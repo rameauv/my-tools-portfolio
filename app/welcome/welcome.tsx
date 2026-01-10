@@ -14,7 +14,7 @@ export function Welcome() {
       <div 
         className="w-full h-full p-4 flex flex-col items-start gap-4"
         style={{
-          background: 'url("https://www.pixelstalk.net/wp-content/uploads/2016/06/Windows-XP-Wallpaper-HD-Free-Download.jpg") center/cover no-repeat',
+          background: 'url("/wallpaper.jpg") center/cover no-repeat',
         }}
       >
         <Window title="Welcome" defaultWidth={400} defaultHeight={300}>
