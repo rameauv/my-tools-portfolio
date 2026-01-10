@@ -6,15 +6,15 @@ let id = 0;
 const MainLeftSectionShortcutsItems = [
   {
     id: id++,
-    icon: <MainSectionItemImgIcon src="/calculator.png" />,
-    title: "Calculator",
-    subtitle: "Calculator",
+    icon: <MainSectionItemImgIcon src="/folder.jpg" />,
+    title: "Internet Explorer",
+    subtitle: "Internet Explorer",
   },
   {
     id: id++,
-    icon: <MainSectionItemImgIcon src="/calculator.png" />,
-    title: "Calculator",
-    subtitle: "Calculator",
+    icon: <MainSectionItemImgIcon src="/folder.jpg" />,
+    title: "Outlook Express",
+    subtitle: "Outlook Express",
   },
 ] as const;
 
@@ -27,32 +27,17 @@ const MainLeftSectionItems = [
   {
     id: id++,
     icon: <MainSectionItemImgIcon src="/calculator.png" />,
-    title: "Calculator",
+    title: "Notepad",
   },
   {
     id: id++,
-    icon: <MainSectionItemImgIcon src="/calculator.png" />,
-    title: "Calculator",
+    icon: <MainSectionItemImgIcon src="/folder.jpg" />,
+    title: "Windows Media Player",
   },
   {
     id: id++,
-    icon: <MainSectionItemImgIcon src="/calculator.png" />,
-    title: "Calculator",
-  },
-  {
-    id: id++,
-    icon: <MainSectionItemImgIcon src="/calculator.png" />,
-    title: "Calculator",
-  },
-  {
-    id: id++,
-    icon: <MainSectionItemImgIcon src="/calculator.png" />,
-    title: "Calculator",
-  },
-  {
-    id: id++,
-    icon: <MainSectionItemImgIcon src="/calculator.png" />,
-    title: "Calculator",
+    icon: <MainSectionItemImgIcon src="/folder.jpg" />,
+    title: "Windows Movie Maker",
   },
 ] as const;
 
@@ -61,78 +46,81 @@ const MainRightSectionTopItems = [
     id: id++,
     icon: <MainSectionItemImgIcon src="/my-documents.png" />,
     title: "My Documents",
+    bold: true,
+  },
+  {
+    id: id++,
+    icon: <MainSectionItemImgIcon src="/folder.jpg" />,
+    title: "My Recent Documents",
+    bold: true,
   },
   {
     id: id++,
     icon: <MainSectionItemImgIcon src="/my-documents.png" />,
-    title: "My Documents",
+    title: "My Pictures",
+    bold: true,
   },
   {
     id: id++,
     icon: <MainSectionItemImgIcon src="/my-documents.png" />,
-    title: "My Documents",
+    title: "My Music",
+    bold: true,
   },
   {
     id: id++,
     icon: <MainSectionItemImgIcon src="/my-documents.png" />,
-    title: "My Documents",
-  },
-  {
-    id: id++,
-    icon: <MainSectionItemImgIcon src="/my-documents.png" />,
-    title: "My Documents",
+    title: "My Computer",
+    bold: true,
   },
 ] as const;
 
 const MainRightSectionMiddleItems = [
   {
     id: id++,
-    icon: <MainSectionItemImgIcon src="/my-documents.png" />,
-    title: "My Documents",
+    icon: <MainSectionItemImgIcon src="/folder.jpg" />,
+    title: "Control Panel",
   },
   {
     id: id++,
-    icon: <MainSectionItemImgIcon src="/my-documents.png" />,
-    title: "My Documents",
+    icon: <MainSectionItemImgIcon src="/folder.jpg" />,
+    title: "Set Program Access and Defaults",
   },
   {
     id: id++,
-    icon: <MainSectionItemImgIcon src="/my-documents.png" />,
-    title: "My Documents",
+    icon: <MainSectionItemImgIcon src="/folder.jpg" />,
+    title: "Connect To",
   },
   {
     id: id++,
-    icon: <MainSectionItemImgIcon src="/my-documents.png" />,
-    title: "My Documents",
-  },
-  {
-    id: id++,
-    icon: <MainSectionItemImgIcon src="/my-documents.png" />,
-    title: "My Documents",
+    icon: <MainSectionItemImgIcon src="/folder.jpg" />,
+    title: "Printers and Faxes",
   },
 ] as const;
 
 const MainRightSectionBottomItems = [
   {
     id: id++,
-    icon: <MainSectionItemImgIcon src="/my-documents.png" />,
+    icon: <MainSectionItemImgIcon src="/folder.jpg" />,
     title: "Help and Support",
   },
   {
     id: id++,
-    icon: <MainSectionItemImgIcon src="/my-documents.png" />,
+    icon: <MainSectionItemImgIcon src="/folder.jpg" />,
     title: "Search",
   },
   {
     id: id++,
-    icon: <MainSectionItemImgIcon src="/my-documents.png" />,
+    icon: <MainSectionItemImgIcon src="/folder.jpg" />,
     title: "Run...",
   },
 ] as const;
 
 export function StartMenu() {
   return (
-    <div className="flex flex-col">
+    <div 
+      className="flex flex-col w-[380px] overflow-hidden rounded-t-[8px] shadow-[2px_2px_20px_rgba(0,0,0,0.4)] border-[#003399] border-t border-x"
+      style={{ fontFamily: 'Tahoma, sans-serif' }}
+    >
       <StartMenuHeader />
       <StartMenuMain />
       <StartMenuFooter />
@@ -142,23 +130,24 @@ export function StartMenu() {
 
 function StartMenuHeader() {
   return (
-    <div className="flex items-center gap-2 bg-blue-500 py-2 px-4">
-      <div className="w-20 ">
-        <StartMenuAccountAvatar />
-      </div>
-      <p className="flex-1 text-white">John Doe</p>
+    <div className="flex items-center gap-3 bg-linear-to-b from-[#1c5ab5] via-[#2c72da] to-[#1c5ab5] py-2 px-3 border-b border-[#003399] relative">
+      {/* Glossy top highlight */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-white/30" />
+      <StartMenuAccountAvatar />
+      <p className="flex-1 text-white font-bold text-[14px] drop-shadow-[1px_1px_1px_rgba(0,0,0,0.8)]">John Doe</p>
     </div>
   );
 }
 
 function StartMenuMain() {
   return (
-    <div className="flex border-2 border-blue-500">
-      <div className="flex-1">
+    <div className="flex bg-white border-x-[3px] border-[#428eff] relative">
+      <div className="w-[190px] flex flex-col">
         <MainLeftSection />
       </div>
-      <div className="w-px bg-blue-500 h-full grow-0 shrink-0" />
-      <div className="flex-1">
+      {/* Vertical orange line that XP has between columns */}
+      <div className="w-px bg-[#91b5df] self-stretch" />
+      <div className="w-[183px] flex flex-col">
         <MainRightSection />
       </div>
     </div>
@@ -166,24 +155,17 @@ function StartMenuMain() {
 }
 
 function MainLeftSectionSeparator() {
-  return <MainSectionSeparator color="var(--color-gray-200)" />;
+  return (
+    <div className="px-2 py-1">
+      <div className="h-px bg-linear-to-r from-transparent via-gray-200 to-transparent w-full" />
+    </div>
+  );
 }
 
 function MainRightSectionSeparator() {
-  return <MainSectionSeparator color="var(--color-blue-500)" />;
-}
-
-function MainSectionSeparator(props: { color: string }) {
   return (
-    <div className="px-4 py-2">
-      <div
-        className="h-[2px] w-full rounded-[50%]"
-        style={
-          {
-            backgroundColor: props.color,
-          } as React.CSSProperties
-        }
-      />
+    <div className="mx-2 my-1">
+      <div className="h-px bg-[#91b5df] shadow-[0_1px_0_rgba(255,255,255,0.4)]" />
     </div>
   );
 }
@@ -194,58 +176,67 @@ function MainLeftSectionItem(props: {
   subtitle?: string;
 }) {
   return (
-    <div className="flex items-center gap-2 px-2 py-1">
-      <div className="aspect-square rounded-lg h-12 overflow-hidden">
+    <div className="group flex items-center gap-2 px-2 py-1.5 cursor-pointer hover:bg-[#2f71cd] hover:text-white transition-colors">
+      <div className="w-8 h-8 shrink-0 group-hover:brightness-110">
         {props.icon}
       </div>
-      <div className="flex flex-col justify-center gap-1">
-        <span className="text-black font-bold">{props.title}</span>
+      <div className="flex flex-col min-w-0">
+        <span className="text-[11px] font-bold truncate group-hover:text-white text-[#333]">
+          {props.title}
+        </span>
         {props.subtitle && (
-          <span className="text-gray-500">{props.subtitle}</span>
+          <span className="text-[10px] truncate group-hover:text-white/80 text-gray-500">
+            {props.subtitle}
+          </span>
         )}
       </div>
     </div>
   );
 }
 
-function MainRightSectionItem(props: { icon: React.ReactNode; title: string }) {
+function MainRightSectionItem(props: { icon: React.ReactNode; title: string; bold?: boolean }) {
   return (
-    <div className="flex items-center gap-2 px-2 py-1">
-      <div className="aspect-square rounded-lg h-10 overflow-hidden">
+    <div className="group flex items-center gap-2 px-2 py-1.5 cursor-pointer hover:bg-[#2f71cd] hover:text-white transition-colors">
+      <div className="w-6 h-6 shrink-0 group-hover:brightness-110">
         {props.icon}
       </div>
-      <div className="flex flex-col justify-center gap-1">
-        <span className="text-black font-bold">{props.title}</span>
-      </div>
+      <span className={`text-[11px] truncate group-hover:text-white text-[#00136b] ${props.bold ? 'font-bold' : ''}`}>
+        {props.title}
+      </span>
     </div>
   );
 }
 
 function MainSectionItemImgIcon(props: { src: string }) {
   return (
-    <img src={props.src} alt="Icon" className="object-cover h-full w-full" />
+    <img src={props.src} alt="Icon" className="w-full h-full object-contain" />
   );
 }
 
 function MainLeftSection() {
   return (
-    <div className="flex flex-col bg-white py-2">
-      {MainLeftSectionShortcutsItems.map((item) => (
-        <MainLeftSectionItem key={item.id} {...item} />
-      ))}
+    <div className="flex flex-col bg-white h-full">
+      <div className="py-1">
+        {MainLeftSectionShortcutsItems.map((item) => (
+          <MainLeftSectionItem key={item.id} {...item} />
+        ))}
+      </div>
       <MainLeftSectionSeparator />
-      {MainLeftSectionItems.map((item) => (
-        <MainLeftSectionItem key={item.id} {...item} />
-      ))}
-      <MainLeftSectionSeparator />
-      <AllProgramsButton />
+      <div className="py-1 flex-1">
+        {MainLeftSectionItems.map((item) => (
+          <MainLeftSectionItem key={item.id} {...item} />
+        ))}
+      </div>
+      <div className="mt-auto pt-1 border-t border-gray-100 bg-white">
+        <AllProgramsButton />
+      </div>
     </div>
   );
 }
 
 function MainRightSection() {
   return (
-    <div className="flex flex-col bg-[#d3e5fa] py-2">
+    <div className="flex flex-col bg-[#d3e5fa] h-full py-1">
       {MainRightSectionTopItems.map((item) => (
         <MainRightSectionItem key={item.id} {...item} />
       ))}
@@ -263,65 +254,51 @@ function MainRightSection() {
 
 function StartMenuFooter() {
   return (
-    <div className="flex bg-blue-500 py-6 px-4 justify-end gap-6">
-      <StartMenuFooterLogOffButton />
-      <StartMenuFooterShutdownButton />
+    <div className="flex items-center justify-end gap-6 bg-linear-to-b from-[#1c5ab5] via-[#2c72da] to-[#1c5ab5] py-2 px-4 border-t border-[#003399] relative">
+      {/* Glossy top highlight for footer */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-white/20" />
+      <StartMenuFooterButton
+        icon="/logoff.png"
+        label="Log Off"
+      />
+      <StartMenuFooterButton
+        icon="/shutdown.png"
+        label="Turn Off Computer"
+      />
     </div>
   );
 }
 
 function StartMenuFooterButton(props: {
-  icon: React.ReactNode;
+  icon: string;
   label: string;
 }) {
   return (
-    <div className="flex items-center gap-2">
-      <div className="aspect-square border-2 border-white rounded-lg h-12 overflow-hidden">
-        {props.icon}
+    <button className="group flex items-center gap-2 cursor-pointer border-none bg-transparent hover:brightness-110 active:brightness-90 transition-all outline-none">
+      <div className="w-7 h-7 rounded-md overflow-hidden border border-white/30 shadow-sm flex items-center justify-center bg-white/10">
+        <img
+          src={props.icon}
+          alt={props.label}
+          className="w-5 h-5 object-contain"
+        />
       </div>
-      <span className="text-white">{props.label}</span>
-    </div>
-  );
-}
-
-function StartMenuFooterLogOffButton() {
-  return (
-    <StartMenuFooterButton
-      icon={
-        <img
-          src="/logoff.png"
-          alt="Log off"
-          className="object-cover h-full w-full"
-        />
-      }
-      label="Log off"
-    />
-  );
-}
-
-function StartMenuFooterShutdownButton() {
-  return (
-    <StartMenuFooterButton
-      icon={
-        <img
-          src="/shutdown.png"
-          alt="Shutdown"
-          className="object-cover h-full w-full"
-        />
-      }
-      label="Shutdown"
-    />
+      <span className="text-white text-[12px] font-medium group-hover:underline drop-shadow-[1px_1px_1px_rgba(0,0,0,0.5)]">
+        {props.label}
+      </span>
+    </button>
   );
 }
 
 function StartMenuAccountAvatar() {
   return (
-    <div className="aspect-square rounded-lg border-white border-4">
+    <div className="w-12 h-12 rounded-[4px] border-2 border-white/90 shadow-[2px_2px_4px_rgba(0,0,0,0.6)] overflow-hidden relative">
       <img
         src="https://github.com/shadcn.png"
         alt="Account Avatar"
-        className="object-cover"
+        className="w-full h-full object-cover"
       />
+      {/* Subtle inner shadow for depth */}
+      <div className="absolute inset-0 shadow-[inset_0_0_4px_rgba(0,0,0,0.2)] pointer-events-none" />
     </div>
   );
 }

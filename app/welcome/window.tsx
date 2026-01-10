@@ -2,6 +2,10 @@ import { Dialog } from "@base-ui/react";
 import * as React from "react";
 import { useState, useEffect, useCallback, useRef } from "react";
 
+const MIN_WIDTH = 200;
+const MIN_HEIGHT = 150;
+const TASKBAR_HEIGHT = 30;
+
 export function Window(props: {
   children: React.ReactNode;
   title?: string;
@@ -41,6 +45,8 @@ export function Window(props: {
             setY={setY}
             width={width}
             height={height}
+            setWidth={setWidth}
+            setHeight={setHeight}
           >
             {props.children}
           </WindowContent>
@@ -60,9 +66,173 @@ function WindowContent(props: {
   setY: (y: number) => void;
   width: number;
   height: number;
+  setWidth: (width: number) => void;
+  setHeight: (height: number) => void;
 }) {
+  const { setWidth, setHeight, setX, setY } = props;
+  const [isResizing, setIsResizing] = useState(false);
+  const [resizeDirection, setResizeDirection] = useState<string | null>(null);
+  const resizeStart = useRef({ x: 0, y: 0, winX: 0, winY: 0, winWidth: 0, winHeight: 0 });
+  const currentDimensions = useRef({ width: props.width, height: props.height, x: props.x, y: props.y });
+  const lastMousePos = useRef({ x: 0, y: 0 });
+
+  // Keep currentDimensions ref in sync with props
+  useEffect(() => {
+    currentDimensions.current = { width: props.width, height: props.height, x: props.x, y: props.y };
+  }, [props.width, props.height, props.x, props.y]);
+
+  const onResizeMouseDown = useCallback((e: React.MouseEvent, direction: string) => {
+    if (e.button !== 0) return;
+    e.stopPropagation(); // Prevent triggering drag
+    
+    setIsResizing(true);
+    setResizeDirection(direction);
+    const mouseX = e.clientX;
+    const mouseY = e.clientY;
+    resizeStart.current = {
+      x: mouseX,
+      y: mouseY,
+      winX: currentDimensions.current.x,
+      winY: currentDimensions.current.y,
+      winWidth: currentDimensions.current.width,
+      winHeight: currentDimensions.current.height,
+    };
+    lastMousePos.current = { x: mouseX, y: mouseY };
+  }, []);
+
+  const onResizeMouseMove = useCallback(
+    (e: MouseEvent) => {
+      if (!isResizing || !resizeDirection) return;
+
+      const deltaX = e.clientX - lastMousePos.current.x;
+      const deltaY = e.clientY - lastMousePos.current.y;
+      lastMousePos.current = { x: e.clientX, y: e.clientY };
+
+      const viewportWidth = window.innerWidth;
+      const viewportHeight = window.innerHeight;
+
+      // Use current dimensions as base (from ref, which is always up-to-date)
+      let newWidth = currentDimensions.current.width;
+      let newHeight = currentDimensions.current.height;
+      let newX = currentDimensions.current.x;
+      let newY = currentDimensions.current.y;
+
+      // Calculate new dimensions based on resize direction
+      if (resizeDirection.includes('e')) {
+        // Right edge or corners
+        const proposedWidth = newWidth + deltaX;
+        const maxWidth = viewportWidth - newX;
+        newWidth = Math.max(MIN_WIDTH, Math.min(proposedWidth, maxWidth));
+      }
+      if (resizeDirection.includes('w')) {
+        // Left edge or corners
+        const deltaWidth = -deltaX;
+        const proposedWidth = newWidth + deltaWidth;
+        const minX = 0;
+        const maxWidth = newX + newWidth - minX;
+        const constrainedWidth = Math.max(MIN_WIDTH, Math.min(proposedWidth, maxWidth));
+        const actualDeltaWidth = constrainedWidth - newWidth;
+        newWidth = constrainedWidth;
+        newX = newX - actualDeltaWidth;
+      }
+      if (resizeDirection.includes('s')) {
+        // Bottom edge or corners
+        const proposedHeight = newHeight + deltaY;
+        const maxHeight = viewportHeight - newY - TASKBAR_HEIGHT;
+        newHeight = Math.max(MIN_HEIGHT, Math.min(proposedHeight, maxHeight));
+      }
+      if (resizeDirection.includes('n')) {
+        // Top edge or corners
+        const deltaHeight = -deltaY;
+        const proposedHeight = newHeight + deltaHeight;
+        const minY = 0;
+        const maxHeight = newY + newHeight - minY;
+        const constrainedHeight = Math.max(MIN_HEIGHT, Math.min(proposedHeight, maxHeight));
+        const actualDeltaHeight = constrainedHeight - newHeight;
+        newHeight = constrainedHeight;
+        newY = newY - actualDeltaHeight;
+      }
+
+      // Ensure window stays within viewport bounds
+      const minX = 0;
+      const minY = 0;
+      const maxX = viewportWidth - newWidth;
+      const maxY = viewportHeight - newHeight - TASKBAR_HEIGHT;
+
+      // Clamp position based on resize direction
+      if (resizeDirection.includes('w')) {
+        newX = Math.max(minX, Math.min(newX, maxX));
+      } else {
+        // For right-side resizing, ensure window doesn't go out of bounds
+        newX = Math.max(minX, Math.min(currentDimensions.current.x, maxX));
+      }
+
+      if (resizeDirection.includes('n')) {
+        newY = Math.max(minY, Math.min(newY, maxY));
+      } else {
+        // For bottom-side resizing, ensure window doesn't go out of bounds
+        newY = Math.max(minY, Math.min(currentDimensions.current.y, maxY));
+      }
+
+      // Final safety check: ensure minimum dimensions
+      newWidth = Math.max(MIN_WIDTH, newWidth);
+      newHeight = Math.max(MIN_HEIGHT, newHeight);
+
+      // Update dimensions and position
+      setWidth(newWidth);
+      setHeight(newHeight);
+      setX(newX);
+      setY(newY);
+      
+      // Update ref immediately so next move event uses latest values
+      currentDimensions.current = { width: newWidth, height: newHeight, x: newX, y: newY };
+    },
+    [isResizing, resizeDirection, setWidth, setHeight, setX, setY]
+  );
+
+  const getCursorForDirection = useCallback((direction: string | null): string => {
+    if (!direction) return 'default';
+    const cursorMap: Record<string, string> = {
+      'nw': 'nw-resize',
+      'n': 'n-resize',
+      'ne': 'ne-resize',
+      'e': 'e-resize',
+      'se': 'se-resize',
+      's': 's-resize',
+      'sw': 'sw-resize',
+      'w': 'w-resize',
+    };
+    return cursorMap[direction] || 'default';
+  }, []);
+
+  const onResizeMouseUp = useCallback(() => {
+    setIsResizing(false);
+    setResizeDirection(null);
+  }, []);
+
+  useEffect(() => {
+    if (isResizing && resizeDirection) {
+      const cursor = getCursorForDirection(resizeDirection);
+      document.body.style.cursor = cursor;
+      document.body.style.userSelect = 'none';
+      window.addEventListener("mousemove", onResizeMouseMove);
+      window.addEventListener("mouseup", onResizeMouseUp);
+    } else {
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+      window.removeEventListener("mousemove", onResizeMouseMove);
+      window.removeEventListener("mouseup", onResizeMouseUp);
+    }
+    return () => {
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+      window.removeEventListener("mousemove", onResizeMouseMove);
+      window.removeEventListener("mouseup", onResizeMouseUp);
+    };
+  }, [isResizing, resizeDirection, onResizeMouseMove, onResizeMouseUp, getCursorForDirection]);
+
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full relative">
       <WindowHeader
         title={props.title}
         onClose={props.onClose}
@@ -76,7 +246,124 @@ function WindowContent(props: {
       <div className="flex-1 overflow-auto p-2 bg-white m-1 border border-gray-400">
         {props.children}
       </div>
+      <ResizeHandles onResizeMouseDown={onResizeMouseDown} />
     </div>
+  );
+}
+
+function ResizeHandles(props: {
+  onResizeMouseDown: (e: React.MouseEvent, direction: string) => void;
+}) {
+  const handleSize = 8;
+  const handleHitArea = 12;
+
+  const getCursor = (direction: string): string => {
+    const cursorMap: Record<string, string> = {
+      'nw': 'nw-resize',
+      'n': 'n-resize',
+      'ne': 'ne-resize',
+      'e': 'e-resize',
+      'se': 'se-resize',
+      's': 's-resize',
+      'sw': 'sw-resize',
+      'w': 'w-resize',
+    };
+    return cursorMap[direction] || 'default';
+  };
+
+  return (
+    <>
+      {/* Corners */}
+      <div
+        className="absolute z-50 bg-transparent"
+        style={{
+          top: -handleSize / 2,
+          left: -handleSize / 2,
+          width: handleHitArea,
+          height: handleHitArea,
+          cursor: getCursor('nw'),
+        }}
+        onMouseDown={(e) => props.onResizeMouseDown(e, 'nw')}
+      />
+      <div
+        className="absolute z-50 bg-transparent"
+        style={{
+          top: -handleSize / 2,
+          right: -handleSize / 2,
+          width: handleHitArea,
+          height: handleHitArea,
+          cursor: getCursor('ne'),
+        }}
+        onMouseDown={(e) => props.onResizeMouseDown(e, 'ne')}
+      />
+      <div
+        className="absolute z-50 bg-transparent"
+        style={{
+          bottom: -handleSize / 2,
+          left: -handleSize / 2,
+          width: handleHitArea,
+          height: handleHitArea,
+          cursor: getCursor('sw'),
+        }}
+        onMouseDown={(e) => props.onResizeMouseDown(e, 'sw')}
+      />
+      <div
+        className="absolute z-50 bg-transparent"
+        style={{
+          bottom: -handleSize / 2,
+          right: -handleSize / 2,
+          width: handleHitArea,
+          height: handleHitArea,
+          cursor: getCursor('se'),
+        }}
+        onMouseDown={(e) => props.onResizeMouseDown(e, 'se')}
+      />
+      {/* Edges */}
+      <div
+        className="absolute z-50 bg-transparent"
+        style={{
+          top: -handleSize / 2,
+          left: handleHitArea / 2,
+          right: handleHitArea / 2,
+          height: handleHitArea,
+          cursor: getCursor('n'),
+        }}
+        onMouseDown={(e) => props.onResizeMouseDown(e, 'n')}
+      />
+      <div
+        className="absolute z-50 bg-transparent"
+        style={{
+          bottom: -handleSize / 2,
+          left: handleHitArea / 2,
+          right: handleHitArea / 2,
+          height: handleHitArea,
+          cursor: getCursor('s'),
+        }}
+        onMouseDown={(e) => props.onResizeMouseDown(e, 's')}
+      />
+      <div
+        className="absolute z-50 bg-transparent"
+        style={{
+          left: -handleSize / 2,
+          top: handleHitArea / 2,
+          bottom: handleHitArea / 2,
+          width: handleHitArea,
+          cursor: getCursor('w'),
+        }}
+        onMouseDown={(e) => props.onResizeMouseDown(e, 'w')}
+      />
+      <div
+        className="absolute z-50 bg-transparent"
+        style={{
+          right: -handleSize / 2,
+          top: handleHitArea / 2,
+          bottom: handleHitArea / 2,
+          width: handleHitArea,
+          cursor: getCursor('e'),
+        }}
+        onMouseDown={(e) => props.onResizeMouseDown(e, 'e')}
+      />
+    </>
   );
 }
 
@@ -128,7 +415,6 @@ function WindowHeader(props: {
       // Get viewport dimensions
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
-      const TASKBAR_HEIGHT = 30; // Height of the BottomBar
 
       // Calculate boundaries to keep window fully inside viewport
       const minX = 0;

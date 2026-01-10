@@ -11,16 +11,17 @@ export default function AllProgramsButton() {
         className="
           group
           flex items-center justify-center gap-2
-          w-full py-1 px-4
+          w-full py-2 px-2
           cursor-pointer
           transition-colors duration-75
           hover:bg-[#2f71cd]
           border-none outline-none
+          mt-1
         "
       >
         <span
           className="
-            text-[#00136b] font-bold text-[20px]
+            text-[#00136b] font-bold text-[11px]
             group-hover:text-white
           "
           style={{ fontFamily: 'Tahoma, sans-serif' }}
@@ -30,8 +31,8 @@ export default function AllProgramsButton() {
         <div
           className="
             flex items-center justify-center
-            bg-[#3c9a38] rounded-sm
-            w-[20px] h-[20px]
+            bg-[#3c9a38] rounded-[2px]
+            w-[16px] h-[16px]
             shadow-[1px_1px_1px_rgba(0,0,0,0.3)]
           "
         >
