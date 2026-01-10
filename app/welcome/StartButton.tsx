@@ -3,34 +3,40 @@ import * as React from "react";
 
 function WindowsLogo() {
   return (
-    <svg
-      width="20"
-      height="20"
-      viewBox="0 0 88 88"
-      className="drop-shadow-sm"
-      aria-hidden="true"
-    >
-      {/* Red quadrant (top-left) */}
-      <path
-        d="M0 12.5L35.7 7.5V42.2H0V12.5Z"
-        fill="#F25022"
-      />
-      {/* Green quadrant (top-right) */}
-      <path
-        d="M39.5 6.9L87.5 0V42.2H39.5V6.9Z"
-        fill="#7FBA00"
-      />
-      {/* Blue quadrant (bottom-left) */}
-      <path
-        d="M0 45.8H35.7V80.5L0 75.5V45.8Z"
-        fill="#00A4EF"
-      />
-      {/* Yellow quadrant (bottom-right) */}
-      <path
-        d="M39.5 45.8H87.5V88L39.5 81.1V45.8Z"
-        fill="#FFB900"
-      />
-    </svg>
+    <div className="relative w-5 h-5 flex items-center justify-center mr-1">
+      <svg
+        width="16"
+        height="16"
+        viewBox="0 0 24 24"
+        className="drop-shadow-[1px_1px_1px_rgba(0,0,0,0.5)]"
+        aria-hidden="true"
+      >
+        <path
+          d="M2.5 4.5C2.5 4.5 6.5 3.5 10.5 5.5V20.5C10.5 20.5 6.5 18.5 2.5 19.5V4.5Z"
+          fill="#ee4e23"
+        />
+        <path
+          d="M11.5 5.5C11.5 5.5 16.5 3.5 21.5 5.5V20.5C21.5 20.5 16.5 18.5 11.5 20.5V5.5Z"
+          fill="#5da423"
+        />
+        <path
+          d="M2.5 4.5C2.5 4.5 6.5 3.5 10.5 5.5V20.5C10.5 20.5 6.5 18.5 2.5 19.5V4.5Z"
+          fill="#f6b323"
+          className="opacity-20"
+        />
+        <path
+          d="M2.5 4.5C2.5 4.5 6.5 3.5 10.5 5.5V20.5C10.5 20.5 6.5 18.5 2.5 19.5V4.5Z"
+          fill="none"
+        />
+      </svg>
+      {/* More accurate XP logo using four colored shapes */}
+      <div className="absolute inset-0 flex flex-wrap w-[14px] h-[14px] m-auto rotate-[-5deg]">
+        <div className="w-[7px] h-[7px] bg-[#ee4e23] rounded-tl-[1px] shadow-[0.5px_0.5px_0_rgba(0,0,0,0.2)]"></div>
+        <div className="w-[7px] h-[7px] bg-[#5da423] rounded-tr-[1px] shadow-[0.5px_0.5px_0_rgba(0,0,0,0.2)]"></div>
+        <div className="w-[7px] h-[7px] bg-[#00a1f1] rounded-bl-[1px] shadow-[0.5px_0.5px_0_rgba(0,0,0,0.2)]"></div>
+        <div className="w-[7px] h-[7px] bg-[#f6b323] rounded-br-[1px] shadow-[0.5px_0.5px_0_rgba(0,0,0,0.2)]"></div>
+      </div>
+    </div>
   );
 }
 
@@ -43,61 +49,43 @@ export function StartButton(props: { children: React.ReactNode }) {
         className="
           group
           relative
-          flex items-center gap-2
-          h-[30px] min-w-[100px] pl-2 pr-4
-          rounded-r-[8px] rounded-l-[15px]
-          text-white font-bold text-[13px] tracking-wide
+          flex items-center
+          h-full px-4
+          text-white font-bold text-[16px] italic
           cursor-pointer
           border-none
           outline-none
-          transition-all duration-100
+          transition-all duration-75
           focus:outline-none
           
           /* XP Green Gradient */
-          bg-linear-to-b from-[#3c9a38] via-[#3c9a38] to-[#2e7d32]
+          bg-linear-to-b from-[#3c9a38] via-[#4aaf47] to-[#2e7d32]
           
-          /* 3D Border effect */
-          shadow-[inset_0_1px_0_rgba(255,255,255,0.4),inset_0_-1px_0_rgba(0,0,0,0.2),0_1px_2px_rgba(0,0,0,0.3)]
+          /* 3D Border and shadow */
+          shadow-[inset_2px_2px_3px_rgba(255,255,255,0.4),inset_-2px_-2px_3px_rgba(0,0,0,0.3),2px_0_5px_rgba(0,0,0,0.2)]
           
-          /* Glossy top highlight */
-          before:content-['']
-          before:absolute
-          before:top-0
-          before:left-0
-          before:right-0
-          before:h-[45%]
-          before:rounded-t-[10px]
-          before:rounded-tl-[15px]
-          before:bg-linear-to-b
-          before:from-[rgba(255,255,255,0.35)]
-          before:to-transparent
-          before:pointer-events-none
+          /* The classic XP start button rounding */
+          rounded-r-[15px] rounded-l-[2px]
           
           /* Hover state */
-          hover:from-[#4aaf47]
-          hover:via-[#4aaf47]
-          hover:to-[#3c9a38]
-          hover:shadow-[inset_0_1px_0_rgba(255,255,255,0.5),inset_0_-1px_0_rgba(0,0,0,0.2),0_2px_4px_rgba(0,0,0,0.3)]
+          hover:brightness-110
           
           /* Active/pressed state */
-          active:from-[#2e7d32]
-          active:via-[#2e7d32]
-          active:to-[#1b5e20]
-          active:shadow-[inset_0_2px_4px_rgba(0,0,0,0.3)]
+          active:brightness-90
+          active:shadow-[inset_3px_3px_5px_rgba(0,0,0,0.4)]
         "
         style={{
-          fontFamily: '"Trebuchet MS", "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif',
-          fontStyle: 'italic',
-          textShadow: '1px 1px 1px rgba(0,0,0,0.4)',
+          fontFamily: '"Trebuchet MS", sans-serif',
+          textShadow: '1px 1px 2px rgba(0,0,0,0.7)',
         }}
       >
-        <span className="relative z-10 flex items-center gap-2">
+        <div className="relative z-10 flex items-center">
           <WindowsLogo />
-          <span>start</span>
-        </span>
+          <span className="ml-1 -mt-0.5 tracking-tight text-[15px]">start</span>
+        </div>
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Popup className="fixed bottom-[72px] left-0 min-w-[500px] animate-in fade-in slide-in-from-bottom-4 duration-200 z-50 overflow-hidden">
+        <Dialog.Popup className="fixed bottom-[30px] left-0 min-w-[400px] animate-in fade-in slide-in-from-bottom-2 duration-150 z-50 overflow-hidden rounded-tr-lg">
           {props.children}
         </Dialog.Popup>
       </Dialog.Portal>

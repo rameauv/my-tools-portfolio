@@ -128,12 +128,13 @@ function WindowHeader(props: {
       // Get viewport dimensions
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
+      const TASKBAR_HEIGHT = 30; // Height of the BottomBar
 
       // Calculate boundaries to keep window fully inside viewport
       const minX = 0;
       const minY = 0;
       const maxX = viewportWidth - props.width;
-      const maxY = viewportHeight - props.height;
+      const maxY = viewportHeight - props.height - TASKBAR_HEIGHT;
 
       // Use current window position as base
       const currentX = props.x;

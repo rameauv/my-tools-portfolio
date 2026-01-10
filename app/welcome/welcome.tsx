@@ -1,20 +1,31 @@
 import * as React from "react";
-import { StartButton } from "./StartButton";
-import { StartMenu } from "./StartMenu";
 import { Window } from "./window";
+import { BottomBar, TaskbarButton } from "./BottomBar";
 
 export function Welcome() {
   return (
     <DesktopLayout
       bottomBar={
         <BottomBar>
-          <div>programs</div>
+          <TaskbarButton title="Welcome" active icon="/my-documents.png" />
         </BottomBar>
       }
     >
-      <div>
+      <div 
+        className="w-full h-full p-4 flex flex-col items-start gap-4"
+        style={{
+          background: 'url("https://www.pixelstalk.net/wp-content/uploads/2016/06/Windows-XP-Wallpaper-HD-Free-Download.jpg") center/cover no-repeat',
+        }}
+      >
         <Window title="Welcome" defaultWidth={400} defaultHeight={300}>
-          <h1 className="text-4xl font-bold text-black">Welcome to the app</h1>
+          <div className="flex flex-col gap-4">
+            <h1 className="text-2xl font-bold text-black" style={{ fontFamily: 'Tahoma, sans-serif' }}>
+              Welcome to the Windows XP Portfolio
+            </h1>
+            <p className="text-sm text-black" style={{ fontFamily: 'Tahoma, sans-serif' }}>
+              This is a faithful recreation of the classic Windows XP interface built with React and Tailwind CSS.
+            </p>
+          </div>
         </Window>
       </div>
     </DesktopLayout>
@@ -26,41 +37,11 @@ function DesktopLayout(props: {
   bottomBar: React.ReactNode;
 }) {
   return (
-    <main className="flex flex-col justify-center h-screen">
-      <div className="flex-1">{props.children}</div>
+    <main className="flex flex-col h-screen overflow-hidden">
+      <div className="flex-1 relative overflow-hidden">
+        {props.children}
+      </div>
       {props.bottomBar}
     </main>
-  );
-}
-
-function BottomBar(props: { children: React.ReactNode }) {
-  return (
-    <footer className="flex items-center bg-blue-500 p-4">
-      <div className="shrink-0">
-        <StartButton>
-          <StartMenu />
-        </StartButton>
-      </div>
-      <div className="flex-1">{props.children}</div>
-      <div className="shrink-0">
-        <StatusIconsSection />
-      </div>
-    </footer>
-  );
-}
-
-function StatusIconsSection(props: {}) {
-  return (
-    <div className="flex items-center gap-2">
-      <StatusSectionClock />
-    </div>
-  );
-}
-
-function StatusSectionClock(props: {}) {
-  return (
-    <div className="flex items-center gap-2">
-      <span className="text-sm text-white">10:00</span>
-    </div>
   );
 }
