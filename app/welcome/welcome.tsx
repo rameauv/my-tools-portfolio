@@ -7,14 +7,27 @@ import { useState } from "react";
 
 export function Welcome() {
   const [windows, setWindows] = useState<WindowConfig[]>([
-    { id: 0, title: "Welcome", isMinimized: false, iconSrc: "/my-documents.png" },
+    {
+      id: 0,
+      title: "Welcome",
+      isMinimized: false,
+      iconSrc: "/my-documents.png",
+      isFocused: true,
+    },
+    {
+      id: 1,
+      title: "Welcome2",
+      isMinimized: false,
+      iconSrc: "/my-documents.png",
+      isFocused: false,
+    },
   ]);
 
   function onMinimize(id: number) {
     setWindows(
       windows.map((window) =>
         window.id === id
-          ? { ...window, isMinimized: !window.isMinimized }
+          ? { ...window, isMinimized: !window.isMinimized, isFocused: false }
           : window
       )
     );
@@ -24,9 +37,20 @@ export function Welcome() {
     setWindows(
       windows.map((window) =>
         window.id === id
-          ? { ...window, isMinimized: !window.isMinimized }
-          : window
+          ? {
+              ...window,
+              isMinimized: !window.isMinimized,
+              isFocused: window.isMinimized,
+            }
+          : { ...window, isFocused: false }
       )
+    );
+  }
+
+  function onFocus(id: number) {
+    console.log("onFocus", id);
+    setWindows(
+      windows.map((window) => ({ ...window, isFocused: window.id === id }))
     );
   }
 
@@ -39,7 +63,7 @@ export function Welcome() {
               <TaskbarButton
                 key={window.id}
                 title={window.title}
-                active={!window.isMinimized}
+                active={window.isFocused}
                 icon={window.iconSrc}
                 onClick={() => onToggleWindow(window.id)}
               />
@@ -62,6 +86,7 @@ export function Welcome() {
                 defaultWidth={400}
                 defaultHeight={300}
                 onMinimize={() => onMinimize(window.id)}
+                onFocus={() => onFocus(window.id)}
               >
                 <div className="flex flex-col gap-4">
                   <h1
