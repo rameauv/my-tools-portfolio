@@ -1,6 +1,7 @@
 import { Dialog } from "@base-ui/react";
 import * as React from "react";
 import { useState, useEffect, useCallback, useRef } from "react";
+import { useWindowContext } from "./WindowContext";
 
 const MIN_WIDTH = 200;
 const MIN_HEIGHT = 150;
@@ -377,6 +378,7 @@ function WindowHeader(props: {
   width: number;
   height: number;
 }) {
+  const { setIsAnyWindowDragging } = useWindowContext();
   const [isDragging, setIsDragging] = useState(false);
   const [dragStart, setDragStart] = useState({ x: 0, y: 0, winX: 0, winY: 0 });
   const lastMousePos = useRef({ x: 0, y: 0 });
@@ -389,6 +391,7 @@ function WindowHeader(props: {
     if ((e.target as HTMLElement).closest("button")) return;
 
     setIsDragging(true);
+    setIsAnyWindowDragging(true);
     const mouseX = e.clientX;
     const mouseY = e.clientY;
     setDragStart({
@@ -474,7 +477,8 @@ function WindowHeader(props: {
 
   const onMouseUp = useCallback(() => {
     setIsDragging(false);
-  }, []);
+    setIsAnyWindowDragging(false);
+  }, [setIsAnyWindowDragging]);
 
   useEffect(() => {
     if (isDragging) {
