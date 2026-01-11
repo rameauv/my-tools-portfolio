@@ -41,7 +41,10 @@ export function Window(props: {
     <Dialog.Root open={open} onOpenChange={onOpenChange} modal={false}>
       <Dialog.Portal>
         <Dialog.Popup
-          className="fixed bg-[#ece9d8] border-2 border-[#0054e3] shadow-xl z-50 overflow-hidden rounded-t-lg"
+          className={`
+            fixed bg-[#ece9d8] border-2 shadow-xl z-50 overflow-hidden rounded-t-lg
+            ${props.config.isFocused ? "border-[#0054e3]" : "border-[#7a96df]"}
+          `}
           style={{
             top: 0,
             left: 0,
@@ -49,6 +52,7 @@ export function Window(props: {
             width: width,
             height: height,
             opacity: props.config.isMinimized ? 0 : 1,
+            zIndex: props.config.isFocused ? 100 : 50,
           }}
           onFocus={() => props.onFocus()}
         >
@@ -67,6 +71,7 @@ export function Window(props: {
             setWidth={setWidth}
             setHeight={setHeight}
             onMinimize={props.onMinimize}
+            isFocused={props.config.isFocused}
           >
             {props.children}
           </WindowContent>
@@ -89,6 +94,7 @@ function WindowContent(props: {
   setWidth: (width: number) => void;
   setHeight: (height: number) => void;
   onMinimize?: () => void;
+  isFocused: boolean;
 }) {
   const {
     onResizeMouseDown,
@@ -166,6 +172,7 @@ function WindowContent(props: {
         height={props.height}
         setWidth={props.setWidth}
         setHeight={props.setHeight}
+        isFocused={props.isFocused}
       />
       <div className="flex-1 overflow-auto p-2 bg-white m-1 border border-gray-400">
         {props.children}
@@ -303,6 +310,7 @@ function WindowHeader(props: {
   setWidth: (width: number) => void;
   setHeight: (height: number) => void;
   onMinimize?: () => void;
+  isFocused: boolean;
 }) {
   const { setIsSnappingWindow } = useWindowContext();
   const { onMouseDown, isDragging } = useWindowDrag({
@@ -330,24 +338,44 @@ function WindowHeader(props: {
     <div
       onMouseDown={onMouseDown}
       className={`
-        flex items-center justify-between bg-linear-to-b from-[#0058e6] via-[#2576ff] to-[#0058e6] px-2 py-1 select-none
+        flex items-center justify-between px-2 py-1 select-none
+        ${
+          props.isFocused
+            ? "bg-linear-to-b from-[#0058e6] via-[#2576ff] to-[#0058e6]"
+            : "bg-linear-to-b from-[#7a96df] via-[#9db9eb] to-[#7a96df]"
+        }
         ${isDragging ? "cursor-grabbing" : "cursor-grab"}
       `}
     >
       <div className="flex items-center gap-2 overflow-hidden pointer-events-none">
-        <span className="text-white font-bold text-sm truncate shadow-sm">
+        <span
+          className={`
+          font-bold text-sm truncate shadow-sm
+          ${props.isFocused ? "text-white" : "text-[#dbe1f1]"}
+        `}
+        >
           {props.title ?? "Window"}
         </span>
       </div>
       <div className="flex items-center gap-1">
-        <WindowHeaderRightButton onClick={props.onMinimize}>
-          <ImgIcon src="/minimize.png" />
+        <WindowHeaderRightButton
+          onClick={props.onMinimize}
+          isFocused={props.isFocused}
+        >
+          <ImgIcon src="/minimize.png" isFocused={props.isFocused} />
         </WindowHeaderRightButton>
-        <WindowHeaderRightButton onClick={onMaximize}>
-          <ImgIcon src="/maximize.png" />
+        <WindowHeaderRightButton
+          onClick={onMaximize}
+          isFocused={props.isFocused}
+        >
+          <ImgIcon src="/maximize.png" isFocused={props.isFocused} />
         </WindowHeaderRightButton>
-        <WindowHeaderRightButton onClick={props.onClose}>
-          <ImgIcon src="/close.png" />
+        <WindowHeaderRightButton
+          onClick={props.onClose}
+          isFocused={props.isFocused}
+          isClose
+        >
+          <ImgIcon src="/close.png" isFocused={props.isFocused} />
         </WindowHeaderRightButton>
       </div>
     </div>
@@ -357,25 +385,28 @@ function WindowHeader(props: {
 function WindowHeaderRightButton(props: {
   children: React.ReactNode;
   onClick?: () => void;
+  isFocused: boolean;
+  isClose?: boolean;
 }) {
   return (
     <button
-      className={`
-        w-[21px] h-[21px] flex items-center justify-center rounded-sm
-        cursor-pointer active:brightness-90 transition-all
-        outline-none border-none
-      `}
+      className="w-[21px] h-[21px] flex items-center justify-center cursor-pointer active:brightness-90 transition-all outline-none border-none bg-transparent"
       onClick={props.onClick}
     >
-      <div className="w-4 h-4 rounded-[2px] p-[0.2px] border-white overflow-hidden bg-white">
-        {props.children}
-      </div>
+      {props.children}
     </button>
   );
 }
 
-function ImgIcon(props: { src: string }) {
+function ImgIcon(props: { src: string; isFocused: boolean }) {
   return (
-    <img src={props.src} alt="icon" className="object-cover h-full w-full" />
+    <img
+      src={props.src}
+      alt="icon"
+      className={`
+        h-full w-full object-contain
+        ${props.isFocused ? "" : "opacity-70 saturate-[0.25] brightness-110"}
+      `}
+    />
   );
 }

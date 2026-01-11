@@ -48,7 +48,6 @@ export function Welcome() {
   }
 
   function onFocus(id: number) {
-    console.log("onFocus", id);
     setWindows(
       windows.map((window) => ({ ...window, isFocused: window.id === id }))
     );

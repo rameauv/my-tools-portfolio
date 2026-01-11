@@ -8,7 +8,7 @@ export function WindowSnapping(props: { children: React.ReactNode }) {
     <div className="relative w-full h-full overflow-hidden">
       <div
         className={`
-          absolute top-2 left-2 bottom-2 w-[calc(50%-12px)] pointer-events-none z-51
+          absolute top-2 left-2 bottom-2 w-[calc(50%-12px)] pointer-events-none z-101
           transition-all duration-300 ease-out
           ${
             isSnappingWindow
@@ -22,7 +22,7 @@ export function WindowSnapping(props: { children: React.ReactNode }) {
 
       <div
         className={`
-          absolute top-2 right-2 bottom-2 w-[calc(50%-12px)] pointer-events-none z-51
+          absolute top-2 right-2 bottom-2 w-[calc(50%-12px)] pointer-events-none z-101
           transition-all duration-300 ease-out
           ${
             isSnappingWindow
