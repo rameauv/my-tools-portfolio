@@ -4,6 +4,8 @@ import { BottomBar, TaskbarButton } from "./BottomBar";
 import { WindowSnapping } from "./WindowSnapping";
 import { WindowProvider } from "./WindowContext";
 import { useState } from "react";
+import { AppOne } from "./apps/app-one/AppOne";
+import { AppTwo } from "./apps/app-two/AppTwo";
 
 export function Welcome() {
   const [windows, setWindows] = useState<WindowConfig[]>([
@@ -13,6 +15,7 @@ export function Welcome() {
       isMinimized: false,
       iconSrc: "/my-documents.png",
       isFocused: true,
+      component: AppOne,
     },
     {
       id: 1,
@@ -20,6 +23,7 @@ export function Welcome() {
       isMinimized: false,
       iconSrc: "/my-documents.png",
       isFocused: false,
+      component: AppTwo,
     },
   ]);
 
@@ -87,21 +91,7 @@ export function Welcome() {
                 onMinimize={() => onMinimize(window.id)}
                 onFocus={() => onFocus(window.id)}
               >
-                <div className="flex flex-col gap-4">
-                  <h1
-                    className="text-2xl font-bold text-black"
-                    style={{ fontFamily: "Tahoma, sans-serif" }}
-                  >
-                    Welcome to the Windows XP Portfolio
-                  </h1>
-                  <p
-                    className="text-sm text-black"
-                    style={{ fontFamily: "Tahoma, sans-serif" }}
-                  >
-                    This is a faithful recreation of the classic Windows XP
-                    interface built with React and Tailwind CSS.
-                  </p>
-                </div>
+                <window.component key={window.id} />
               </Window>
             ))}
           </div>

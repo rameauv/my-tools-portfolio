@@ -13,6 +13,7 @@ export interface WindowConfig {
   isMinimized: boolean;
   iconSrc: string;
   isFocused: boolean;
+  component: React.ComponentType<any>;
 }
 
 export function Window(props: {
@@ -57,10 +58,7 @@ export function Window(props: {
           onFocus={() => props.onFocus()}
         >
           <WindowContent
-            title={
-              props.title +
-              ` (${props.config.isMinimized ? "Minimized" : "Restored"})`
-            }
+            title={props.title}
             onClose={props.onClose}
             x={x}
             y={y}
