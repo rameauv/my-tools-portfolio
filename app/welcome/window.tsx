@@ -8,23 +8,34 @@ const MIN_HEIGHT = 150;
 const TASKBAR_HEIGHT = 30;
 const SNAPPING_ZONE_RATIO = 0.1;
 
+export interface WindowConfig {
+  id: number;
+  title: string;
+  isMinimized: boolean;
+  iconSrc: string;
+}
+
 export function Window(props: {
   children: React.ReactNode;
   title?: string;
   onClose?: () => void;
   defaultWidth?: number;
   defaultHeight?: number;
+  config: WindowConfig;
+  onMinimize?: () => void;
 }) {
   const open = true;
   const [x, setX] = useState(100);
   const [y, setY] = useState(100);
   const [width, setWidth] = useState(props.defaultWidth ?? 200);
   const [height, setHeight] = useState(props.defaultHeight ?? 200);
+
   function onOpenChange(open: boolean) {
     if (!open) {
       props.onClose?.();
     }
   }
+
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange} modal={false}>
       <Dialog.Portal>
@@ -36,10 +47,14 @@ export function Window(props: {
             transform: `translate(${x}px, ${y}px)`,
             width: width,
             height: height,
+            opacity: props.config.isMinimized ? 0 : 1,
           }}
         >
           <WindowContent
-            title={props.title}
+            title={
+              props.title +
+              ` (${props.config.isMinimized ? "Minimized" : "Restored"})`
+            }
             onClose={props.onClose}
             x={x}
             y={y}
@@ -49,6 +64,7 @@ export function Window(props: {
             height={height}
             setWidth={setWidth}
             setHeight={setHeight}
+            onMinimize={props.onMinimize}
           >
             {props.children}
           </WindowContent>
@@ -70,6 +86,7 @@ function WindowContent(props: {
   height: number;
   setWidth: (width: number) => void;
   setHeight: (height: number) => void;
+  onMinimize?: () => void;
 }) {
   const { setWidth, setHeight, setX, setY } = props;
   const [isResizing, setIsResizing] = useState(false);
@@ -278,6 +295,7 @@ function WindowContent(props: {
       <WindowHeader
         title={props.title}
         onClose={props.onClose}
+        onMinimize={props.onMinimize}
         x={props.x}
         y={props.y}
         setX={props.setX}
@@ -422,6 +440,7 @@ function WindowHeader(props: {
   height: number;
   setWidth: (width: number) => void;
   setHeight: (height: number) => void;
+  onMinimize?: () => void;
 }) {
   const { setIsSnappingWindow } = useWindowContext();
   const [isDragging, setIsDragging] = useState(false);
@@ -553,6 +572,15 @@ function WindowHeader(props: {
     [props]
   );
 
+  const onMaximize = React.useEffectEvent(() => {
+    const viewportWidth = window.innerWidth;
+    const maxHeight = window.innerHeight - TASKBAR_HEIGHT;
+    props.setWidth(viewportWidth);
+    props.setHeight(maxHeight);
+    props.setX(0);
+    props.setY(0);
+  });
+
   useEffect(() => {
     if (isDragging) {
       window.addEventListener("mousemove", onMouseMove);
@@ -581,10 +609,10 @@ function WindowHeader(props: {
         </span>
       </div>
       <div className="flex items-center gap-1">
-        <WindowHeaderRightButton>
+        <WindowHeaderRightButton onClick={props.onMinimize}>
           <ImgIcon src="/minimize.png" />
         </WindowHeaderRightButton>
-        <WindowHeaderRightButton>
+        <WindowHeaderRightButton onClick={onMaximize}>
           <ImgIcon src="/maximize.png" />
         </WindowHeaderRightButton>
         <WindowHeaderRightButton onClick={props.onClose}>
