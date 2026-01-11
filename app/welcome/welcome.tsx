@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Window } from "./window";
 import { BottomBar, TaskbarButton } from "./BottomBar";
-import { WindowSnapping } from "./windowSnapping";
+import { WindowSnapping } from "./WindowSnapping";
 import { WindowProvider } from "./WindowContext";
 
 export function Welcome() {

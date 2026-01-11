@@ -587,7 +587,7 @@ function WindowHeader(props: {
         <WindowHeaderRightButton>
           <ImgIcon src="/maximize.png" />
         </WindowHeaderRightButton>
-        <WindowHeaderRightButton onClick={props.onClose} variant="close">
+        <WindowHeaderRightButton onClick={props.onClose}>
           <ImgIcon src="/close.png" />
         </WindowHeaderRightButton>
       </div>
@@ -598,23 +598,19 @@ function WindowHeader(props: {
 function WindowHeaderRightButton(props: {
   children: React.ReactNode;
   onClick?: () => void;
-  variant?: "default" | "close";
 }) {
   return (
     <button
       className={`
         w-[21px] h-[21px] flex items-center justify-center rounded-sm
         cursor-pointer active:brightness-90 transition-all
-        ${
-          props.variant === "close"
-            ? "bg-[#e2422c] hover:bg-[#ff5d47]"
-            : "bg-[#0054e3] hover:bg-[#2576ff]"
-        }
-        border border-white/40 shadow-[inset_1px_1px_1px_rgba(255,255,255,0.4)]
+        outline-none border-none
       `}
       onClick={props.onClick}
     >
-      <div className="w-4 h-4">{props.children}</div>
+      <div className="w-4 h-4 rounded-[2px] p-[0.2px] border-white overflow-hidden bg-white">
+        {props.children}
+      </div>
     </button>
   );
 }
