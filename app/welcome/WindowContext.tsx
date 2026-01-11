@@ -2,21 +2,21 @@ import * as React from "react";
 import { createContext, useContext, useState, useMemo } from "react";
 
 interface WindowContextType {
-  isAnyWindowDragging: boolean;
-  setIsAnyWindowDragging: (dragging: boolean) => void;
+  isSnappingWindow: boolean;
+  setIsSnappingWindow: (dragging: boolean) => void;
 }
 
 const WindowContext = createContext<WindowContextType | undefined>(undefined);
 
 export function WindowProvider({ children }: { children: React.ReactNode }) {
-  const [isAnyWindowDragging, setIsAnyWindowDragging] = useState(false);
+  const [isSnappingWindow, setIsSnappingWindow] = useState(false);
 
   const value = useMemo(
     () => ({
-      isAnyWindowDragging,
-      setIsAnyWindowDragging,
+      isSnappingWindow,
+      setIsSnappingWindow,
     }),
-    [isAnyWindowDragging]
+    [isSnappingWindow]
   );
 
   return (
