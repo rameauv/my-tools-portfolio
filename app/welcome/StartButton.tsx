@@ -1,41 +1,39 @@
 import { Dialog } from "@base-ui/react";
 import * as React from "react";
 
-function WindowsLogo() {
+function KoreanColorsLogo() {
   return (
     <div className="relative w-5 h-5 flex items-center justify-center mr-1">
       <svg
-        width="16"
-        height="16"
-        viewBox="0 0 24 24"
-        className="drop-shadow-[1px_1px_1px_rgba(0,0,0,0.5)]"
+        width="18"
+        height="18"
+        viewBox="0 0 100 100"
+        className="drop-shadow-[1px_1px_1px_rgba(0,0,0,0.3)]"
         aria-hidden="true"
       >
-        <path
-          d="M2.5 4.5C2.5 4.5 6.5 3.5 10.5 5.5V20.5C10.5 20.5 6.5 18.5 2.5 19.5V4.5Z"
-          fill="#ee4e23"
-        />
-        <path
-          d="M11.5 5.5C11.5 5.5 16.5 3.5 21.5 5.5V20.5C21.5 20.5 16.5 18.5 11.5 20.5V5.5Z"
-          fill="#5da423"
-        />
-        <path
-          d="M2.5 4.5C2.5 4.5 6.5 3.5 10.5 5.5V20.5C10.5 20.5 6.5 18.5 2.5 19.5V4.5Z"
-          fill="#f6b323"
-          className="opacity-20"
-        />
-        <path
-          d="M2.5 4.5C2.5 4.5 6.5 3.5 10.5 5.5V20.5C10.5 20.5 6.5 18.5 2.5 19.5V4.5Z"
-          fill="none"
-        />
+        <defs>
+          <mask id="circleMask">
+            <circle cx="50" cy="50" r="48" fill="white" />
+          </mask>
+        </defs>
+        
+        <g mask="url(#circleMask)">
+          {/* North: Black */}
+          <path d="M 0 0 L 100 0 L 50 50 Z" fill="#000000" />
+          {/* East: Blue */}
+          <path d="M 100 0 L 100 100 L 50 50 Z" fill="#0055A4" />
+          {/* South: Red */}
+          <path d="M 100 100 L 0 100 L 50 50 Z" fill="#C60C30" />
+          {/* West: White */}
+          <path d="M 0 100 L 0 0 L 50 50 Z" fill="#FFFFFF" />
+          
+          {/* Center: Yellow */}
+          <circle cx="50" cy="50" r="25" fill="#FFD700" />
+        </g>
+        
+        {/* Subtle inner glow/border to match XP style if desired, or keep it clean */}
+        <circle cx="50" cy="50" r="48" fill="none" stroke="rgba(255,255,255,0.2)" strokeWidth="2" />
       </svg>
-      {/* More accurate XP logo using four colored shapes */}
-      <div className="absolute inset-0 flex flex-wrap w-[14px] h-[14px] m-auto rotate-[-5deg]">
-        <div className="w-[7px] h-[7px] bg-[#ee4e23] rounded-tl-[1px] shadow-[0.5px_0.5px_0_rgba(0,0,0,0.2)]"></div>
-        <div className="w-[7px] h-[7px] bg-[#5da423] rounded-tr-[1px] shadow-[0.5px_0.5px_0_rgba(0,0,0,0.2)]"></div>
-        <div className="w-[7px] h-[7px] bg-[#00a1f1] rounded-bl-[1px] shadow-[0.5px_0.5px_0_rgba(0,0,0,0.2)]"></div>
-        <div className="w-[7px] h-[7px] bg-[#f6b323] rounded-br-[1px] shadow-[0.5px_0.5px_0_rgba(0,0,0,0.2)]"></div>
-      </div>
     </div>
   );
 }
@@ -80,8 +78,8 @@ export function StartButton(props: { children: React.ReactNode }) {
         }}
       >
         <div className="relative z-10 flex items-center">
-          <WindowsLogo />
-          <span className="ml-1 -mt-0.5 tracking-tight text-[15px]">start</span>
+          <KoreanColorsLogo />
+          <span className="ml-1 -mt-0.5 tracking-tight text-[15px]">사직하기</span>
         </div>
       </Dialog.Trigger>
       <Dialog.Portal>

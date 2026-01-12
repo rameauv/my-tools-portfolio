@@ -35,14 +35,8 @@ export function Window(props: {
   const [width, setWidth] = useState(props.defaultWidth ?? 200);
   const [height, setHeight] = useState(props.defaultHeight ?? 200);
 
-  function onOpenChange(open: boolean) {
-    if (!open) {
-      props.onClose?.();
-    }
-  }
-
   return (
-    <Dialog.Root open={open} onOpenChange={onOpenChange} modal={false}>
+    <Dialog.Root open={open} modal={false}>
       <Dialog.Portal>
         <Dialog.Popup
           className={`
@@ -56,6 +50,7 @@ export function Window(props: {
             width: width,
             height: height,
             opacity: props.config.isMinimized ? 0 : 1,
+            pointerEvents: props.config.isMinimized ? "none" : "auto",
             zIndex: props.config.isFocused ? 100 : 50,
           }}
           onFocus={() => props.onFocus()}

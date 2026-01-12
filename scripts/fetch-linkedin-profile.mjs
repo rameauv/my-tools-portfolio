@@ -662,34 +662,8 @@ function escapeTypeScriptString(str) {
  * @returns {string}
  */
 function generateTypeScriptFile(profilesByLocale) {
-  const interfaces = `export interface LinkedInPosition {
-  title: string;
-  companyName: string;
-  startDate: string | null;
-  endDate: string | null;
-  description: string | null;
-}
-
-export interface LinkedInEducation {
-  schoolName: string;
-  degree: string | null;
-  fieldOfStudy: string | null;
-  startDate: string | null;
-  endDate: string | null;
-}
-
-export interface LinkedInProfile {
-  id: string;
-  firstName: string;
-  lastName: string;
-  headline: string | null;
-  profilePicture: string | null;
-  vanityName: string | null;
-  locale: string;
-  positions: LinkedInPosition[];
-  educations: LinkedInEducation[];
-  skills: string[];
-}`;
+  // Import types from shared types file
+  const importStatement = `import type { LinkedInProfile } from '../linkedin/types';`;
 
   const profilesObject = Object.entries(profilesByLocale).map(([locale, profile]) => {
     const positions = profile.positions.map(pos => {
@@ -732,7 +706,7 @@ ${educations}
   }`;
   }).join(',\n');
 
-  return `${interfaces}
+  return `${importStatement}
 
 export const linkedinProfiles: Record<string, LinkedInProfile> = {
 ${profilesObject}

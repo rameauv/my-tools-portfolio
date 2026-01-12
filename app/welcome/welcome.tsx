@@ -6,11 +6,14 @@ import { WindowProvider } from "./WindowContext";
 import { useState } from "react";
 import { AppOne } from "./apps/app-one/AppOne";
 import { AppTwo } from "./apps/app-two/AppTwo";
+import { LinkedIn } from "./apps/linkedin/LinkedIn";
+
+let windowId = 0;
 
 export function Welcome() {
   const [windows, setWindows] = useState<WindowConfig[]>([
     {
-      id: 0,
+      id: windowId++,
       title: "Welcome",
       isMinimized: false,
       iconSrc: "/my-documents.png",
@@ -18,12 +21,22 @@ export function Welcome() {
       component: AppOne,
     },
     {
-      id: 1,
+      id: windowId++,
       title: "GitHub Explorer",
       isMinimized: false,
       iconSrc: "/my-documents.png",
       isFocused: false,
       component: AppTwo,
+    },
+    {
+      id: windowId++,
+      title: "LinkedIn Profile",
+      isMinimized: false,
+      iconSrc: "/my-documents.png",
+      isFocused: false,
+      component: LinkedIn,
+      defaultWidth: 900,
+      defaultHeight: 700,
     },
   ]);
 
@@ -58,11 +71,12 @@ export function Welcome() {
   }
 
   function onClose(id: number) {
+    console.log("onClose", id);
     setWindows(windows.filter((window) => window.id !== id));
   }
 
   function openWindow(config: Partial<WindowConfig> & { component: React.ComponentType<any> }) {
-    const newId = Math.max(...windows.map(w => w.id), -1) + 1;
+    const newId = windowId++;
     const newWindow: WindowConfig = {
       id: newId,
       title: config.title || "Untitled",
@@ -76,6 +90,8 @@ export function Welcome() {
     };
     setWindows(windows.map(w => ({ ...w, isFocused: false })).concat(newWindow));
   }
+
+  console.log("windows", windows);
 
   return (
     <WindowProvider openWindow={openWindow}>

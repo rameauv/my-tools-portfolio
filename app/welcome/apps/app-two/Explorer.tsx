@@ -260,7 +260,7 @@ function RepoIconItem({
          <img src="/my-documents.png" alt="repo" className="w-full h-full object-contain" />
       </div>
       <span className={clsx(
-        "text-center mt-1 px-1 py-0.5 rounded-sm line-clamp-2 leading-tight",
+        "text-center mt-1 px-1 py-0.5 rounded-sm line-clamp-2 leading-tight break-all",
         selected ? "bg-[#316ac5] text-white" : "text-black group-hover:text-blue-700 group-hover:underline"
       )}>
         {repo.name}
