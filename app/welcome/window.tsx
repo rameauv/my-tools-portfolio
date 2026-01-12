@@ -14,6 +14,9 @@ export interface WindowConfig {
   iconSrc: string;
   isFocused: boolean;
   component: React.ComponentType<any>;
+  componentProps?: Record<string, unknown>;
+  defaultWidth?: number;
+  defaultHeight?: number;
 }
 
 export function Window(props: {

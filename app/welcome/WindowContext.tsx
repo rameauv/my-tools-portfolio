@@ -1,22 +1,31 @@
 import * as React from "react";
 import { createContext, useContext, useState, useMemo } from "react";
+import type { WindowConfig } from "./window";
 
 interface WindowContextType {
   isSnappingWindow: boolean;
   setIsSnappingWindow: (dragging: boolean) => void;
+  openWindow: (config: Partial<WindowConfig> & { component: React.ComponentType<any> }) => void;
 }
 
 const WindowContext = createContext<WindowContextType | undefined>(undefined);
 
-export function WindowProvider({ children }: { children: React.ReactNode }) {
+export function WindowProvider({ 
+  children, 
+  openWindow 
+}: { 
+  children: React.ReactNode;
+  openWindow: (config: Partial<WindowConfig> & { component: React.ComponentType<any> }) => void;
+}) {
   const [isSnappingWindow, setIsSnappingWindow] = useState(false);
 
   const value = useMemo(
     () => ({
       isSnappingWindow,
       setIsSnappingWindow,
+      openWindow,
     }),
-    [isSnappingWindow]
+    [isSnappingWindow, openWindow]
   );
 
   return (

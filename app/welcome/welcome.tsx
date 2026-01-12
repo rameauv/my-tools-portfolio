@@ -19,7 +19,7 @@ export function Welcome() {
     },
     {
       id: 1,
-      title: "Welcome2",
+      title: "GitHub Explorer",
       isMinimized: false,
       iconSrc: "/my-documents.png",
       isFocused: false,
@@ -57,8 +57,28 @@ export function Welcome() {
     );
   }
 
+  function onClose(id: number) {
+    setWindows(windows.filter((window) => window.id !== id));
+  }
+
+  function openWindow(config: Partial<WindowConfig> & { component: React.ComponentType<any> }) {
+    const newId = Math.max(...windows.map(w => w.id), -1) + 1;
+    const newWindow: WindowConfig = {
+      id: newId,
+      title: config.title || "Untitled",
+      isMinimized: false,
+      iconSrc: config.iconSrc || "/my-documents.png",
+      isFocused: true,
+      component: config.component,
+      componentProps: config.componentProps,
+      defaultWidth: config.defaultWidth,
+      defaultHeight: config.defaultHeight,
+    };
+    setWindows(windows.map(w => ({ ...w, isFocused: false })).concat(newWindow));
+  }
+
   return (
-    <WindowProvider>
+    <WindowProvider openWindow={openWindow}>
       <DesktopLayout
         bottomBar={
           <BottomBar>
@@ -81,19 +101,23 @@ export function Welcome() {
               background: 'url("/wallpaper.jpg") center/cover no-repeat',
             }}
           >
-            {windows.map((window) => (
-              <Window
-                key={window.id}
-                config={window}
-                title={window.title}
-                defaultWidth={400}
-                defaultHeight={300}
-                onMinimize={() => onMinimize(window.id)}
-                onFocus={() => onFocus(window.id)}
-              >
-                <window.component key={window.id} />
-              </Window>
-            ))}
+            {windows.map((window) => {
+              const Component = window.component;
+              return (
+                  <Window
+                  key={window.id}
+                  config={window}
+                  title={window.title}
+                  defaultWidth={window.defaultWidth ?? (window.id === 1 ? 800 : 400)}
+                  defaultHeight={window.defaultHeight ?? (window.id === 1 ? 600 : 300)}
+                  onMinimize={() => onMinimize(window.id)}
+                  onFocus={() => onFocus(window.id)}
+                  onClose={() => onClose(window.id)}
+                >
+                  <Component key={window.id} {...(window.componentProps || {})} />
+                </Window>
+              );
+            })}
           </div>
         </WindowSnapping>
       </DesktopLayout>
