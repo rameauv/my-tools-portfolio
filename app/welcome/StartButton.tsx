@@ -83,7 +83,7 @@ export function StartButton(props: { children: React.ReactNode }) {
         </div>
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Popup className="fixed bottom-[30px] left-0 min-w-[400px] animate-in fade-in slide-in-from-bottom-2 duration-150 z-50 overflow-hidden rounded-tr-lg">
+        <Dialog.Popup className="fixed bottom-[30px] left-0 min-w-[400px] animate-in fade-in slide-in-from-bottom-2 duration-150 z-200 overflow-hidden rounded-tr-lg">
           {props.children}
         </Dialog.Popup>
       </Dialog.Portal>

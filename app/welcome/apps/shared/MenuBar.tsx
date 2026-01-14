@@ -22,15 +22,15 @@ const DEFAULT_MENU_ITEMS: MenuBarItem[] = [
 
 export function MenuBar({ 
   items = DEFAULT_MENU_ITEMS, 
-  className = "bg-[#ece9d8] border-b border-gray-400 px-2 py-0.5 flex items-center gap-2 sm:gap-4 text-xs text-black overflow-x-auto",
+  className = "bg-[#ece9d8] border-b border-gray-400 px-2 py-0.5 flex items-center gap-2 @sm:gap-4 text-xs text-black overflow-x-auto",
   itemClassName = "border border-[#ece9d8] hover:bg-white hover:border-gray-300 px-1 cursor-pointer whitespace-nowrap"
 }: MenuBarProps) {
   return (
-    <div className={className}>
+    <div className={`@container ${className}`}>
       {items.map((item) => (
         <span
           key={item.label}
-          className={item.hideOnMobile ? `hidden sm:inline ${itemClassName}` : itemClassName}
+          className={item.hideOnMobile ? `hidden @sm:inline ${itemClassName}` : itemClassName}
         >
           {item.label}
         </span>

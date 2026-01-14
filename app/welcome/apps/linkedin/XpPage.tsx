@@ -9,19 +9,19 @@ export function XpPage() {
   const [activeSection, setActiveSection] = useState<"about" | "experience" | "education" | "skills">("about");
 
   return (
-    <div className="w-full h-full bg-[#e5e5e5] overflow-auto font-sans text-black">
+    <div className="@container w-full h-full bg-[#e5e5e5] overflow-auto font-sans text-black">
       {/* Page Header */}
-      <div className="bg-gradient-to-b from-[#dfe8f6] to-[#c8d5e8] border-b-2 border-[#a0a0a0] px-3 sm:px-6 py-2 sm:py-3">
-        <h1 className="text-base sm:text-lg font-bold text-[#003366]">
+      <div className="bg-gradient-to-b from-[#dfe8f6] to-[#c8d5e8] border-b-2 border-[#a0a0a0] px-3 @sm:px-6 py-2 @sm:py-3">
+        <h1 className="text-base @sm:text-lg font-bold text-[#003366]">
           {profile.firstName} {profile.lastName}
         </h1>
         {profile.headline && (
-          <p className="text-[10px] sm:text-xs text-gray-700 mt-1">{profile.headline}</p>
+          <p className="text-[10px] @sm:text-xs text-gray-700 mt-1">{profile.headline}</p>
         )}
       </div>
 
       {/* Mobile Navigation Tabs */}
-      <div className="sm:hidden bg-[#ece9d8] border-b border-gray-400 flex overflow-x-auto">
+      <div className="@sm:hidden bg-[#ece9d8] border-b border-gray-400 flex overflow-x-auto">
         <NavTab
           active={activeSection === "about"}
           onClick={() => setActiveSection("about")}
@@ -45,9 +45,9 @@ export function XpPage() {
       </div>
 
       {/* Main Content Area */}
-      <div className="flex flex-col sm:flex-row">
+      <div className="flex flex-col @sm:flex-row">
         {/* Sidebar - Desktop */}
-        <div className="hidden sm:block w-48 bg-[#f0f0f0] border-r-2 border-[#a0a0a0] p-3 shrink-0">
+        <div className="hidden @sm:block w-48 bg-[#f0f0f0] border-r-2 border-[#a0a0a0] p-3 shrink-0">
           <SidebarNav
             activeSection={activeSection}
             onSectionChange={setActiveSection}
@@ -55,9 +55,9 @@ export function XpPage() {
         </div>
 
         {/* Content */}
-        <div className="flex-1 p-3 sm:p-6 bg-white min-h-0">
+        <div className="flex-1 p-3 @sm:p-6 bg-white min-h-0">
           {/* Mobile: Show only active section */}
-          <div className="sm:hidden">
+          <div className="@sm:hidden">
             {activeSection === "about" && <AboutSection profile={profile} />}
             {activeSection === "experience" && <ExperienceSection profile={profile} />}
             {activeSection === "education" && <EducationSection profile={profile} />}
@@ -65,7 +65,7 @@ export function XpPage() {
           </div>
 
           {/* Desktop: Show all sections */}
-          <div className="hidden sm:block space-y-6">
+          <div className="hidden @sm:block space-y-6">
             <AboutSection profile={profile} />
             <ExperienceSection profile={profile} />
             <EducationSection profile={profile} />
@@ -75,7 +75,7 @@ export function XpPage() {
       </div>
 
       {/* Footer */}
-      <div className="bg-[#ece9d8] border-t border-gray-400 px-3 sm:px-6 py-1 text-[9px] sm:text-[10px] text-gray-600 text-center">
+      <div className="bg-[#ece9d8] border-t border-gray-400 px-3 @sm:px-6 py-1 text-[9px] @sm:text-[10px] text-gray-600 text-center">
         Last updated: {new Date().toLocaleDateString()} | Powered by Internet Explorer 6
       </div>
     </div>
@@ -95,7 +95,7 @@ function NavTab({
     <button
       onClick={onClick}
       className={clsx(
-        "px-4 py-2 text-[10px] sm:text-xs font-semibold border-b-2 transition-colors whitespace-nowrap",
+        "px-4 py-2 text-[10px] @sm:text-xs font-semibold border-b-2 transition-colors whitespace-nowrap",
         active
           ? "bg-white border-[#003366] text-[#003366]"
           : "bg-[#ece9d8] border-transparent text-gray-600 hover:bg-gray-100"
@@ -151,11 +151,11 @@ function AboutSection({ profile }: { profile: LinkedInProfile }) {
       <div className="space-y-4">
         {/* Profile Picture */}
         {profile.profilePicture && (
-          <div className="flex justify-center sm:justify-start">
+          <div className="flex justify-center @sm:justify-start">
             <img
               src={profile.profilePicture}
               alt={`${profile.firstName} ${profile.lastName}`}
-              className="w-24 h-24 sm:w-32 sm:h-32 border-2 border-gray-400 rounded-sm object-cover"
+              className="w-24 h-24 @sm:w-32 @sm:h-32 border-2 border-gray-400 rounded-sm object-cover"
             />
           </div>
         )}
@@ -174,8 +174,8 @@ function AboutSection({ profile }: { profile: LinkedInProfile }) {
         {/* Headline */}
         {profile.headline && (
           <div className="bg-[#f9f9f9] border border-gray-300 p-3 rounded-sm">
-            <h3 className="text-xs sm:text-sm font-bold text-[#003366] mb-2">Summary</h3>
-            <p className="text-[10px] sm:text-xs text-gray-700 leading-relaxed whitespace-pre-line">
+            <h3 className="text-xs @sm:text-sm font-bold text-[#003366] mb-2">Summary</h3>
+            <p className="text-[10px] @sm:text-xs text-gray-700 leading-relaxed whitespace-pre-line">
               {profile.headline}
             </p>
           </div>
@@ -184,10 +184,10 @@ function AboutSection({ profile }: { profile: LinkedInProfile }) {
         {/* Languages */}
         {profile.languages && profile.languages.length > 0 && (
           <div className="bg-[#f9f9f9] border border-gray-300 p-3 rounded-sm">
-            <h3 className="text-xs sm:text-sm font-bold text-[#003366] mb-2">Languages</h3>
+            <h3 className="text-xs @sm:text-sm font-bold text-[#003366] mb-2">Languages</h3>
             <div className="space-y-1">
               {profile.languages.map((lang, idx) => (
-                <div key={idx} className="text-[10px] sm:text-xs text-gray-700">
+                <div key={idx} className="text-[10px] @sm:text-xs text-gray-700">
                   <span className="font-semibold">{lang.language}:</span> {lang.proficiency}
                 </div>
               ))}
@@ -204,16 +204,16 @@ function ExperienceSection({ profile }: { profile: LinkedInProfile }) {
     <Section title="Experience">
       <div className="space-y-4">
         {profile.positions.length === 0 ? (
-          <p className="text-[10px] sm:text-xs text-gray-500">No experience listed.</p>
+          <p className="text-[10px] @sm:text-xs text-gray-500">No experience listed.</p>
         ) : (
           profile.positions.map((pos, idx) => (
             <div
               key={idx}
-              className="bg-[#f9f9f9] border border-gray-300 p-3 sm:p-4 rounded-sm hover:border-[#003366] transition-colors"
+              className="bg-[#f9f9f9] border border-gray-300 p-3 @sm:p-4 rounded-sm hover:border-[#003366] transition-colors"
             >
-              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-2 mb-2">
+              <div className="flex flex-col @sm:flex-row @sm:items-start @sm:justify-between gap-2 mb-2">
                 <div className="flex-1">
-                  <h3 className="text-xs sm:text-sm font-bold text-[#003366] mb-1">
+                  <h3 className="text-xs @sm:text-sm font-bold text-[#003366] mb-1">
                     {pos.title}
                   </h3>
                   <div className="flex items-center gap-2 flex-wrap">
@@ -224,17 +224,17 @@ function ExperienceSection({ profile }: { profile: LinkedInProfile }) {
                         className="w-4 h-4 object-contain"
                       />
                     )}
-                    <span className="text-[10px] sm:text-xs font-semibold text-gray-700">
+                    <span className="text-[10px] @sm:text-xs font-semibold text-gray-700">
                       {pos.companyName}
                     </span>
                     {pos.location && (
-                      <span className="text-[9px] sm:text-[10px] text-gray-500">
+                      <span className="text-[9px] @sm:text-[10px] text-gray-500">
                         ({pos.location})
                       </span>
                     )}
                   </div>
                 </div>
-                <div className="text-[9px] sm:text-[10px] text-gray-600 shrink-0">
+                <div className="text-[9px] @sm:text-[10px] text-gray-600 shrink-0">
                   {pos.startDate && (
                     <span>
                       {formatDate(pos.startDate)} - {pos.isCurrent ? "Present" : pos.endDate ? formatDate(pos.endDate) : "Unknown"}
@@ -244,7 +244,7 @@ function ExperienceSection({ profile }: { profile: LinkedInProfile }) {
               </div>
 
               {pos.description && (
-                <div className="mt-2 text-[10px] sm:text-xs text-gray-700 leading-relaxed whitespace-pre-line">
+                <div className="mt-2 text-[10px] @sm:text-xs text-gray-700 leading-relaxed whitespace-pre-line">
                   {pos.description}
                 </div>
               )}
@@ -254,7 +254,7 @@ function ExperienceSection({ profile }: { profile: LinkedInProfile }) {
                   {pos.skills.map((skill) => (
                     <span
                       key={skill}
-                      className="bg-[#dfe8f6] text-[#003366] px-2 py-0.5 rounded text-[9px] sm:text-[10px] border border-[#a0a0a0]"
+                      className="bg-[#dfe8f6] text-[#003366] px-2 py-0.5 rounded text-[9px] @sm:text-[10px] border border-[#a0a0a0]"
                     >
                       {skill}
                     </span>
@@ -263,7 +263,7 @@ function ExperienceSection({ profile }: { profile: LinkedInProfile }) {
               )}
 
               {pos.images && pos.images.length > 0 && (
-                <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div className="mt-3 grid grid-cols-1 @sm:grid-cols-2 gap-2">
                   {pos.images.map((img, i) => (
                     <img
                       key={i}
@@ -292,25 +292,25 @@ function EducationSection({ profile }: { profile: LinkedInProfile }) {
     <Section title="Education">
       <div className="space-y-4">
         {allEducation.length === 0 ? (
-          <p className="text-[10px] sm:text-xs text-gray-500">No education listed.</p>
+          <p className="text-[10px] @sm:text-xs text-gray-500">No education listed.</p>
         ) : (
           allEducation.map((edu, idx) => (
             <div
               key={idx}
-              className="bg-[#f9f9f9] border border-gray-300 p-3 sm:p-4 rounded-sm"
+              className="bg-[#f9f9f9] border border-gray-300 p-3 @sm:p-4 rounded-sm"
             >
-              <h3 className="text-xs sm:text-sm font-bold text-[#003366] mb-1">
+              <h3 className="text-xs @sm:text-sm font-bold text-[#003366] mb-1">
                 {edu.schoolName}
               </h3>
               {(edu.degree || edu.fieldOfStudy) && (
-                <p className="text-[10px] sm:text-xs text-gray-700 mb-2">
+                <p className="text-[10px] @sm:text-xs text-gray-700 mb-2">
                   {edu.degree && <span>{edu.degree}</span>}
                   {edu.degree && edu.fieldOfStudy && <span> in </span>}
                   {edu.fieldOfStudy && <span>{edu.fieldOfStudy}</span>}
                 </p>
               )}
               {(edu.startDate || edu.endDate || (edu as any).startYear) && (
-                <p className="text-[9px] sm:text-[10px] text-gray-600">
+                <p className="text-[9px] @sm:text-[10px] text-gray-600">
                   {(edu as any).startYear
                     ? `${(edu as any).startYear}${(edu as any).endYear ? ` - ${(edu as any).endYear}` : ""}`
                     : edu.startDate
@@ -319,12 +319,12 @@ function EducationSection({ profile }: { profile: LinkedInProfile }) {
                 </p>
               )}
               {(edu as any).grade && (
-                <p className="text-[9px] sm:text-[10px] text-gray-600 mt-1">
+                <p className="text-[9px] @sm:text-[10px] text-gray-600 mt-1">
                   Grade: {(edu as any).grade}
                 </p>
               )}
               {edu.images && edu.images.length > 0 && (
-                <div className="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div className="mt-3 grid grid-cols-1 @sm:grid-cols-2 gap-2">
                   {edu.images.map((img, i) => (
                     <img
                       key={i}
@@ -348,13 +348,13 @@ function SkillsSection({ profile }: { profile: LinkedInProfile }) {
     <Section title="Skills">
       <div className="space-y-4">
         {profile.skills.length === 0 ? (
-          <p className="text-[10px] sm:text-xs text-gray-500">No skills listed.</p>
+          <p className="text-[10px] @sm:text-xs text-gray-500">No skills listed.</p>
         ) : (
           <div className="flex flex-wrap gap-2">
             {profile.skills.map((skill) => (
               <span
                 key={skill}
-                className="bg-[#dfe8f6] text-[#003366] px-3 py-1.5 rounded-sm text-[10px] sm:text-xs font-semibold border border-[#a0a0a0] hover:bg-[#c8d5e8] transition-colors cursor-default"
+                className="bg-[#dfe8f6] text-[#003366] px-3 py-1.5 rounded-sm text-[10px] @sm:text-xs font-semibold border border-[#a0a0a0] hover:bg-[#c8d5e8] transition-colors cursor-default"
                 style={{
                   boxShadow: "inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 0 rgba(0,0,0,0.1)",
                 }}
@@ -378,7 +378,7 @@ function Section({
 }) {
   return (
     <div className="mb-6">
-      <h2 className="text-sm sm:text-base font-bold text-[#003366] mb-3 pb-2 border-b-2 border-[#003366]">
+      <h2 className="text-sm @sm:text-base font-bold text-[#003366] mb-3 pb-2 border-b-2 border-[#003366]">
         {title}
       </h2>
       {children}
@@ -388,8 +388,8 @@ function Section({
 
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex flex-col sm:flex-row gap-1 sm:gap-2 py-1 text-[10px] sm:text-xs">
-      <span className="font-semibold text-gray-700 w-20 sm:w-24 shrink-0">{label}:</span>
+    <div className="flex flex-col @sm:flex-row gap-1 @sm:gap-2 py-1 text-[10px] @sm:text-xs">
+      <span className="font-semibold text-gray-700 w-20 @sm:w-24 shrink-0">{label}:</span>
       <span className="text-gray-600">{value}</span>
     </div>
   );
