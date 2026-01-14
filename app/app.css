@@ -8,6 +8,7 @@
 
 html,
 body {
+  overscroll-behavior: none;
   /* @apply bg-white dark:bg-gray-950; */
   @apply bg-white;
 
