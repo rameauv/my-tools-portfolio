@@ -13,6 +13,7 @@ interface UseWindowDragParams {
   setWidth: (width: number) => void;
   setHeight: (height: number) => void;
   setIsSnappingWindow: (snapping: boolean) => void;
+  setSnappingSide: (side: 'left' | 'right' | null) => void;
 }
 
 export function useWindowDrag(params: UseWindowDragParams) {
@@ -26,6 +27,7 @@ export function useWindowDrag(params: UseWindowDragParams) {
     setWidth,
     setHeight,
     setIsSnappingWindow,
+    setSnappingSide,
   } = params;
 
   const [isDragging, setIsDragging] = useState(false);
@@ -79,10 +81,13 @@ export function useWindowDrag(params: UseWindowDragParams) {
 
       if (mouseX < snappingZone) {
         setIsSnappingWindow(true);
+        setSnappingSide('left');
       } else if (mouseX > viewportWidth - snappingZone) {
         setIsSnappingWindow(true);
+        setSnappingSide('right');
       } else {
         setIsSnappingWindow(false);
+        setSnappingSide(null);
       }
 
       // X Damping Calculation
@@ -141,13 +146,14 @@ export function useWindowDrag(params: UseWindowDragParams) {
       setX(newX);
       setY(newY);
     },
-    [isDragging, x, y, width, height, setX, setY, setIsSnappingWindow]
+    [isDragging, x, y, width, height, setX, setY, setIsSnappingWindow, setSnappingSide]
   );
 
   const onMouseUp = useCallback(
     (e: MouseEvent) => {
       setIsDragging(false);
       setIsSnappingWindow(false);
+      setSnappingSide(null);
 
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
@@ -207,7 +213,7 @@ export function useWindowDrag(params: UseWindowDragParams) {
         setY(targetY);
       }
     },
-    [x, y, width, height, setX, setY, setWidth, setHeight, setIsSnappingWindow]
+    [x, y, width, height, setX, setY, setWidth, setHeight, setIsSnappingWindow, setSnappingSide]
   );
 
   useEffect(() => {

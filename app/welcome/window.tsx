@@ -314,7 +314,7 @@ function WindowHeader(props: {
   onMinimize?: () => void;
   isFocused: boolean;
 }) {
-  const { setIsSnappingWindow } = useWindowContext();
+  const { setIsSnappingWindow, setSnappingSide } = useWindowContext();
   const { onMouseDown, isDragging } = useWindowDrag({
     x: props.x,
     y: props.y,
@@ -325,6 +325,7 @@ function WindowHeader(props: {
     setWidth: props.setWidth,
     setHeight: props.setHeight,
     setIsSnappingWindow,
+    setSnappingSide,
   });
 
   const onMaximize = React.useEffectEvent(() => {

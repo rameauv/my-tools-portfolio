@@ -5,6 +5,8 @@ import type { WindowConfig } from "./window";
 interface WindowContextType {
   isSnappingWindow: boolean;
   setIsSnappingWindow: (dragging: boolean) => void;
+  snappingSide: 'left' | 'right' | null;
+  setSnappingSide: (side: 'left' | 'right' | null) => void;
   openWindow: (config: Partial<WindowConfig> & { component: React.ComponentType<any> }) => void;
 }
 
@@ -18,14 +20,17 @@ export function WindowProvider({
   openWindow: (config: Partial<WindowConfig> & { component: React.ComponentType<any> }) => void;
 }) {
   const [isSnappingWindow, setIsSnappingWindow] = useState(false);
+  const [snappingSide, setSnappingSide] = useState<'left' | 'right' | null>(null);
 
   const value = useMemo(
     () => ({
       isSnappingWindow,
       setIsSnappingWindow,
+      snappingSide,
+      setSnappingSide,
       openWindow,
     }),
-    [isSnappingWindow, openWindow]
+    [isSnappingWindow, snappingSide, openWindow]
   );
 
   return (

@@ -2,7 +2,7 @@ import * as React from "react";
 import { useWindowContext } from "./WindowContext";
 
 export function WindowSnapping(props: { children: React.ReactNode }) {
-  const { isSnappingWindow } = useWindowContext();
+  const { snappingSide } = useWindowContext();
 
   return (
     <div className="relative w-full h-full overflow-hidden">
@@ -11,7 +11,7 @@ export function WindowSnapping(props: { children: React.ReactNode }) {
           absolute top-2 left-2 bottom-2 w-[calc(50%-12px)] pointer-events-none z-101
           transition-all duration-300 ease-out
           ${
-            isSnappingWindow
+            snappingSide === 'left'
               ? "opacity-100 translate-x-0 scale-100"
               : "opacity-0 -translate-x-8 scale-95"
           }
@@ -25,7 +25,7 @@ export function WindowSnapping(props: { children: React.ReactNode }) {
           absolute top-2 right-2 bottom-2 w-[calc(50%-12px)] pointer-events-none z-101
           transition-all duration-300 ease-out
           ${
-            isSnappingWindow
+            snappingSide === 'right'
               ? "opacity-100 translate-x-0 scale-100"
               : "opacity-0 translate-x-8 scale-95"
           }
