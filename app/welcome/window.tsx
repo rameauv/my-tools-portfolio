@@ -17,9 +17,15 @@ export interface WindowConfig {
   componentProps?: Record<string, unknown>;
   defaultWidth?: number;
   defaultHeight?: number;
+  depth: number;
+}
+
+function mapWindowDepthToZIndex(depth: number, windowCount: number): number {
+  return 50 + depth;
 }
 
 export function Window(props: {
+  windowCount: number;
   children: React.ReactNode;
   title?: string;
   onClose?: () => void;
@@ -51,7 +57,7 @@ export function Window(props: {
             height: height,
             opacity: props.config.isMinimized ? 0 : 1,
             pointerEvents: props.config.isMinimized ? "none" : "auto",
-            zIndex: props.config.isFocused ? 100 : 50,
+            zIndex: mapWindowDepthToZIndex(props.config.depth, props.windowCount),
           }}
           onFocus={() => props.onFocus()}
         >

@@ -1,9 +1,7 @@
-import { useEffect } from "react";
+import React from "react";
 
-export function AppOne() {
-    useEffect(() => {
-        console.log("AppOne rendered");
-    }, []);
+export const AppOne = React.memo(function AppOne() {
+  console.log("render AppOne");
   return (
     <div className="flex flex-col gap-4">
       <h1
@@ -21,4 +19,4 @@ export function AppOne() {
       </p>
     </div>
   );
-}
+});

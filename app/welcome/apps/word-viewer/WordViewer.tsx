@@ -1,14 +1,14 @@
 import * as React from "react";
 import Markdown from "react-markdown";
 import { Bold, Italic, Underline, AlignLeft, AlignCenter, AlignRight, List } from "lucide-react";
-import clsx from "clsx";
-import type { GithubRepo } from "../app-two/mockData";
+import type { GithubRepo } from "../app-two/githubRepos";
 
 interface WordViewerProps {
   repo?: GithubRepo | null;
 }
 
 export function WordViewer({ repo }: WordViewerProps) {
+  console.log("render WordViewer");
   if (!repo) {
     return (
       <div className="flex items-center justify-center h-full text-gray-500" style={{ fontFamily: "Tahoma, sans-serif" }}>
@@ -80,7 +80,7 @@ export function WordViewer({ repo }: WordViewerProps) {
       <div className="flex-1 overflow-auto bg-gray-200 p-8">
         <div className="bg-white shadow-lg mx-auto max-w-4xl min-h-full p-12">
           <div className="prose prose-sm max-w-none" style={{ fontFamily: "Times New Roman, serif" }}>
-            <Markdown>{repo.readmeContent}</Markdown>
+            <Markdown skipHtml={false}>{repo.readmeContent}</Markdown>
           </div>
         </div>
       </div>

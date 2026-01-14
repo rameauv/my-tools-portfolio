@@ -32,6 +32,7 @@ export interface LinkedInDiploma {
   issuingOrganization: string;
   issuedDate: string | null;
   expirationDate: string | null;
+  CredentialID: string;
   images: { url: string; name: string }[] | null;
 }
 
@@ -56,7 +57,8 @@ export interface LinkedInLanguage {
     | "Native"
     | "Bilingual"
     | "Fluent"
-    | "Professional Working"
+    | "Professional working proficiency"
+    | "Native or bilingual proficiency"
     | "Basic"
     | "Elementary";
 }

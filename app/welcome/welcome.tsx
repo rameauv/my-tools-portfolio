@@ -19,6 +19,7 @@ export function Welcome() {
       iconSrc: "/my-documents.png",
       isFocused: true,
       component: AppOne,
+      depth: 0,
     },
     {
       id: windowId++,
@@ -27,6 +28,7 @@ export function Welcome() {
       iconSrc: "/my-documents.png",
       isFocused: false,
       component: AppTwo,
+      depth: 1,
     },
     {
       id: windowId++,
@@ -37,6 +39,7 @@ export function Welcome() {
       component: LinkedIn,
       defaultWidth: 900,
       defaultHeight: 700,
+      depth: 2,
     },
   ]);
 
@@ -51,22 +54,46 @@ export function Welcome() {
   }
 
   function onToggleWindow(id: number) {
-    setWindows(
-      windows.map((window) =>
+    setWindows((windows) => {
+      const focusedWindow = windows.find((window) => window.isFocused);
+      if (focusedWindow != null && focusedWindow.id !== id) {
+        return windows.map((window) => {
+          if (window.id === id) {
+            return {
+              ...window,
+              isFocused: true,
+              isMinimized: false,
+              depth: windows.length - 1,
+            };
+          } else {
+            return { ...window, isFocused: false, depth: window.depth - 1 };
+          }
+        });
+      }
+      return windows.map((window) =>
         window.id === id
           ? {
               ...window,
               isMinimized: !window.isMinimized,
               isFocused: window.isMinimized,
+              depth: windows.length - 1,
             }
-          : { ...window, isFocused: false }
-      )
-    );
+          : { ...window, isFocused: false, depth: window.depth - 1 }
+      );
+    });
   }
 
   function onFocus(id: number) {
     setWindows(
-      windows.map((window) => ({ ...window, isFocused: window.id === id }))
+      windows.map((window) =>
+        window.id === id
+          ? {
+              ...window,
+              isFocused: true,
+              depth: windows.length - 1,
+            }
+          : { ...window, isFocused: false, depth: window.depth - 1 }
+      )
     );
   }
 
@@ -75,7 +102,9 @@ export function Welcome() {
     setWindows(windows.filter((window) => window.id !== id));
   }
 
-  function openWindow(config: Partial<WindowConfig> & { component: React.ComponentType<any> }) {
+  function openWindow(
+    config: Partial<WindowConfig> & { component: React.ComponentType<any> }
+  ) {
     const newId = windowId++;
     const newWindow: WindowConfig = {
       id: newId,
@@ -87,8 +116,13 @@ export function Welcome() {
       componentProps: config.componentProps,
       defaultWidth: config.defaultWidth,
       defaultHeight: config.defaultHeight,
+      depth: windows.length,
     };
-    setWindows(windows.map(w => ({ ...w, isFocused: false })).concat(newWindow));
+    setWindows(
+      windows
+        .map((w) => ({ ...w, isFocused: false, depth: w.depth - 1 }))
+        .concat(newWindow)
+    );
   }
 
   console.log("windows", windows);
@@ -120,17 +154,25 @@ export function Welcome() {
             {windows.map((window) => {
               const Component = window.component;
               return (
-                  <Window
-                  key={window.id}
+                <Window
+                  key={"window-" + window.id}
                   config={window}
                   title={window.title}
-                  defaultWidth={window.defaultWidth ?? (window.id === 1 ? 800 : 400)}
-                  defaultHeight={window.defaultHeight ?? (window.id === 1 ? 600 : 300)}
+                  defaultWidth={
+                    window.defaultWidth ?? (window.id === 1 ? 800 : 400)
+                  }
+                  defaultHeight={
+                    window.defaultHeight ?? (window.id === 1 ? 600 : 300)
+                  }
                   onMinimize={() => onMinimize(window.id)}
                   onFocus={() => onFocus(window.id)}
                   onClose={() => onClose(window.id)}
+                  windowCount={windows.length}
                 >
-                  <Component key={window.id} {...(window.componentProps || {})} />
+                  <Component
+                    key={"window-content-" + window.id}
+                    {...(window.componentProps || {})}
+                  />
                 </Window>
               );
             })}

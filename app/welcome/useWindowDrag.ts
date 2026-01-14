@@ -51,34 +51,29 @@ export function useWindowDrag(params: UseWindowDragParams) {
     (e: MouseEvent) => {
       if (!isDragging) return;
 
-      // Calculate incremental mouse movement delta from last position
-      // This ensures smooth movement even when damping is applied
       const deltaX = e.clientX - lastMousePos.current.x;
       const deltaY = e.clientY - lastMousePos.current.y;
       const mouseX = e.clientX;
-      // Update last mouse position for next event
       lastMousePos.current = { x: e.clientX, y: e.clientY };
 
-      // Get viewport dimensions
       const viewportWidth = window.innerWidth;
       const viewportHeight = window.innerHeight;
 
-      // Calculate boundaries to keep window fully inside viewport
+      // Calculate safe boundaries
       const minX = 0;
       const minY = 0;
       const maxX = viewportWidth - width;
       const maxY = viewportHeight - height - TASKBAR_HEIGHT;
 
+      // Define how far the window can go past the edge before hard stopping or heavy damping
+      const OVERSHOOT_THRESHOLD = 300;
+
       // Use current window position as base
       const currentX = x;
       const currentY = y;
 
-      // Calculate proposed new position from current position
       const proposedX = currentX + deltaX;
       const proposedY = currentY + deltaY;
-
-      // Define resistance zone size (pixels from edge where speed reduction starts)
-      const resistanceZone = 50;
 
       const snappingZone = viewportWidth * SNAPPING_ZONE_RATIO;
 
@@ -90,38 +85,58 @@ export function useWindowDrag(params: UseWindowDragParams) {
         setIsSnappingWindow(false);
       }
 
-      // Calculate damping factors for X axis (0 = fully damped, 1 = no damping)
-      // Use proposed position to check proximity to edges
+      // X Damping Calculation
       let dampingX = 1.0;
-      if (deltaX < 0 && proposedX < resistanceZone) {
-        // Moving left, approaching left edge
-        dampingX = Math.max(0, proposedX / resistanceZone);
-      } else if (deltaX > 0 && proposedX > maxX - resistanceZone) {
-        // Moving right, approaching right edge
-        dampingX = Math.max(0, (maxX - proposedX) / resistanceZone);
+      /*
+        If we are past the Left Edge (proposedX < 0):
+          We want to allow movement up to -OVERSHOOT_THRESHOLD.
+          As we get closer to -OVERSHOOT_THRESHOLD, resistance increases.
+      */
+      if (proposedX < 0) {
+        // If trying to move further left (deltaX < 0)
+        if (deltaX < 0) {
+           // Calculate distance from the "hard stop" (-OVERSHOOT_THRESHOLD)
+           // distance goes from OVERSHOOT_THRESHOLD -> 0
+           const dist = proposedX - (-OVERSHOOT_THRESHOLD);
+           dampingX = Math.max(0, dist / OVERSHOOT_THRESHOLD);
+        }
+      } 
+      /*
+        If we are past the Right Edge (proposedX > maxX):
+          We want to allow movement up to maxX + OVERSHOOT_THRESHOLD.
+      */
+      else if (proposedX > maxX) {
+        // If trying to move further right (deltaX > 0)
+        if (deltaX > 0) {
+           const dist = (maxX + OVERSHOOT_THRESHOLD) - proposedX;
+           dampingX = Math.max(0, dist / OVERSHOOT_THRESHOLD);
+        }
       }
 
-      // Calculate damping factors for Y axis
+      // Y Damping Calculation
       let dampingY = 1.0;
-      if (deltaY < 0 && proposedY < resistanceZone) {
-        // Moving up, approaching top edge
-        dampingY = Math.max(0, proposedY / resistanceZone);
-      } else if (deltaY > 0 && proposedY > maxY - resistanceZone) {
-        // Moving down, approaching bottom edge
-        dampingY = Math.max(0, (maxY - proposedY) / resistanceZone);
+      if (proposedY < 0) {
+         if (deltaY < 0) {
+           const dist = proposedY - (-OVERSHOOT_THRESHOLD);
+           dampingY = Math.max(0, dist / OVERSHOOT_THRESHOLD);
+         }
+      } else if (proposedY > maxY) {
+         if (deltaY > 0) {
+           const dist = (maxY + OVERSHOOT_THRESHOLD) - proposedY;
+           dampingY = Math.max(0, dist / OVERSHOOT_THRESHOLD);
+         }
       }
 
-      // Apply damping to deltas (damping only reduces magnitude, never reverses direction)
       const dampedDeltaX = deltaX * dampingX;
       const dampedDeltaY = deltaY * dampingY;
 
-      // Calculate final position from current position with damped movement
       let newX = currentX + dampedDeltaX;
       let newY = currentY + dampedDeltaY;
 
-      // Clamp position to boundaries to ensure window stays fully inside
-      newX = Math.max(minX, Math.min(newX, maxX));
-      newY = Math.max(minY, Math.min(newY, maxY));
+      // Final hard clamp just to prevent completely losing the window
+      // (It allows it to go OVERSHOOT_THRESHOLD pixels past the edge)
+      newX = Math.max(minX - OVERSHOOT_THRESHOLD, Math.min(newX, maxX + OVERSHOOT_THRESHOLD));
+      newY = Math.max(minY - OVERSHOOT_THRESHOLD, Math.min(newY, maxY + OVERSHOOT_THRESHOLD));
 
       setX(newX);
       setY(newY);
@@ -138,19 +153,61 @@ export function useWindowDrag(params: UseWindowDragParams) {
       const viewportHeight = window.innerHeight;
       const snappingZone = viewportWidth * SNAPPING_ZONE_RATIO;
       const mouseX = e.clientX;
+
+      // Handle full-screen snapping
       if (mouseX < snappingZone) {
         setWidth(viewportWidth / 2);
         setHeight(viewportHeight - TASKBAR_HEIGHT);
         setX(0);
         setY(0);
+        return;
       } else if (mouseX > viewportWidth - snappingZone) {
         setWidth(viewportWidth / 2);
         setHeight(viewportHeight - TASKBAR_HEIGHT);
         setX(viewportWidth / 2);
         setY(0);
+        return;
+      }
+
+      // Handle "Snap Back" if window is out of bounds
+      const minX = 0;
+      const minY = 0;
+      const maxX = viewportWidth - width;
+      const maxY = viewportHeight - height - TASKBAR_HEIGHT;
+
+      // Current position (captured in closure could be stale, but we use 'x' from dependency or just clamping logic)
+      // Since 'x' and 'y' in dependency might be stale if strict mode,
+      // it is safer to rely on the logic that runs in render or a functional update. 
+      // However here we are calling setX/setY directly.
+      // Let's check boundaries based on current 'x' and 'y'.
+      
+      let targetX = x;
+      let targetY = y;
+      
+      let needsSnapBack = false;
+
+      if (x < minX) {
+        targetX = minX;
+        needsSnapBack = true;
+      } else if (x > maxX) {
+        targetX = maxX;
+        needsSnapBack = true;
+      }
+
+      if (y < minY) {
+        targetY = minY;
+        needsSnapBack = true;
+      } else if (y > maxY) {
+        targetY = maxY;
+        needsSnapBack = true;
+      }
+
+      if (needsSnapBack) {
+        setX(targetX);
+        setY(targetY);
       }
     },
-    [setX, setY, setWidth, setHeight, setIsSnappingWindow]
+    [x, y, width, height, setX, setY, setWidth, setHeight, setIsSnappingWindow]
   );
 
   useEffect(() => {
