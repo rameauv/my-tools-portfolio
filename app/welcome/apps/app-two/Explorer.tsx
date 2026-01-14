@@ -7,6 +7,7 @@ import clsx from "clsx";
 import { githubRepos, type GithubRepo } from "./githubRepos";
 import { useWindowContext } from "../../WindowContext";
 import { WordViewer } from "../word-viewer/WordViewer";
+import { MenuBar } from "../shared/MenuBar";
 
 export function Explorer() {
   const [viewMode, setViewMode] = useState<"icons" | "details">("icons");
@@ -35,14 +36,10 @@ export function Explorer() {
   return (
     <div className="flex flex-col h-full bg-white select-none text-xs" style={{ fontFamily: "Tahoma, sans-serif" }}>
       {/* Top Menu Bar (Visual Only) */}
-      <div className="bg-[#ece9d8] px-2 py-1 border-b border-[#d1d1d1] flex items-center gap-4 text-black">
-        <span>File</span>
-        <span>Edit</span>
-        <span>View</span>
-        <span>Favorites</span>
-        <span>Tools</span>
-        <span>Help</span>
-      </div>
+      <MenuBar 
+        className="bg-[#ece9d8] px-2 py-1 border-b border-[#d1d1d1] flex items-center gap-4 text-black"
+        itemClassName="border border-[#ece9d8] hover:bg-white hover:border-gray-300 px-1 cursor-pointer whitespace-nowrap"
+      />
 
       {/* Toolbar */}
       <div className="bg-[#ece9d8] p-1 border-b border-[#d1d1d1] flex items-center gap-2">

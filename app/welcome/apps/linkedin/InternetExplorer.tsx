@@ -1,6 +1,7 @@
 import * as React from "react";
 import { ArrowLeft, ArrowRight, X, RotateCw, Home, Search, ChevronDown } from "lucide-react";
 import clsx from "clsx";
+import { MenuBar } from "../shared/MenuBar";
 
 interface InternetExplorerProps {
   children: React.ReactNode;
@@ -11,14 +12,7 @@ export function InternetExplorer({ children, url = "http://cyworld.com/valentin"
   return (
     <div className="w-full h-full flex flex-col bg-[#ece9d8] font-sans select-none overflow-hidden">
       {/* Menu Bar */}
-      <div className="bg-[#ece9d8] border-b border-gray-400 px-2 py-0.5 flex items-center gap-2 sm:gap-4 text-xs text-black overflow-x-auto">
-        <span className="hover:bg-white hover:border hover:border-gray-300 px-1 cursor-pointer whitespace-nowrap">File</span>
-        <span className="hover:bg-white hover:border hover:border-gray-300 px-1 cursor-pointer whitespace-nowrap">Edit</span>
-        <span className="hover:bg-white hover:border hover:border-gray-300 px-1 cursor-pointer whitespace-nowrap">View</span>
-        <span className="hidden sm:inline hover:bg-white hover:border hover:border-gray-300 px-1 cursor-pointer whitespace-nowrap">Favorites</span>
-        <span className="hover:bg-white hover:border hover:border-gray-300 px-1 cursor-pointer whitespace-nowrap">Tools</span>
-        <span className="hidden sm:inline hover:bg-white hover:border hover:border-gray-300 px-1 cursor-pointer whitespace-nowrap">Help</span>
-      </div>
+      <MenuBar />
 
       {/* Toolbar */}
       <div className="bg-[#ece9d8] border-b border-gray-400 px-1 py-1 flex items-center gap-0.5 sm:gap-1 overflow-x-auto">

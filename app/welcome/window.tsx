@@ -20,13 +20,13 @@ export interface WindowConfig {
   depth: number;
 }
 
-function mapWindowDepthToZIndex(depth: number, windowCount: number): number {
+function mapWindowDepthToZIndex(depth: number): number {
   return 50 + depth;
 }
 
 export function Window(props: {
-  windowCount: number;
   children: React.ReactNode;
+  windowsContainerRef: React.RefObject<HTMLDivElement | null>;
   title?: string;
   onClose?: () => void;
   defaultWidth?: number;
@@ -43,7 +43,7 @@ export function Window(props: {
 
   return (
     <Dialog.Root open={open} modal={false}>
-      <Dialog.Portal>
+      <Dialog.Portal container={props.windowsContainerRef}>
         <Dialog.Popup
           className={`
             fixed bg-[#ece9d8] border-2 shadow-xl z-50 overflow-hidden rounded-t-lg
@@ -52,12 +52,12 @@ export function Window(props: {
           style={{
             top: 0,
             left: 0,
-            transform: `translate(${x}px, ${y}px)`,
+            transform: `translate3d(${x}px, ${y}px, 0)`,
             width: width,
             height: height,
             opacity: props.config.isMinimized ? 0 : 1,
             pointerEvents: props.config.isMinimized ? "none" : "auto",
-            zIndex: mapWindowDepthToZIndex(props.config.depth, props.windowCount),
+            zIndex: mapWindowDepthToZIndex(props.config.depth),
           }}
           onFocus={() => props.onFocus()}
         >
@@ -176,7 +176,7 @@ function WindowContent(props: {
         setHeight={props.setHeight}
         isFocused={props.isFocused}
       />
-      <div className="flex-1 overflow-auto p-2 bg-white m-1 border border-gray-400">
+      <div className="flex-1 overflow-auto bg-white m-1 border border-gray-400">
         {props.children}
       </div>
       <ResizeHandles onResizeMouseDown={onResizeMouseDown} />

@@ -3,7 +3,7 @@ import { Window, type WindowConfig } from "./window";
 import { BottomBar, TaskbarButton } from "./BottomBar";
 import { WindowSnapping } from "./WindowSnapping";
 import { WindowProvider } from "./WindowContext";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { AppOne } from "./apps/app-one/AppOne";
 import { AppTwo } from "./apps/app-two/AppTwo";
 import { LinkedIn } from "./apps/linkedin/LinkedIn";
@@ -126,6 +126,7 @@ export function Welcome() {
   }
 
   console.log("windows", windows);
+  const windowsContainerRef = useRef<HTMLDivElement>(null);
 
   return (
     <WindowProvider openWindow={openWindow}>
@@ -150,6 +151,7 @@ export function Welcome() {
             style={{
               background: 'url("/wallpaper.jpg") center/cover no-repeat',
             }}
+            ref={windowsContainerRef}
           >
             {windows.map((window) => {
               const Component = window.component;
@@ -167,7 +169,7 @@ export function Welcome() {
                   onMinimize={() => onMinimize(window.id)}
                   onFocus={() => onFocus(window.id)}
                   onClose={() => onClose(window.id)}
-                  windowCount={windows.length}
+                  windowsContainerRef={windowsContainerRef}
                 >
                   <Component
                     key={"window-content-" + window.id}
@@ -187,6 +189,7 @@ function DesktopLayout(props: {
   children: React.ReactNode;
   bottomBar: React.ReactNode;
 }) {
+  // const desktopContentRef = useRef<HTMLDivElement>(null);
   return (
     <main className="flex flex-col h-screen overflow-hidden">
       <div className="flex-1 relative overflow-hidden">{props.children}</div>
