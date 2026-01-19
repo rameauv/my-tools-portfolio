@@ -27,47 +27,47 @@ export function InternetExplorer({
 			{/* Toolbar */}
 			<div className="bg-[#ece9d8] border-b border-gray-400 px-1 py-1 flex items-center gap-0.5 @sm:gap-1 overflow-x-auto">
 				<ToolbarButton
-					icon={<ArrowLeft size={14} className="@sm:w-4 @sm:h-4" />}
+					hideLabelOnMobile
+					icon={<ArrowLeft className="@sm:w-4 @sm:h-4" size={14} />}
 					label="Back"
-					hideLabelOnMobile
 				/>
 				<ToolbarButton
-					icon={<ArrowRight size={14} className="@sm:w-4 @sm:h-4" />}
+					disabled
+					hideLabelOnMobile
+					icon={<ArrowRight className="@sm:w-4 @sm:h-4" size={14} />}
 					label="Forward"
-					disabled
-					hideLabelOnMobile
 				/>
 				<div className="w-px h-5 @sm:h-6 bg-gray-400 mx-0.5 @sm:mx-1" />
 				<ToolbarButton
-					icon={<X size={14} className="@sm:w-4 @sm:h-4" />}
+					disabled
+					hideLabelOnMobile
+					icon={<X className="@sm:w-4 @sm:h-4" size={14} />}
 					label="Stop"
-					disabled
-					hideLabelOnMobile
 				/>
 				<ToolbarButton
-					icon={<RotateCw size={14} className="@sm:w-4 @sm:h-4" />}
+					hideLabelOnMobile
+					icon={<RotateCw className="@sm:w-4 @sm:h-4" size={14} />}
 					label="Refresh"
-					hideLabelOnMobile
 				/>
 				<ToolbarButton
-					icon={<Home size={14} className="@sm:w-4 @sm:h-4" />}
+					hideLabelOnMobile
+					icon={<Home className="@sm:w-4 @sm:h-4" size={14} />}
 					label="Home"
-					hideLabelOnMobile
 				/>
-				<div className="w-px h-5 @sm:h-6 bg-gray-400 mx-0.5 @sm:mx-1" />
+				{/* <div className="w-px h-5 @sm:h-6 bg-gray-400 mx-0.5 @sm:mx-1" />
 				<ToolbarButton
-					icon={<Search size={14} className="@sm:w-4 @sm:h-4" />}
+					hideLabelOnMobile
+					icon={<Search className="@sm:w-4 @sm:h-4" size={14} />}
 					label="Search"
+				/> */}
+				{/* <ToolbarButton
 					hideLabelOnMobile
-				/>
-				<ToolbarButton
-					icon={<ChevronDown size={14} className="@sm:w-4 @sm:h-4" />}
-					hideLabelOnMobile
-				/>
+					icon={<ChevronDown className="@sm:w-4 @sm:h-4" size={14} />}
+				/> */}
 			</div>
 
 			{/* Address Bar */}
-			<div className="bg-[#ece9d8] border-b border-gray-400 px-1 @sm:px-2 py-1 flex flex-col @sm:flex-row items-stretch @sm:items-center gap-1 @sm:gap-2">
+			<div className="bg-[#ece9d8] border-b border-gray-400 px-1 @sm:px-2 py-1 flex items-stretch @sm:items-center gap-1 @sm:gap-2">
 				<span className="hidden @sm:inline text-xs text-black font-semibold whitespace-nowrap">
 					Address
 				</span>
@@ -81,25 +81,25 @@ export function InternetExplorer({
 						</div>
 					</div>
 					<input
+						className="flex-1 px-1 @sm:px-2 py-0.5 text-[10px] @sm:text-xs text-black bg-transparent outline-none truncate"
+						readOnly
 						type="text"
 						value={url}
-						readOnly
-						className="flex-1 px-1 @sm:px-2 py-0.5 text-[10px] @sm:text-xs text-black bg-transparent outline-none truncate"
 					/>
 				</div>
 				<div className="flex gap-1 shrink-0">
 					<button
-						type="button"
 						className="px-2 @sm:px-3 py-0.5 bg-[#ece9d8] border border-gray-400 text-[10px] @sm:text-xs font-semibold hover:bg-white active:bg-gray-200 whitespace-nowrap"
+						type="button"
 					>
 						Go
 					</button>
-					<button
-						type="button"
+					{/* <button
 						className="px-1.5 @sm:px-2 py-0.5 bg-[#ece9d8] border border-gray-400 text-[10px] @sm:text-xs hover:bg-white active:bg-gray-200 whitespace-nowrap"
+						type="button"
 					>
 						Links
-					</button>
+					</button> */}
 				</div>
 			</div>
 
@@ -153,20 +153,20 @@ function ToolbarButton({
 }) {
 	return (
 		<button
-			type="button"
-			onClick={onClick}
-			disabled={disabled}
 			className={clsx(
 				"px-1 @sm:px-2 py-0.5 @sm:py-1 flex items-center gap-0.5 @sm:gap-1 text-[10px] @sm:text-xs border border-transparent rounded-sm shrink-0",
 				"hover:border-gray-400 hover:bg-white",
 				disabled && "opacity-50 cursor-not-allowed",
 				!disabled && "active:bg-gray-200 active:border-gray-500",
 			)}
+			disabled={disabled}
+			onClick={onClick}
 			style={{
 				boxShadow: !disabled
 					? "inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 0 rgba(0,0,0,0.1)"
 					: undefined,
 			}}
+			type="button"
 		>
 			<span className={disabled ? "text-gray-400" : "text-black"}>{icon}</span>
 			{label && !hideLabelOnMobile && (
