@@ -1,10 +1,10 @@
 import clsx from "clsx";
-import type * as React from "react";
+import * as React from "react";
 import { useState } from "react";
+import { assertAllOptionsHandled } from "~/utils/assertIsNever";
 import { linkedinData } from "./data";
 import type { LinkedInProfile } from "./types";
 
-// Helper functions
 function extractVanityName(url: string): string | null {
 	const match = url.match(/\/in\/([^/?]+)/);
 	return match ? match[1] : null;
@@ -15,20 +15,38 @@ export function XpPage() {
 	const [activeSection, setActiveSection] = useState<
 		"about" | "experience" | "education" | "skills"
 	>("about");
+	const containerRef = React.useRef<HTMLDivElement>(null);
+
 	const handleSectionChange = (
 		section: "about" | "experience" | "education" | "skills",
+		platform: "desktop" | "mobile",
 	) => {
 		setActiveSection(section);
-		const element = document.getElementById(`section-${section}`);
-		if (element) {
-			element.scrollIntoView({ behavior: "smooth" });
+
+		if (platform === "mobile") {
+			if (containerRef.current) {
+				containerRef.current.scrollTo({ top: 0, behavior: "smooth" });
+			}
+			return;
 		}
+
+		if (platform === "desktop") {
+			const element = document.getElementById(`section-${section}`);
+			if (element) {
+				element.scrollIntoView({ behavior: "smooth" });
+			}
+			return;
+		}
+		assertAllOptionsHandled(platform);
 	};
 
 	return (
-		<div className="@container w-full h-full bg-[#e5e5e5] overflow-auto font-sans text-black">
+		<div
+			className="@container w-full h-full bg-[#e5e5e5] overflow-auto font-sans text-black"
+			ref={containerRef}
+		>
 			{/* Page Header */}
-			<div className="bg-gradient-to-b from-[#dfe8f6] to-[#c8d5e8] border-b-2 border-[#a0a0a0] px-3 @sm:px-6 py-2 @sm:py-3">
+			<div className="bg-linear-to-b from-[#dfe8f6] to-[#c8d5e8] border-b-2 border-[#a0a0a0] px-3 @sm:px-6 py-2 @sm:py-3">
 				<h1 className="text-base @sm:text-lg font-bold text-[#003366]">
 					{profile.personal_information.name}
 				</h1>
@@ -44,22 +62,22 @@ export function XpPage() {
 				<NavTab
 					active={activeSection === "about"}
 					label="About"
-					onClick={() => handleSectionChange("about")}
+					onClick={() => handleSectionChange("about", "mobile")}
 				/>
 				<NavTab
 					active={activeSection === "experience"}
 					label="Experience"
-					onClick={() => handleSectionChange("experience")}
+					onClick={() => handleSectionChange("experience", "mobile")}
 				/>
 				<NavTab
 					active={activeSection === "education"}
 					label="Education"
-					onClick={() => handleSectionChange("education")}
+					onClick={() => handleSectionChange("education", "mobile")}
 				/>
 				<NavTab
 					active={activeSection === "skills"}
 					label="Skills"
-					onClick={() => handleSectionChange("skills")}
+					onClick={() => handleSectionChange("skills", "mobile")}
 				/>
 			</div>
 
@@ -138,6 +156,7 @@ function SidebarNav({
 	activeSection: string;
 	onSectionChange: (
 		section: "about" | "experience" | "education" | "skills",
+		platform: "desktop" | "mobile",
 	) => void;
 }) {
 	const links = [
@@ -158,7 +177,7 @@ function SidebarNav({
 							: "bg-white border-gray-300 text-gray-700 hover:bg-gray-50",
 					)}
 					key={link.id}
-					onClick={() => onSectionChange(link.id)}
+					onClick={() => onSectionChange(link.id, "desktop")}
 					style={{
 						boxShadow:
 							activeSection === link.id
@@ -186,7 +205,11 @@ function AboutSection({ profile }: { profile: LinkedInProfile }) {
 				<div className="bg-[#f9f9f9] border border-gray-300 p-3 rounded-sm">
 					<InfoRow label="Name" value={profile.personal_information.name} />
 					{vanityName && (
-						<InfoRow label="LinkedIn" value={`linkedin.com/in/${vanityName}`} />
+						<InfoRow
+							href={profile.personal_information.contact.linkedin}
+							label="LinkedIn"
+							value={`linkedin.com/in/${vanityName}`}
+						/>
 					)}
 					{profile.personal_information.location && (
 						<InfoRow
@@ -425,13 +448,40 @@ function Section({
 	);
 }
 
-function InfoRow({ label, value }: { label: string; value: string }) {
-	return (
-		<div className="flex flex-col @sm:flex-row gap-1 @sm:gap-2 py-1 text-[10px] @sm:text-xs">
+function InfoRow({
+	label,
+	value,
+	href,
+}: {
+	label: string;
+	value: string;
+	href?: string;
+}) {
+	const content = (
+		<div
+			className={clsx(
+				"flex flex-col @sm:flex-row gap-1 @sm:gap-2 py-1 text-[10px] @sm:text-xs",
+				href && "hover:bg-gray-100 transition-colors cursor-pointer",
+			)}
+		>
 			<span className="font-semibold text-gray-700 w-20 @sm:w-24 shrink-0">
 				{label}:
 			</span>
-			<span className="text-gray-600">{value}</span>
+			<span
+				className={clsx("text-gray-600", href && "text-[#003366] underline")}
+			>
+				{value}
+			</span>
 		</div>
 	);
+
+	if (href) {
+		return (
+			<a href={href} rel="noopener noreferrer" target="_blank">
+				{content}
+			</a>
+		);
+	}
+
+	return content;
 }
