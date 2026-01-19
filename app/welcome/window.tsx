@@ -9,6 +9,20 @@ const TASKBAR_HEIGHT = 30;
 const MIN_WIDTH = 200;
 const MIN_HEIGHT = 150;
 
+function useIsMobile() {
+	const [isMobile, setIsMobile] = useState(false);
+
+	useEffect(() => {
+		const mql = window.matchMedia("(max-width: 768px)");
+		const onChange = () => setIsMobile(mql.matches);
+		mql.addEventListener("change", onChange);
+		setIsMobile(mql.matches);
+		return () => mql.removeEventListener("change", onChange);
+	}, []);
+
+	return isMobile;
+}
+
 export interface WindowConfig {
 	id: number;
 	appId: string;
@@ -45,6 +59,17 @@ export function Window(props: {
 	const [width, setWidth] = useState(props.defaultWidth ?? 200);
 	const [height, setHeight] = useState(props.defaultHeight ?? 200);
 
+	const isMobile = useIsMobile();
+
+	useEffect(() => {
+		if (isMobile) {
+			setX(0);
+			setY(0);
+			setWidth(window.innerWidth);
+			setHeight(window.innerHeight - TASKBAR_HEIGHT);
+		}
+	}, [isMobile]);
+
 	// Use refs to access current values in resize handler without re-creating the effect
 	const windowBoundsRef = useRef({ x, y, width, height });
 	useEffect(() => {
@@ -54,6 +79,13 @@ export function Window(props: {
 	// Listen for browser window resize events to keep window within viewport bounds
 	useEffect(() => {
 		const handleWindowResize = () => {
+			if (isMobile) {
+				setX(0);
+				setY(0);
+				setWidth(window.innerWidth);
+				setHeight(window.innerHeight - TASKBAR_HEIGHT);
+				return;
+			}
 			const viewportWidth = window.innerWidth;
 			const viewportHeight = window.innerHeight;
 			const current = windowBoundsRef.current;
@@ -124,7 +156,7 @@ export function Window(props: {
 		return () => {
 			window.removeEventListener("resize", handleWindowResize);
 		};
-	}, []);
+	}, [isMobile]);
 
 	return (
 		<Dialog.Root modal={false} open={open}>
@@ -144,11 +176,13 @@ export function Window(props: {
 						opacity: props.config.isMinimized ? 0 : 1,
 						pointerEvents: props.config.isMinimized ? "none" : "auto",
 						zIndex: mapWindowDepthToZIndex(props.config.depth),
+						borderRadius: isMobile ? 0 : undefined,
 					}}
 				>
 					<WindowContent
 						height={height}
 						isFocused={props.config.isFocused}
+						isMobile={isMobile}
 						onClose={props.onClose}
 						onMinimize={props.onMinimize}
 						setHeight={setHeight}
@@ -182,6 +216,7 @@ function WindowContent(props: {
 	setHeight: (height: number) => void;
 	onMinimize?: () => void;
 	isFocused: boolean;
+	isMobile: boolean;
 }) {
 	const {
 		onResizeMouseDown,
@@ -250,6 +285,7 @@ function WindowContent(props: {
 			<WindowHeader
 				height={props.height}
 				isFocused={props.isFocused}
+				isMobile={props.isMobile}
 				onClose={props.onClose}
 				onMinimize={props.onMinimize}
 				setHeight={props.setHeight}
@@ -264,7 +300,9 @@ function WindowContent(props: {
 			<div className="flex-1 overflow-auto bg-white m-1 border border-gray-400">
 				{props.children}
 			</div>
-			<ResizeHandles onResizeMouseDown={onResizeMouseDown} />
+			{!props.isMobile && (
+				<ResizeHandles onResizeMouseDown={onResizeMouseDown} />
+			)}
 		</div>
 	);
 }
@@ -398,6 +436,7 @@ function WindowHeader(props: {
 	setHeight: (height: number) => void;
 	onMinimize?: () => void;
 	isFocused: boolean;
+	isMobile: boolean;
 }) {
 	const { setIsSnappingWindow, setSnappingSide } = useWindowContext();
 	const { onMouseDown, isDragging } = useWindowDrag({
@@ -432,8 +471,9 @@ function WindowHeader(props: {
 						: "bg-linear-to-b from-[#7a96df] via-[#9db9eb] to-[#7a96df]"
 				}
         ${isDragging ? "cursor-grabbing" : "cursor-grab"}
+        ${props.isMobile ? "cursor-default" : ""}
       `}
-			onMouseDown={onMouseDown}
+			onMouseDown={props.isMobile ? undefined : onMouseDown}
 		>
 			<div className="flex items-center gap-2 overflow-hidden pointer-events-none">
 				<span
@@ -452,12 +492,14 @@ function WindowHeader(props: {
 				>
 					<ImgIcon isFocused={props.isFocused} src="/minimize.png" />
 				</WindowHeaderRightButton>
-				<WindowHeaderRightButton
-					isFocused={props.isFocused}
-					onClick={onMaximize}
-				>
-					<ImgIcon isFocused={props.isFocused} src="/maximize.png" />
-				</WindowHeaderRightButton>
+				{!props.isMobile && (
+					<WindowHeaderRightButton
+						isFocused={props.isFocused}
+						onClick={onMaximize}
+					>
+						<ImgIcon isFocused={props.isFocused} src="/maximize.png" />
+					</WindowHeaderRightButton>
+				)}
 				<WindowHeaderRightButton
 					isClose
 					isFocused={props.isFocused}
