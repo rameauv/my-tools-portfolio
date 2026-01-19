@@ -1,13 +1,4 @@
-export interface GithubRepo {
-	id: string;
-	name: string;
-	description: string | null;
-	language: string | null;
-	updatedAt: string;
-	readmeContent: string;
-}
-
-export const githubRepos: GithubRepo[] = [
+export const githubRepos = [
 	{
 		id: "665393433",
 		name: "morphman_korean_mecab.git",
@@ -2205,4 +2196,4 @@ Afterwards compile with:
 \`gcc main.c $(pkg-config --libs --cflags libusb-1.0)\`
 `,
 	},
-];
+] as const;

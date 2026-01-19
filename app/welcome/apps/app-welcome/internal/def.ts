@@ -1,6 +1,6 @@
 import { AppWelcome } from "./AppWelcome";
 
-export const DEF = {
+export const def = {
 	appId: "WELCOME",
 	title: "Welcome",
 	iconSrc: "/my-documents.png",

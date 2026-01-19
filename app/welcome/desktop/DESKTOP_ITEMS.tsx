@@ -1,16 +1,16 @@
-import { APP_LINKEDIN } from "../apps/app-linkedin";
-import { APP_WELCOME } from "../apps/app-welcome";
+import { appGitHubExplorer } from "../apps/app-github-explorer";
+import { appLinkedin } from "../apps/app-linkedin";
 import type { DesktopItem } from "./DesktopItem";
 
 export const DESKTOP_ITEMS: DesktopItem[] = [
 	{
 		data: {
 			id: 1,
-			appId: APP_WELCOME.def.appId,
-			icon: APP_WELCOME.def.iconSrc,
-			title: APP_WELCOME.def.title,
-			component: APP_WELCOME.def.component,
-			groupingId: APP_WELCOME.def.groupingId,
+			appId: appGitHubExplorer.def.appId,
+			icon: appGitHubExplorer.def.iconSrc,
+			title: appGitHubExplorer.def.title,
+			component: appGitHubExplorer.def.component,
+			groupingId: appGitHubExplorer.def.groupingId,
 		},
 		x: 0,
 		y: 0,
@@ -18,11 +18,11 @@ export const DESKTOP_ITEMS: DesktopItem[] = [
 	{
 		data: {
 			id: 2,
-			appId: APP_LINKEDIN.def.appId,
-			icon: APP_LINKEDIN.def.iconSrc,
-			title: APP_LINKEDIN.def.title,
-			component: APP_LINKEDIN.def.component,
-			groupingId: APP_LINKEDIN.def.groupingId,
+			appId: appLinkedin.def.appId,
+			icon: appLinkedin.def.iconSrc,
+			title: appLinkedin.def.title,
+			component: appLinkedin.def.component,
+			groupingId: appLinkedin.def.groupingId,
 		},
 		x: 0,
 		y: 100,

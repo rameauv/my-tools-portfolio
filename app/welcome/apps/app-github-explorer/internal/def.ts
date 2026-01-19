@@ -1,9 +1,9 @@
 import type { AppDef } from "../../AppDef";
-import { GitHubExplorer } from "./AppTwo";
+import { GitHubExplorer } from "./GitHubExplorer";
 
-export const DEF: AppDef = {
+export const def: AppDef = {
 	appId: "GITHUB_EXPLORER",
-	title: "GitHub Explorer",
+	title: "My Projects",
 	iconSrc: "/my-documents.png",
 	component: GitHubExplorer,
 	groupingId: "GITHUB_EXPLORER",

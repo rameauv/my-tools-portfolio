@@ -9,7 +9,7 @@ import {
 } from "lucide-react";
 import type * as React from "react";
 import Markdown from "react-markdown";
-import type { GithubRepo } from "../../app-github-explorer/internal/githubRepos";
+import type { GithubRepo } from "../../app-github-explorer/internal/GithubRepo";
 
 import { Ruler } from "./Ruler";
 

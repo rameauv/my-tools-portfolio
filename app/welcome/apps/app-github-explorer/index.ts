@@ -1,5 +1,5 @@
-import { DEF } from "./internal/DEF";
+import { def } from "./internal/def";
 
-export const APP_GITHUB_EXPLORER = {
-	def: DEF,
+export const appGitHubExplorer = {
+	def: def,
 };

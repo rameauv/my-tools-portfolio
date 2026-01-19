@@ -1,5 +1,5 @@
-import { DEF } from "./internal/DEF";
+import { def } from "./internal/def";
 
-export const APP_WELCOME = {
-	def: DEF,
+export const appWelcome = {
+	def: def,
 };

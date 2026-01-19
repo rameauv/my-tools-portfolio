@@ -1,8 +1,6 @@
 import type * as React from "react";
 import { useEffectEvent, useRef, useState } from "react";
-import { APP_GITHUB_EXPLORER } from "./apps/app-github-explorer";
-import { APP_LINKEDIN } from "./apps/app-linkedin";
-import { APP_WELCOME } from "./apps/app-welcome";
+import { appLinkedin } from "./apps/app-linkedin";
 import { BottomBar } from "./BottomBar";
 import { Desktop } from "./desktop/Desktop";
 import type { DesktopItemData } from "./desktop/DesktopItemData";
@@ -16,38 +14,16 @@ export function Welcome() {
 	const [windows, setWindows] = useState<WindowConfig[]>([
 		{
 			id: windowId++,
-			appId: APP_WELCOME.def.appId,
+			appId: appLinkedin.def.appId,
+			title: appLinkedin.def.title,
 			isMinimized: false,
-			isFocused: true,
-			depth: 0,
-			component: APP_WELCOME.def.component,
-			title: APP_WELCOME.def.title,
-			iconSrc: APP_WELCOME.def.iconSrc,
-			groupingId: APP_WELCOME.def.groupingId,
-		},
-		{
-			id: windowId++,
-			appId: APP_GITHUB_EXPLORER.def.appId,
-			title: APP_GITHUB_EXPLORER.def.title,
-			isMinimized: false,
-			iconSrc: APP_GITHUB_EXPLORER.def.iconSrc,
+			iconSrc: appLinkedin.def.iconSrc,
 			isFocused: false,
-			component: APP_GITHUB_EXPLORER.def.component,
-			depth: 1,
-			groupingId: APP_GITHUB_EXPLORER.def.groupingId,
-		},
-		{
-			id: windowId++,
-			appId: APP_LINKEDIN.def.appId,
-			title: APP_LINKEDIN.def.title,
-			isMinimized: false,
-			iconSrc: APP_LINKEDIN.def.iconSrc,
-			isFocused: false,
-			component: APP_LINKEDIN.def.component,
+			component: appLinkedin.def.component,
 			defaultWidth: 900,
 			defaultHeight: 700,
 			depth: 2,
-			groupingId: APP_LINKEDIN.def.groupingId,
+			groupingId: appLinkedin.def.groupingId,
 		},
 	]);
 

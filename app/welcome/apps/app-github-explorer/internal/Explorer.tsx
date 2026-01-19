@@ -14,9 +14,10 @@ import {
 import type * as React from "react";
 import { useState } from "react";
 import { useWindowContext } from "../../../WindowContext";
-import { APP_GITHUB_PROJECT } from "../../app-github-project";
+import { appGithubProjects } from "../../app-github-project";
 import { MenuBar } from "../../shared/MenuBar";
-import { type GithubRepo, githubRepos } from "./githubRepos";
+import type { GithubRepo } from "./GithubRepo";
+import { githubRepos } from "./githubRepos";
 
 export function Explorer() {
 	const [viewMode, setViewMode] = useState<"icons" | "details">("icons");
@@ -32,7 +33,7 @@ export function Explorer() {
 
 	function handleRepoDoubleClick(repo: GithubRepo) {
 		// Double click opens Word viewer
-		const programDef = APP_GITHUB_PROJECT.def({
+		const programDef = appGithubProjects.def({
 			projectId: repo.id,
 			title: `${repo.name} - Microsoft Word`,
 			componentProps: { repo },
@@ -115,7 +116,7 @@ export function Explorer() {
 			{/* Main Content */}
 			<div className="flex flex-1 overflow-hidden">
 				{/* Sidebar */}
-				<div className="w-48 bg-gradient-to-b from-[#748aff] to-[#4057d2] p-3 flex flex-col gap-3 overflow-y-auto">
+				<div className="hidden md:flex w-48 bg-gradient-to-b from-[#748aff] to-[#4057d2] p-3 flex-col gap-3 overflow-y-auto">
 					<SidebarSection isOpen title="File and Folder Tasks">
 						<SidebarLink icon={<Folder size={14} />} text="Make a new folder" />
 						<SidebarLink

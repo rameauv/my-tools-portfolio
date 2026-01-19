@@ -1,5 +1,5 @@
-import { DEF } from "./internal/DEF";
+import { def } from "./internal/def";
 
-export const APP_GITHUB_PROJECT = {
-	def: DEF,
+export const appGithubProjects = {
+	def: def,
 };
