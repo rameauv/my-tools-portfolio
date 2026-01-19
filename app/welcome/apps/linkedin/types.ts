@@ -1,3 +1,4 @@
+// Legacy types kept for backward compatibility
 export interface LinkedInPosition {
   title: string;
   companyName: string;
@@ -36,29 +37,70 @@ export interface LinkedInDiploma {
   images: { url: string; name: string }[] | null;
 }
 
-export interface LinkedInProfile {
-  id: string;
-  firstName: string;
-  lastName: string;
-  headline: string | null;
-  profilePicture: string | null;
-  vanityName: string | null;
-  locale: string;
-  positions: LinkedInPosition[];
-  educations: LinkedInEducation[];
-  diplomas: LinkedInDiploma[];
-  languages: LinkedInLanguage[];
-  skills: string[];
+// New types matching the data structure
+export interface Contact {
+  phone: string;
+  email: string;
+  linkedin: string;
+}
+
+export interface PersonalInformation {
+  name: string;
+  job_title: string;
+  location: string;
+  contact: Contact;
+  visa_status: string;
+}
+
+export interface WorkExperience {
+  company: string;
+  role: string;
+  location: string;
+  start_date: string;
+  end_date: string;
+  description: string;
+  achievements: string[];
+}
+
+export interface Education {
+  institution: string;
+  degree: string;
+  location: string;
+  start_year: string;
+  end_year: string;
+}
+
+export interface Skills {
+  programming_languages: string[];
+  frontend: string[];
+  backend_cloud: string[];
+  tools: string[];
+  frameworks: string[];
+}
+
+export interface Project {
+  name: string;
+  description: string;
+}
+
+export interface Certification {
+  name: string;
+  level: string;
+  year: string;
 }
 
 export interface LinkedInLanguage {
   language: string;
-  proficiency:
-    | "Native"
-    | "Bilingual"
-    | "Fluent"
-    | "Professional working proficiency"
-    | "Native or bilingual proficiency"
-    | "Basic"
-    | "Elementary";
+  proficiency: string; // Changed to string to accommodate values like "TOPIK Level 5"
+}
+
+export interface LinkedInProfile {
+  personal_information: PersonalInformation;
+  summary: string;
+  work_experience: WorkExperience[];
+  education: Education[];
+  skills: Skills;
+  projects: Project[];
+  languages: LinkedInLanguage[];
+  certifications: Certification[];
 }

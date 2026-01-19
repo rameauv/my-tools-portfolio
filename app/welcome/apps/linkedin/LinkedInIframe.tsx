@@ -10,9 +10,17 @@ export function LinkedInIframe({ profileUrl }: LinkedInIframeProps) {
   const [iframeError, setIframeError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   
-  const profile = linkedinData[0];
-  const defaultUrl = profile?.vanityName 
-    ? `https://www.linkedin.com/in/${profile.vanityName}`
+  const profile = linkedinData;
+  // Extract vanity name from LinkedIn URL
+  const extractVanityName = (url: string): string | null => {
+    const match = url.match(/\/in\/([^\/\?]+)/);
+    return match ? match[1] : null;
+  };
+  const vanityName = profile?.personal_information?.contact?.linkedin 
+    ? extractVanityName(profile.personal_information.contact.linkedin)
+    : null;
+  const defaultUrl = vanityName 
+    ? `https://www.linkedin.com/in/${vanityName}`
     : "https://www.linkedin.com";
 
   const url = profileUrl || defaultUrl;

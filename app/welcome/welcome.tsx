@@ -1,199 +1,219 @@
-import * as React from "react";
-import { Window, type WindowConfig } from "./window";
-import { BottomBar, TaskbarButton } from "./BottomBar";
-import { WindowSnapping } from "./WindowSnapping";
-import { WindowProvider } from "./WindowContext";
-import { useRef, useState } from "react";
+import type * as React from "react";
+import { useEffectEvent, useRef, useState } from "react";
+import { APP_ONE } from "./apps/app-one/APP_ONE";
 import { AppOne } from "./apps/app-one/AppOne";
-import { AppTwo } from "./apps/app-two/AppTwo";
+import { APP_TWO } from "./apps/app-two/APP_TWO";
+import { GitHubExplorer } from "./apps/app-two/AppTwo";
+import { APP_LINKEDIN } from "./apps/linkedin/APP_LINKEDIN";
 import { LinkedIn } from "./apps/linkedin/LinkedIn";
+import { BottomBar } from "./BottomBar";
+import { Desktop } from "./desktop/Desktop";
+import type { DesktopItemData } from "./desktop/DesktopItemData";
+import { WindowProvider } from "./WindowContext";
+import { WindowSnapping } from "./WindowSnapping";
+import { Window, type WindowConfig } from "./window";
 
 let windowId = 0;
 
 export function Welcome() {
-  const [windows, setWindows] = useState<WindowConfig[]>([
-    {
-      id: windowId++,
-      title: "Welcome",
-      isMinimized: false,
-      iconSrc: "/my-documents.png",
-      isFocused: true,
-      component: AppOne,
-      depth: 0,
-    },
-    {
-      id: windowId++,
-      title: "GitHub Explorer",
-      isMinimized: false,
-      iconSrc: "/my-documents.png",
-      isFocused: false,
-      component: AppTwo,
-      depth: 1,
-    },
-    {
-      id: windowId++,
-      title: "LinkedIn Profile",
-      isMinimized: false,
-      iconSrc: "/my-documents.png",
-      isFocused: false,
-      component: LinkedIn,
-      defaultWidth: 900,
-      defaultHeight: 700,
-      depth: 2,
-    },
-  ]);
+	const [windows, setWindows] = useState<WindowConfig[]>([
+		{
+			id: windowId++,
+			appId: APP_ONE.appId,
+			isMinimized: false,
+			isFocused: true,
+			depth: 0,
+			component: APP_ONE.component,
+			title: APP_ONE.title,
+			iconSrc: APP_ONE.iconSrc,
+			groupingId: APP_ONE.groupingId,
+		},
+		{
+			id: windowId++,
+			appId: APP_TWO.appId,
+			title: APP_TWO.title,
+			isMinimized: false,
+			iconSrc: APP_TWO.iconSrc,
+			isFocused: false,
+			component: APP_TWO.component,
+			depth: 1,
+			groupingId: APP_TWO.groupingId,
+		},
+		{
+			id: windowId++,
+			appId: APP_LINKEDIN.appId,
+			title: APP_LINKEDIN.title,
+			isMinimized: false,
+			iconSrc: APP_LINKEDIN.iconSrc,
+			isFocused: false,
+			component: APP_LINKEDIN.component,
+			defaultWidth: 900,
+			defaultHeight: 700,
+			depth: 2,
+			groupingId: APP_LINKEDIN.groupingId,
+		},
+	]);
 
-  function onMinimize(id: number) {
-    setWindows(
-      windows.map((window) =>
-        window.id === id
-          ? { ...window, isMinimized: !window.isMinimized, isFocused: false }
-          : window
-      )
-    );
-  }
+	function onMinimize(id: number) {
+		setWindows(
+			windows.map((window) =>
+				window.id === id
+					? { ...window, isMinimized: !window.isMinimized, isFocused: false }
+					: window,
+			),
+		);
+	}
 
-  function onToggleWindow(id: number) {
-    setWindows((windows) => {
-      const focusedWindow = windows.find((window) => window.isFocused);
-      if (focusedWindow != null && focusedWindow.id !== id) {
-        return windows.map((window) => {
-          if (window.id === id) {
-            return {
-              ...window,
-              isFocused: true,
-              isMinimized: false,
-              depth: windows.length - 1,
-            };
-          } else {
-            return { ...window, isFocused: false, depth: window.depth - 1 };
-          }
-        });
-      }
-      return windows.map((window) =>
-        window.id === id
-          ? {
-              ...window,
-              isMinimized: !window.isMinimized,
-              isFocused: window.isMinimized,
-              depth: windows.length - 1,
-            }
-          : { ...window, isFocused: false, depth: window.depth - 1 }
-      );
-    });
-  }
+	function onToggleWindow(id: number) {
+		setWindows((windows) => {
+			const focusedWindow = windows.find((window) => window.isFocused);
+			if (focusedWindow != null && focusedWindow.id !== id) {
+				return windows.map((window) => {
+					if (window.id === id) {
+						return {
+							...window,
+							isFocused: true,
+							isMinimized: false,
+							depth: windows.length - 1,
+						};
+					} else {
+						return { ...window, isFocused: false, depth: window.depth - 1 };
+					}
+				});
+			}
+			return windows.map((window) =>
+				window.id === id
+					? {
+							...window,
+							isMinimized: !window.isMinimized,
+							isFocused: window.isMinimized,
+							depth: windows.length - 1,
+						}
+					: { ...window, isFocused: false, depth: window.depth - 1 },
+			);
+		});
+	}
 
-  function onFocus(id: number) {
-    setWindows(
-      windows.map((window) =>
-        window.id === id
-          ? {
-              ...window,
-              isFocused: true,
-              depth: windows.length - 1,
-            }
-          : { ...window, isFocused: false, depth: window.depth - 1 }
-      )
-    );
-  }
+	function onFocus(id: number) {
+		setWindows(
+			windows.map((window) =>
+				window.id === id
+					? {
+							...window,
+							isFocused: true,
+							depth: windows.length - 1,
+						}
+					: { ...window, isFocused: false, depth: window.depth - 1 },
+			),
+		);
+	}
 
-  function onClose(id: number) {
-    console.log("onClose", id);
-    setWindows(windows.filter((window) => window.id !== id));
-  }
+	function onClose(id: number) {
+		setWindows(windows.filter((window) => window.id !== id));
+	}
 
-  function openWindow(
-    config: Partial<WindowConfig> & { component: React.ComponentType<any> }
-  ) {
-    const newId = windowId++;
-    const newWindow: WindowConfig = {
-      id: newId,
-      title: config.title || "Untitled",
-      isMinimized: false,
-      iconSrc: config.iconSrc || "/my-documents.png",
-      isFocused: true,
-      component: config.component,
-      componentProps: config.componentProps,
-      defaultWidth: config.defaultWidth,
-      defaultHeight: config.defaultHeight,
-      depth: windows.length,
-    };
-    setWindows(
-      windows
-        .map((w) => ({ ...w, isFocused: false, depth: w.depth - 1 }))
-        .concat(newWindow)
-    );
-  }
+	function openWindow(config: {
+		appId: string;
+		title: string;
+		iconSrc: string;
+		component: React.ComponentType<any>;
+		componentProps?: Record<string, unknown>;
+		groupingId: string;
+		defaultWidth?: number;
+		defaultHeight?: number;
+	}) {
+		const existingWindow = windows.find(
+			(windowItem) => windowItem.appId === config.appId,
+		);
+		if (existingWindow != null) {
+			onFocus(existingWindow.id);
+			return;
+		}
+		const newId = windowId++;
+		const newWindow: WindowConfig = {
+			id: newId,
+			appId: config.appId,
+			title: config.title,
+			isMinimized: false,
+			iconSrc: config.iconSrc,
+			isFocused: true,
+			component: config.component,
+			componentProps: config.componentProps,
+			defaultWidth: config.defaultWidth,
+			defaultHeight: config.defaultHeight,
+			groupingId: config.groupingId,
+			depth: windows.length,
+		};
+		setWindows(
+			windows
+				.map((w) => ({ ...w, isFocused: false, depth: w.depth - 1 }))
+				.concat(newWindow),
+		);
+	}
 
-  console.log("windows", windows);
-  const windowsContainerRef = useRef<HTMLDivElement>(null);
+	const onOpenItem = useEffectEvent((item: DesktopItemData) => {
+		openWindow({
+			appId: item.appId,
+			title: item.title,
+			iconSrc: item.icon,
+			component: item.component,
+			groupingId: item.groupingId,
+		});
+	});
 
-  return (
-    <WindowProvider openWindow={openWindow}>
-      <DesktopLayout
-        bottomBar={
-          <BottomBar>
-            {windows.map((window) => (
-              <TaskbarButton
-                key={window.id}
-                title={window.title}
-                active={window.isFocused}
-                icon={window.iconSrc}
-                onClick={() => onToggleWindow(window.id)}
-              />
-            ))}
-          </BottomBar>
-        }
-      >
-        <WindowSnapping>
-          <div
-            className="w-full h-full p-4 flex flex-col items-start gap-4"
-            style={{
-              background: 'url("/wallpaper.jpg") center/cover no-repeat',
-            }}
-            ref={windowsContainerRef}
-          >
-            {windows.map((window) => {
-              const Component = window.component;
-              return (
-                <Window
-                  key={"window-" + window.id}
-                  config={window}
-                  title={window.title}
-                  defaultWidth={
-                    window.defaultWidth ?? (window.id === 1 ? 800 : 400)
-                  }
-                  defaultHeight={
-                    window.defaultHeight ?? (window.id === 1 ? 600 : 300)
-                  }
-                  onMinimize={() => onMinimize(window.id)}
-                  onFocus={() => onFocus(window.id)}
-                  onClose={() => onClose(window.id)}
-                  windowsContainerRef={windowsContainerRef}
-                >
-                  <Component
-                    key={"window-content-" + window.id}
-                    {...(window.componentProps || {})}
-                  />
-                </Window>
-              );
-            })}
-          </div>
-        </WindowSnapping>
-      </DesktopLayout>
-    </WindowProvider>
-  );
+	console.log("windows", windows);
+	const windowsContainerRef = useRef<HTMLDivElement>(null);
+
+	return (
+		<WindowProvider openWindow={openWindow}>
+			<Shell
+				bottomBar={
+					<BottomBar onToggleWindow={onToggleWindow} windows={windows} />
+				}
+			>
+				<WindowSnapping>
+					<div className="w-full h-full" ref={windowsContainerRef}>
+						{windows.map((window) => {
+							const Component = window.component;
+							return (
+								<Window
+									config={window}
+									defaultHeight={
+										window.defaultHeight ?? (window.id === 1 ? 600 : 300)
+									}
+									defaultWidth={
+										window.defaultWidth ?? (window.id === 1 ? 800 : 400)
+									}
+									key={`window-${window.id}`}
+									onClose={() => onClose(window.id)}
+									onFocus={() => onFocus(window.id)}
+									onMinimize={() => onMinimize(window.id)}
+									title={window.title}
+									windowsContainerRef={windowsContainerRef}
+								>
+									<Component
+										key={`window-content-${window.id}`}
+										{...window.componentProps}
+									/>
+								</Window>
+							);
+						})}
+						<Desktop onOpenItem={onOpenItem} />
+					</div>
+				</WindowSnapping>
+			</Shell>
+		</WindowProvider>
+	);
 }
 
-function DesktopLayout(props: {
-  children: React.ReactNode;
-  bottomBar: React.ReactNode;
+function Shell(props: {
+	children: React.ReactNode;
+	bottomBar: React.ReactNode;
 }) {
-  // const desktopContentRef = useRef<HTMLDivElement>(null);
-  return (
-    <main className="flex flex-col h-screen overflow-hidden">
-      <div className="flex-1 relative overflow-hidden">{props.children}</div>
-      {props.bottomBar}
-    </main>
-  );
+	return (
+		<main className="flex flex-col h-screen overflow-hidden">
+			<div className="flex-1 relative overflow-hidden">{props.children}</div>
+			{props.bottomBar}
+		</main>
+	);
 }
