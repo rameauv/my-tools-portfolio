@@ -17,7 +17,7 @@
  * If no authentication is provided, the script will use OAuth Device Flow automatically.
  */
 
-import { writeFileSync } from 'fs';
+import { writeFileSync, mkdirSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { setTimeout } from 'timers/promises';
@@ -71,7 +71,7 @@ function parseArgs() {
 
   // Default output path
   if (!config.output) {
-    config.output = join(__dirname, '..', 'app', 'welcome', 'apps', 'app-two', 'githubRepos.ts');
+    config.output = join(__dirname, '..', 'app', 'welcome', 'apps', 'shared', 'projects', 'github-repos', 'githubRepos.ts');
   }
 
   return config;
@@ -309,47 +309,73 @@ function formatDate(dateString) {
 }
 
 /**
- * Escape TypeScript string content
+ * Write markdown files to readmes subfolder
  */
-function escapeTypeScriptString(str) {
-  if (!str) return '';
-  return str
-    .replace(/\\/g, '\\\\')
-    .replace(/`/g, '\\`')
-    .replace(/\${/g, '\\${');
+function writeMarkdownFiles(repos, outputDir) {
+  const readmesDir = join(outputDir, 'readmes');
+  
+  // Create readmes directory if it doesn't exist
+  mkdirSync(readmesDir, { recursive: true });
+  
+  const writtenFiles = [];
+  
+  repos.forEach(repo => {
+    // Only write if there's content
+    if (repo.readmeContent && repo.readmeContent.trim()) {
+      const mdFilePath = join(readmesDir, `${repo.id}.md`);
+      writeFileSync(mdFilePath, repo.readmeContent, 'utf-8');
+      writtenFiles.push({
+        id: repo.id,
+        importName: `readme${repo.id}`,
+        path: `./readmes/${repo.id}.md`
+      });
+    }
+  });
+  
+  return writtenFiles;
 }
 
 /**
  * Generate TypeScript file content
  */
-function generateTypeScriptFile(repos) {
-  const interfaceDefinition = `export interface GithubRepo {
-  id: string;
-  name: string;
-  description: string | null;
-  language: string | null;
-  updatedAt: string;
-  readmeContent: string;
-}`;
+function generateTypeScriptFile(repos, markdownFiles) {
+  // Create a map of repo ID to import name for quick lookup
+  const readmeMap = new Map();
+  markdownFiles.forEach(file => {
+    readmeMap.set(file.id, file.importName);
+  });
 
+  // Generate import statements
+  const imports = markdownFiles.map(file => 
+    `import ${file.importName} from "${file.path}?raw";`
+  ).join('\n');
+
+  // Generate repos array
   const reposArray = repos.map(repo => {
-    const readmeContent = escapeTypeScriptString(repo.readmeContent);
+    const readmeRef = readmeMap.get(repo.id);
+    const readmeContent = readmeRef ? readmeRef : '""';
+    
     return `  {
     id: "${repo.id}",
     name: "${repo.name.replace(/"/g, '\\"')}",
     description: ${repo.description ? `"${repo.description.replace(/"/g, '\\"').replace(/\n/g, ' ')}"` : 'null'},
     language: ${repo.language ? `"${repo.language.replace(/"/g, '\\"')}"` : 'null'},
     updatedAt: "${repo.updatedAt}",
-    readmeContent: \`${readmeContent}\`
+    readmeContent: ${readmeRef ? readmeRef : '""'}
   }`;
   }).join(',\n');
 
-  return `${interfaceDefinition}
+  const content = imports ? `${imports}
 
-export const githubRepos: GithubRepo[] = [
+export const githubRepos = [
+${reposArray}
+];
+` : `export const githubRepos = [
 ${reposArray}
 ];
 `;
+
+  return content;
 }
 
 /**
