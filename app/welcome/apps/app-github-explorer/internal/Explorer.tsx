@@ -13,9 +13,9 @@ import {
 } from "lucide-react";
 import type * as React from "react";
 import { useState } from "react";
-import { useWindowContext } from "../../WindowContext";
-import { createGithubProjectAppDef } from "../github-project/GITHUB_PROJECT";
-import { MenuBar } from "../shared/MenuBar";
+import { useWindowContext } from "../../../WindowContext";
+import { APP_GITHUB_PROJECT } from "../../app-github-project";
+import { MenuBar } from "../../shared/MenuBar";
 import { type GithubRepo, githubRepos } from "./githubRepos";
 
 export function Explorer() {
@@ -32,7 +32,7 @@ export function Explorer() {
 
 	function handleRepoDoubleClick(repo: GithubRepo) {
 		// Double click opens Word viewer
-		const programDef = createGithubProjectAppDef({
+		const programDef = APP_GITHUB_PROJECT.def({
 			projectId: repo.id,
 			title: `${repo.name} - Microsoft Word`,
 			componentProps: { repo },

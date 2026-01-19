@@ -1,8 +1,8 @@
-import type { AppDef } from "../AppDef";
-import type { GithubRepo } from "../app-two/githubRepos";
+import type { AppDef } from "../../AppDef";
+import type { GithubRepo } from "../../app-github-explorer/internal/githubRepos";
 import { GithubProject } from "./GithubProject";
 
-export const createGithubProjectAppDef = (config: {
+export const DEF = (config: {
 	projectId: string;
 	title: string;
 	componentProps: { repo: GithubRepo };

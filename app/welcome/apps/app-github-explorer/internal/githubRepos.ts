@@ -1,40 +1,40 @@
 export interface GithubRepo {
-  id: string;
-  name: string;
-  description: string | null;
-  language: string | null;
-  updatedAt: string;
-  readmeContent: string;
+	id: string;
+	name: string;
+	description: string | null;
+	language: string | null;
+	updatedAt: string;
+	readmeContent: string;
 }
 
 export const githubRepos: GithubRepo[] = [
-  {
-    id: "665393433",
-    name: "morphman_korean_mecab.git",
-    description: null,
-    language: "Python",
-    updatedAt: "2025-10-20",
-    readmeContent: `This project adds support for the Korean language to the Anki plugin Morphman.
-`
-  },
-  {
-    id: "643827394",
-    name: "spotify-flutter.git",
-    description: null,
-    language: "Dart",
-    updatedAt: "2025-10-20",
-    readmeContent: `# A clone a spotify made with flutter
+	{
+		id: "665393433",
+		name: "morphman_korean_mecab.git",
+		description: null,
+		language: "Python",
+		updatedAt: "2025-10-20",
+		readmeContent: `This project adds support for the Korean language to the Anki plugin Morphman.
+`,
+	},
+	{
+		id: "643827394",
+		name: "spotify-flutter.git",
+		description: null,
+		language: "Dart",
+		updatedAt: "2025-10-20",
+		readmeContent: `# A clone a spotify made with flutter
 
 preview: https://rameauv.github.io/spotify-flutter-website/
-`
-  },
-  {
-    id: "786133128",
-    name: "game-of-life-psvita.git",
-    description: null,
-    language: "C",
-    updatedAt: "2025-10-20",
-    readmeContent: `# Conway's Game of Life for the PlayStation Vita
+`,
+	},
+	{
+		id: "786133128",
+		name: "game-of-life-psvita.git",
+		description: null,
+		language: "C",
+		updatedAt: "2025-10-20",
+		readmeContent: `# Conway's Game of Life for the PlayStation Vita
 
 An implementation of the famous Conway's Game of Life for the PSVITA
 
@@ -104,15 +104,15 @@ clang-tidy --list-checks
 
 
 [![Build](https://github.com/rameauv/game-of-life-psvita/actions/workflows/build.yml/badge.svg)](https://github.com/rameauv/game-of-life-psvita/actions/workflows/build.yml)
-`
-  },
-  {
-    id: "580800349",
-    name: "spotify-clone-backend-asp.net.git",
-    description: null,
-    language: "C#",
-    updatedAt: "2025-04-15",
-    readmeContent: `
+`,
+	},
+	{
+		id: "580800349",
+		name: "spotify-clone-backend-asp.net.git",
+		description: null,
+		language: "C#",
+		updatedAt: "2025-04-15",
+		readmeContent: `
 # Back-end for a clone of Spotify made with Asp.net Core
 
   
@@ -225,15 +225,16 @@ The documentation is available in the \`doc\` folder.
 - Better documentation
 - More code comments
 - Use an authentication service like Auth0
-`
-  },
-  {
-    id: "576883039",
-    name: "MorphMan.git",
-    description: "Anki plugin that reorders language cards based on the words you know",
-    language: "Python",
-    updatedAt: "2024-09-09",
-    readmeContent: `# MorphMan
+`,
+	},
+	{
+		id: "576883039",
+		name: "MorphMan.git",
+		description:
+			"Anki plugin that reorders language cards based on the words you know",
+		language: "Python",
+		updatedAt: "2024-09-09",
+		readmeContent: `# MorphMan
 
 <a title="Rate on AnkiWeb" href="https://ankiweb.net/shared/info/900801631"><img src="https://glutanimate.com/logos/ankiweb-rate.svg"></a>
 <br>
@@ -284,33 +285,33 @@ See the [MorphMan wiki](https://github.com/kaegi/MorphMan/wiki) for more informa
 - Build Qt Developer UI with \`python scripts/build_ui.py\`
 - Install git commit hook to run tests and pylint
   \` scripts/setup_dev.sh\`
-`
-  },
-  {
-    id: "187827182",
-    name: "try_psvita-sdk.git",
-    description: null,
-    language: "C++",
-    updatedAt: "2024-04-14",
-    readmeContent: `# try-cpp-psvita
+`,
+	},
+	{
+		id: "187827182",
+		name: "try_psvita-sdk.git",
+		description: null,
+		language: "C++",
+		updatedAt: "2024-04-14",
+		readmeContent: `# try-cpp-psvita
 a try with unofficial vitasdk
-`
-  },
-  {
-    id: "752546819",
-    name: "spotify-flutter-website.git",
-    description: null,
-    language: "JavaScript",
-    updatedAt: "2024-02-04",
-    readmeContent: ``
-  },
-  {
-    id: "702926419",
-    name: "breezy-weather.git",
-    description: "A Material Design Weather Application",
-    language: "Kotlin",
-    updatedAt: "2023-12-13",
-    readmeContent: `<div align="center">
+`,
+	},
+	{
+		id: "752546819",
+		name: "spotify-flutter-website.git",
+		description: null,
+		language: "JavaScript",
+		updatedAt: "2024-02-04",
+		readmeContent: ``,
+	},
+	{
+		id: "702926419",
+		name: "breezy-weather.git",
+		description: "A Material Design Weather Application",
+		language: "Kotlin",
+		updatedAt: "2023-12-13",
+		readmeContent: `<div align="center">
 <br />
 <img src="app/src/main/res/mipmap-xxxhdpi/ic_launcher_round.webp" />
 </div>
@@ -485,23 +486,24 @@ It enables Instant App and bundles Google Network Location Provider (proprietary
 * [Guidelines regarding Breezy Weather identity and forks](/IDENTITY.md)
 * [Built on Geometric Weather Android app (GNU Lesser General Public License v3.0)](https://github.com/WangDaYeeeeee/GeometricWeather). Breezy Weather is not officially associated with Geometric Weather or its products.
 
-`
-  },
-  {
-    id: "655472379",
-    name: "dotfiles_config.git",
-    description: null,
-    language: "Lua",
-    updatedAt: "2023-06-19",
-    readmeContent: ``
-  },
-  {
-    id: "648603137",
-    name: "swiper.git",
-    description: "Most modern mobile touch slider with hardware accelerated transitions",
-    language: "JavaScript",
-    updatedAt: "2023-06-04",
-    readmeContent: `<p align="center">
+`,
+	},
+	{
+		id: "655472379",
+		name: "dotfiles_config.git",
+		description: null,
+		language: "Lua",
+		updatedAt: "2023-06-19",
+		readmeContent: ``,
+	},
+	{
+		id: "648603137",
+		name: "swiper.git",
+		description:
+			"Most modern mobile touch slider with hardware accelerated transitions",
+		language: "JavaScript",
+		updatedAt: "2023-06-04",
+		readmeContent: `<p align="center">
   <img src="https://swiperjs.com/images/share-banner-3.png"/>
 </p>
 
@@ -1494,15 +1496,15 @@ This project exists thanks to all the people who contribute. [[Contribute](CONTR
 Become a financial contributor and help us sustain our community. [[Contribute](https://opencollective.com/swiper/contribute)]
 
 <a href="https://opencollective.com/swiper"><img src="https://opencollective.com/swiper/individuals.svg?width=890"></a>
-`
-  },
-  {
-    id: "648652874",
-    name: "swiper-website.git",
-    description: "Swiper website",
-    language: null,
-    updatedAt: "2023-06-02",
-    readmeContent: `# Swiper Website
+`,
+	},
+	{
+		id: "648652874",
+		name: "swiper-website.git",
+		description: "Swiper website",
+		language: null,
+		updatedAt: "2023-06-02",
+		readmeContent: `# Swiper Website
 
 Swiper's website to use these docs offline
 
@@ -1536,15 +1538,15 @@ To learn more about Next.js, take a look at the following resources:
 
 - [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
 - [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-`
-  },
-  {
-    id: "626759615",
-    name: "angular-poc-localize.git",
-    description: null,
-    language: "TypeScript",
-    updatedAt: "2023-04-13",
-    readmeContent: `# AngularPocLocalize
+`,
+	},
+	{
+		id: "626759615",
+		name: "angular-poc-localize.git",
+		description: null,
+		language: "TypeScript",
+		updatedAt: "2023-04-13",
+		readmeContent: `# AngularPocLocalize
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 15.2.5.
 
@@ -1571,35 +1573,35 @@ Run \`ng e2e\` to execute the end-to-end tests via a platform of your choice. To
 ## Further help
 
 To get more help on the Angular CLI use \`ng help\` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
-`
-  },
-  {
-    id: "608687750",
-    name: "jober_design_renewal.git",
-    description: "Created with CodeSandbox",
-    language: "JavaScript",
-    updatedAt: "2023-03-03",
-    readmeContent: `# jober_design_renewal
+`,
+	},
+	{
+		id: "608687750",
+		name: "jober_design_renewal.git",
+		description: "Created with CodeSandbox",
+		language: "JavaScript",
+		updatedAt: "2023-03-03",
+		readmeContent: `# jober_design_renewal
 Created with CodeSandbox
-`
-  },
-  {
-    id: "608690004",
-    name: "jober_nlb_favorites.git",
-    description: "Created with CodeSandbox",
-    language: "JavaScript",
-    updatedAt: "2023-03-02",
-    readmeContent: `# jober_nlb_favorites
+`,
+	},
+	{
+		id: "608690004",
+		name: "jober_nlb_favorites.git",
+		description: "Created with CodeSandbox",
+		language: "JavaScript",
+		updatedAt: "2023-03-02",
+		readmeContent: `# jober_nlb_favorites
 Created with CodeSandbox
-`
-  },
-  {
-    id: "577191173",
-    name: "spotify-clone-frontend-ionic-react.git",
-    description: null,
-    language: "TypeScript",
-    updatedAt: "2023-01-02",
-    readmeContent: `
+`,
+	},
+	{
+		id: "577191173",
+		name: "spotify-clone-frontend-ionic-react.git",
+		description: null,
+		language: "TypeScript",
+		updatedAt: "2023-01-02",
+		readmeContent: `
 # Front-end for a clone of Spotify made with React and Ionic
 
   
@@ -1683,27 +1685,29 @@ a example file \`.env.exemple\` is present at the root of the repo.
 - Being able to create playlists
 - Being able to actulay play tracks
 - Recomendation feed
-`
-  },
-  {
-    id: "196317481",
-    name: "dotnet-core-fusion-keyboard-api.git",
-    description: "based on martin31821's work https://github.com/martin31821/fusion-kbd-controller",
-    language: "C",
-    updatedAt: "2022-11-13",
-    readmeContent: `# dotnet-core-fusion-keyboard-api
+`,
+	},
+	{
+		id: "196317481",
+		name: "dotnet-core-fusion-keyboard-api.git",
+		description:
+			"based on martin31821's work https://github.com/martin31821/fusion-kbd-controller",
+		language: "C",
+		updatedAt: "2022-11-13",
+		readmeContent: `# dotnet-core-fusion-keyboard-api
 based on martin31821's work https://github.com/martin31821/fusion-kbd-controller
 
 api for the aero 15w rgb fusion french keyboard
-`
-  },
-  {
-    id: "196416316",
-    name: "Aurora.git",
-    description: "Unified lighting effects across multiple brands and various games.",
-    language: "C#",
-    updatedAt: "2019-07-11",
-    readmeContent: `# Aurora - Unified Lighting Effects
+`,
+	},
+	{
+		id: "196416316",
+		name: "Aurora.git",
+		description:
+			"Unified lighting effects across multiple brands and various games.",
+		language: "C#",
+		updatedAt: "2019-07-11",
+		readmeContent: `# Aurora - Unified Lighting Effects
 ![Aurora Logo](http://i.imgur.com/ZkxyAyp.png)
 
 [Link to Aurora's webpage, includes some demos and changelogs](http://project-aurora.com/)
@@ -2167,15 +2171,15 @@ Thanks to all the brilliant people that made contributions to this project. See 
 * Trickster79
 * twitch.tv/fearsc | Faceit.com
 * Warblade
-`
-  },
-  {
-    id: "196316990",
-    name: "fusion-kbd-controller.git",
-    description: "Controller tool for aero 15x keyboard backlight.",
-    language: "C",
-    updatedAt: "2019-07-11",
-    readmeContent: `# fusion-kbd-controller
+`,
+	},
+	{
+		id: "196316990",
+		name: "fusion-kbd-controller.git",
+		description: "Controller tool for aero 15x keyboard backlight.",
+		language: "C",
+		updatedAt: "2019-07-11",
+		readmeContent: `# fusion-kbd-controller
 
 This project is a tiny userspace binary, allowing you to configure the RGB Fusion keyboard of
 the gigabyte AERO 15X when running linux.
@@ -2199,6 +2203,6 @@ You need libusb and (on debian/fedora however) libusb-dev.
 Afterwards compile with:
 
 \`gcc main.c $(pkg-config --libs --cflags libusb-1.0)\`
-`
-  }
+`,
+	},
 ];

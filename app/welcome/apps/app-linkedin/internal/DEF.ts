@@ -1,7 +1,7 @@
-import type { AppDef } from "../AppDef";
+import type { AppDef } from "../../AppDef";
 import { LinkedIn } from "./LinkedIn";
 
-export const APP_LINKEDIN: AppDef = {
+export const DEF: AppDef = {
 	appId: "LINKEDIN",
 	title: "LinkedIn Profile",
 	iconSrc: "/my-documents.png",

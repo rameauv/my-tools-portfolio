@@ -1,14 +1,6 @@
 import clsx from "clsx";
-import {
-	ArrowLeft,
-	ArrowRight,
-	ChevronDown,
-	Home,
-	RotateCw,
-	Search,
-	X,
-} from "lucide-react";
-import { MenuBar } from "../shared/MenuBar";
+import { ArrowLeft, ArrowRight, Home, RotateCw, X } from "lucide-react";
+import { MenuBar } from "../../shared/MenuBar";
 
 interface InternetExplorerProps {
 	children: React.ReactNode;

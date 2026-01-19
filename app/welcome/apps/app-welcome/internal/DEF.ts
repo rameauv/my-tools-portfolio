@@ -1,9 +1,9 @@
-import { AppOne } from "./AppOne";
+import { AppWelcome } from "./AppWelcome";
 
-export const APP_ONE = {
+export const DEF = {
 	appId: "WELCOME",
 	title: "Welcome",
 	iconSrc: "/my-documents.png",
-	component: AppOne,
+	component: AppWelcome,
 	groupingId: "WELCOME",
 };

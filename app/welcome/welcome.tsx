@@ -1,11 +1,8 @@
 import type * as React from "react";
 import { useEffectEvent, useRef, useState } from "react";
-import { APP_ONE } from "./apps/app-one/APP_ONE";
-import { AppOne } from "./apps/app-one/AppOne";
-import { APP_TWO } from "./apps/app-two/APP_TWO";
-import { GitHubExplorer } from "./apps/app-two/AppTwo";
-import { APP_LINKEDIN } from "./apps/linkedin/APP_LINKEDIN";
-import { LinkedIn } from "./apps/linkedin/LinkedIn";
+import { APP_GITHUB_EXPLORER } from "./apps/app-github-explorer";
+import { APP_LINKEDIN } from "./apps/app-linkedin";
+import { APP_WELCOME } from "./apps/app-welcome";
 import { BottomBar } from "./BottomBar";
 import { Desktop } from "./desktop/Desktop";
 import type { DesktopItemData } from "./desktop/DesktopItemData";
@@ -19,38 +16,38 @@ export function Welcome() {
 	const [windows, setWindows] = useState<WindowConfig[]>([
 		{
 			id: windowId++,
-			appId: APP_ONE.appId,
+			appId: APP_WELCOME.def.appId,
 			isMinimized: false,
 			isFocused: true,
 			depth: 0,
-			component: APP_ONE.component,
-			title: APP_ONE.title,
-			iconSrc: APP_ONE.iconSrc,
-			groupingId: APP_ONE.groupingId,
+			component: APP_WELCOME.def.component,
+			title: APP_WELCOME.def.title,
+			iconSrc: APP_WELCOME.def.iconSrc,
+			groupingId: APP_WELCOME.def.groupingId,
 		},
 		{
 			id: windowId++,
-			appId: APP_TWO.appId,
-			title: APP_TWO.title,
+			appId: APP_GITHUB_EXPLORER.def.appId,
+			title: APP_GITHUB_EXPLORER.def.title,
 			isMinimized: false,
-			iconSrc: APP_TWO.iconSrc,
+			iconSrc: APP_GITHUB_EXPLORER.def.iconSrc,
 			isFocused: false,
-			component: APP_TWO.component,
+			component: APP_GITHUB_EXPLORER.def.component,
 			depth: 1,
-			groupingId: APP_TWO.groupingId,
+			groupingId: APP_GITHUB_EXPLORER.def.groupingId,
 		},
 		{
 			id: windowId++,
-			appId: APP_LINKEDIN.appId,
-			title: APP_LINKEDIN.title,
+			appId: APP_LINKEDIN.def.appId,
+			title: APP_LINKEDIN.def.title,
 			isMinimized: false,
-			iconSrc: APP_LINKEDIN.iconSrc,
+			iconSrc: APP_LINKEDIN.def.iconSrc,
 			isFocused: false,
-			component: APP_LINKEDIN.component,
+			component: APP_LINKEDIN.def.component,
 			defaultWidth: 900,
 			defaultHeight: 700,
 			depth: 2,
-			groupingId: APP_LINKEDIN.groupingId,
+			groupingId: APP_LINKEDIN.def.groupingId,
 		},
 	]);
 
