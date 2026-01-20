@@ -112,7 +112,7 @@ export function Explorer() {
 			<div className="bg-[#ece9d8] px-2 py-1 border-b border-[#d1d1d1] flex items-center gap-2">
 				<span className="text-gray-500">Address</span>
 				<div className="flex-1 bg-white border border-[#7f9db9] px-1 py-0.5 flex items-center text-black">
-					<img alt="folder" className="w-4 h-4 mr-2" src="/icons/windows-xp-icons/19.ico" />
+					<img alt="folder" className="w-4 h-4 mr-2" src="/assets/icons/shell32/23-folder-48.ico" />
 					<span className="flex-1">C:\GitHub</span>
 					<ChevronDown className="text-gray-500" size={14} />
 				</div>
@@ -337,7 +337,7 @@ function RepoIconItem({
 				<img
 					alt="repo"
 					className="w-full h-full object-contain"
-					src="icons/windows-xp-icons/19.ico"
+					src="/assets/icons/shell32/23-folder-48.ico"
 				/>
 			</div>
 			<span
@@ -377,7 +377,7 @@ function RepoListItem({
 			onMouseDown={onMouseDown}
 		>
 			<div className="flex-1 flex items-center gap-2 min-w-0">
-				<img alt="repo" className="w-4 h-4 shrink-0" src="icons/windows-xp-icons/19.ico" />
+				<img alt="repo" className="w-4 h-4 shrink-0" src="/assets/icons/shell32/23-folder-48.ico" />
 				<span className="truncate">{repo.name}</span>
 			</div>
 			<div className={clsx("w-24 px-1 shrink-0", !selected && "text-gray-500")}>

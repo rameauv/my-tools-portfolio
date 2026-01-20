@@ -7,77 +7,36 @@ export const menuItems: MenuItem[] = [
 			<img
 				alt="Accessories"
 				className="w-4 h-4"
-				src="/icons/windows-xp-icons/19.ico"
+				src="/assets/icons/shell32/160-all-programs-folder-48.ico"
 			/>
 		),
 		children: [
 			{
 				label: "Calculator",
 				icon: (
-					<img alt="Calculator" className="w-4 h-4" src="/calculator.png" />
+					<img
+						alt="Calculator"
+						className="w-4 h-4"
+						src="/assets/icons/other/calculator.webp"
+					/>
 				),
 			},
 			{
 				label: "Notepad",
-				icon: <img alt="Notepad" className="w-4 h-4" src="/my-documents.png" />,
+				icon: (
+					<img
+						alt="Notepad"
+						className="w-4 h-4"
+						src="/assets/icons/other/notepad.webp"
+					/>
+				),
 			},
 			{
 				label: "Paint",
 				icon: (
-					<img
-						alt="Paint"
-						className="w-4 h-4"
-						src="/icons/windows-xp-icons/19.ico"
-					/>
+					<img alt="Paint" className="w-4 h-4" src="/assets/icons/other/paint.webp" />
 				),
-				children: [
-					{
-						label: "New",
-						icon: <img alt="New" className="w-4 h-4" src="/my-documents.png" />,
-					},
-					{
-						label: "Open",
-						icon: (
-							<img
-								alt="Open"
-								className="w-4 h-4"
-								src="/icons/windows-xp-icons/19.ico"
-							/>
-						),
-					},
-					{
-						label: "Recent Files",
-						icon: (
-							<img
-								alt="Recent Files"
-								className="w-4 h-4"
-								src="/icons/windows-xp-icons/19.ico"
-							/>
-						),
-						children: [
-							{
-								label: "File1.png",
-								icon: (
-									<img
-										alt="File1.png"
-										className="w-4 h-4"
-										src="/my-documents.png"
-									/>
-								),
-							},
-							{
-								label: "File2.png",
-								icon: (
-									<img
-										alt="File2.png"
-										className="w-4 h-4"
-										src="/my-documents.png"
-									/>
-								),
-							},
-						],
-					},
-				],
+				children: [],
 			},
 		],
 	},
@@ -87,37 +46,17 @@ export const menuItems: MenuItem[] = [
 			<img
 				alt="Games"
 				className="w-4 h-4"
-				src="/icons/windows-xp-icons/19.ico"
+				src="/assets/icons/shell32/160-all-programs-folder-48.ico"
 			/>
 		),
 		children: [
-			{
-				label: "Solitaire",
-				icon: (
-					<img
-						alt="Solitaire"
-						className="w-4 h-4"
-						src="/icons/windows-xp-icons/19.ico"
-					/>
-				),
-			},
 			{
 				label: "Minesweeper",
 				icon: (
 					<img
 						alt="Minesweeper"
 						className="w-4 h-4"
-						src="/icons/windows-xp-icons/19.ico"
-					/>
-				),
-			},
-			{
-				label: "Spider Solitaire",
-				icon: (
-					<img
-						alt="Spider Solitaire"
-						className="w-4 h-4"
-						src="/icons/windows-xp-icons/19.ico"
+						src="/assets/icons/other/minesweeper.webp"
 					/>
 				),
 			},
@@ -129,7 +68,7 @@ export const menuItems: MenuItem[] = [
 			<img
 				alt="Startup"
 				className="w-4 h-4"
-				src="/icons/windows-xp-icons/19.ico"
+				src="/assets/icons/shell32/160-all-programs-folder-48.ico"
 			/>
 		),
 		children: [],
@@ -140,7 +79,7 @@ export const menuItems: MenuItem[] = [
 			<img
 				alt="System Tools"
 				className="w-4 h-4"
-				src="/icons/windows-xp-icons/19.ico"
+				src="/assets/icons/shell32/160-all-programs-folder-48.ico"
 			/>
 		),
 		children: [
@@ -150,7 +89,7 @@ export const menuItems: MenuItem[] = [
 					<img
 						alt="Disk Cleanup"
 						className="w-4 h-4"
-						src="/icons/windows-xp-icons/19.ico"
+						src="/assets/icons/windows-xp-icons/241.ico"
 					/>
 				),
 			},
@@ -160,7 +99,7 @@ export const menuItems: MenuItem[] = [
 					<img
 						alt="Defragmenter"
 						className="w-4 h-4"
-						src="/icons/windows-xp-icons/19.ico"
+						src="/assets/icons/shell32/578-defragmenter-48.ico"
 					/>
 				),
 			},
@@ -170,7 +109,7 @@ export const menuItems: MenuItem[] = [
 					<img
 						alt="System Information"
 						className="w-4 h-4"
-						src="/icons/windows-xp-icons/19.ico"
+						src="/assets/icons/other/system-information.webp"
 					/>
 				),
 			},
@@ -182,7 +121,7 @@ export const menuItems: MenuItem[] = [
 			<img
 				alt="Internet Explorer"
 				className="w-4 h-4"
-				src="/icons/windows-xp-icons/19.ico"
+				src="/assets/icons/shell32/1484-internet-explorer-48.ico"
 			/>
 		),
 	},
@@ -192,17 +131,7 @@ export const menuItems: MenuItem[] = [
 			<img
 				alt="Outlook Express"
 				className="w-4 h-4"
-				src="/icons/windows-xp-icons/19.ico"
-			/>
-		),
-	},
-	{
-		label: "Remote Desktop Connection",
-		icon: (
-			<img
-				alt="Remote Desktop Connection"
-				className="w-4 h-4"
-				src="/icons/windows-xp-icons/19.ico"
+				src="/assets/icons/other/outlook-express-xp-icon.webp"
 			/>
 		),
 	},
@@ -212,7 +141,7 @@ export const menuItems: MenuItem[] = [
 			<img
 				alt="Windows Media Player"
 				className="w-4 h-4"
-				src="/icons/windows-xp-icons/19.ico"
+				src="/assets/icons/other/windows-media-player.webp"
 			/>
 		),
 	},
@@ -222,7 +151,7 @@ export const menuItems: MenuItem[] = [
 			<img
 				alt="Windows Movie Maker"
 				className="w-4 h-4"
-				src="/icons/windows-xp-icons/19.ico"
+				src="/assets/icons/other/windows-movie-maker.webp"
 			/>
 		),
 	},

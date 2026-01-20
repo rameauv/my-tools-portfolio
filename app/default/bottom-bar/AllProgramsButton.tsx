@@ -54,7 +54,7 @@ export default function AllProgramsButton() {
 				</div>
 			</Popover.Trigger>
 			<Popover.Portal>
-				<Popover.Positioner align="end" side="right" style={{ zIndex: 100 }}>
+				<Popover.Positioner align="end" side="right" style={{ zIndex: 201 }}>
 					<Popover.Popup
 						className="
               bg-white border border-gray-300 shadow-lg py-1 min-w-[200px]

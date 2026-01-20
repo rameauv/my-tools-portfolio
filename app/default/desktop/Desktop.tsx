@@ -4,6 +4,7 @@ import { DESKTOP_ITEMS } from "./DESKTOP_ITEMS";
 import type { DesktopItem } from "./DesktopItem";
 import { DesktopItemComponent } from "./DesktopItemComponent";
 import type { DesktopItemData } from "./DesktopItemData";
+import { getWallpaperSrcSet, wallpapers } from "./wallpapers";
 
 export const Desktop = React.memo(function Desktop(props: {
 	onOpenItem: (item: DesktopItemData) => void;
@@ -20,12 +21,14 @@ export const Desktop = React.memo(function Desktop(props: {
 	);
 
 	return (
-		<ul
-			className="w-full h-full flex flex-col items-start gap-4"
-			style={{
-				background: 'url("/wallpaper.jpg") center/cover no-repeat',
-			}}
-		>
+		<ul className="relative w-full h-full flex flex-col items-start gap-4">
+			<img
+				alt="Desktop wallpaper"
+				className="fixed inset-0 w-full h-full object-cover -z-10"
+				sizes="100vw"
+				src={wallpapers.bliss.fallback}
+				srcSet={getWallpaperSrcSet(wallpapers.bliss)}
+			/>
 			{desktopItems.map((item) => (
 				<DesktopItemComponent
 					item={item}

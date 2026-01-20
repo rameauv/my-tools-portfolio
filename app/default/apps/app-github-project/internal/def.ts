@@ -11,7 +11,7 @@ export const def = (config: {
 	return {
 		appId: `GITHUB_PROJECT_${config.projectId}`,
 		title: `${config.title} - Microsoft Word`,
-		iconSrc: "icons/windows-xp-icons/19.ico",
+		iconSrc: "/assets/icons/shell32/23-folder-48.ico",
 		componentProps: config.config,
 		component: GithubProject,
 		groupingId: "GITHUB_PROJECT",

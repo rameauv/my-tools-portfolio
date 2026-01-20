@@ -6,13 +6,13 @@ let id = 0;
 const MainLeftSectionShortcutsItems = [
 	{
 		id: id++,
-		icon: <MainSectionItemImgIcon src="/icons/windows-xp-icons/19.ico" />,
+		icon: <MainSectionItemImgIcon src="/assets/icons/shell32/1484-internet-explorer-48.ico" />,
 		title: "Internet Explorer",
 		subtitle: "Internet Explorer",
 	},
 	{
 		id: id++,
-		icon: <MainSectionItemImgIcon src="/icons/windows-xp-icons/19.ico" />,
+		icon: <MainSectionItemImgIcon src="/assets/icons/other/outlook-express-xp-icon.webp" />,
 		title: "Outlook Express",
 		subtitle: "Outlook Express",
 	},
@@ -21,22 +21,22 @@ const MainLeftSectionShortcutsItems = [
 const MainLeftSectionItems = [
 	{
 		id: id++,
-		icon: <MainSectionItemImgIcon src="/calculator.png" />,
+		icon: <MainSectionItemImgIcon src="/assets/icons/other/calculator.webp" />,
 		title: "Calculator",
 	},
 	{
 		id: id++,
-		icon: <MainSectionItemImgIcon src="/calculator.png" />,
+		icon: <MainSectionItemImgIcon src="/assets/icons/other/notepad.webp" />,
 		title: "Notepad",
 	},
 	{
 		id: id++,
-		icon: <MainSectionItemImgIcon src="/icons/windows-xp-icons/19.ico" />,
+		icon: <MainSectionItemImgIcon src="/assets/icons/other/windows-media-player.webp" />,
 		title: "Windows Media Player",
 	},
 	{
 		id: id++,
-		icon: <MainSectionItemImgIcon src="/icons/windows-xp-icons/19.ico" />,
+		icon: <MainSectionItemImgIcon src="/assets/icons/other/windows-movie-maker.webp" />,
 		title: "Windows Movie Maker",
 	},
 ] as const;
@@ -44,31 +44,31 @@ const MainLeftSectionItems = [
 const MainRightSectionTopItems = [
 	{
 		id: id++,
-		icon: <MainSectionItemImgIcon src="/my-documents.png" />,
+		icon: <MainSectionItemImgIcon src="/assets/icons/shell32/796-my-documents-48.ico" />,
 		title: "My Documents",
 		bold: true,
 	},
 	{
 		id: id++,
-		icon: <MainSectionItemImgIcon src="/icons/windows-xp-icons/19.ico" />,
+		icon: <MainSectionItemImgIcon src="/assets/icons/shell32/170-my-recent-document-48.ico" />,
 		title: "My Recent Documents",
 		bold: true,
 	},
 	{
 		id: id++,
-		icon: <MainSectionItemImgIcon src="/my-documents.png" />,
+		icon: <MainSectionItemImgIcon src="/assets/icons/shell32/808-my-pictures-48.ico" />,
 		title: "My Pictures",
 		bold: true,
 	},
 	{
 		id: id++,
-		icon: <MainSectionItemImgIcon src="/my-documents.png" />,
+		icon: <MainSectionItemImgIcon src="/assets/icons/shell32/820-my-musics-48.ico" />,
 		title: "My Music",
 		bold: true,
 	},
 	{
 		id: id++,
-		icon: <MainSectionItemImgIcon src="/my-documents.png" />,
+		icon: <MainSectionItemImgIcon src="/assets/icons/shell32/123-my-computer-48.ico" />,
 		title: "My Computer",
 		bold: true,
 	},
@@ -77,22 +77,22 @@ const MainRightSectionTopItems = [
 const MainRightSectionMiddleItems = [
 	{
 		id: id++,
-		icon: <MainSectionItemImgIcon src="/icons/windows-xp-icons/19.ico" />,
+		icon: <MainSectionItemImgIcon src="/assets/icons/shell32/1125-control-panel-48.ico" />,
 		title: "Control Panel",
 	},
 	{
 		id: id++,
-		icon: <MainSectionItemImgIcon src="/icons/windows-xp-icons/19.ico" />,
+		icon: <MainSectionItemImgIcon src="/assets/icons/other/set-program-access-and-defaults.webp" />,
 		title: "Set Program Access and Defaults",
 	},
 	{
 		id: id++,
-		icon: <MainSectionItemImgIcon src="/icons/windows-xp-icons/19.ico" />,
+		icon: <MainSectionItemImgIcon src="/assets/icons/shell32/142-connect-to-48.ico" />,
 		title: "Connect To",
 	},
 	{
 		id: id++,
-		icon: <MainSectionItemImgIcon src="/icons/windows-xp-icons/19.ico" />,
+		icon: <MainSectionItemImgIcon src="/assets/icons/shell32/432-printers-and-faxes-48.ico" />,
 		title: "Printers and Faxes",
 	},
 ] as const;
@@ -100,17 +100,17 @@ const MainRightSectionMiddleItems = [
 const MainRightSectionBottomItems = [
 	{
 		id: id++,
-		icon: <MainSectionItemImgIcon src="/icons/windows-xp-icons/19.ico" />,
+		icon: <MainSectionItemImgIcon src="/assets/icons/shell32/963-help-48.ico" />,
 		title: "Help and Support",
 	},
 	{
 		id: id++,
-		icon: <MainSectionItemImgIcon src="/icons/windows-xp-icons/19.ico" />,
+		icon: <MainSectionItemImgIcon src="/assets/icons/shell32/194-search-48.ico" />,
 		title: "Search",
 	},
 	{
 		id: id++,
-		icon: <MainSectionItemImgIcon src="/icons/windows-xp-icons/19.ico" />,
+		icon: <MainSectionItemImgIcon src="/assets/icons/shell32/217-run-48.ico" />,
 		title: "Run...",
 	},
 ] as const;
@@ -135,7 +135,7 @@ function StartMenuHeader() {
 			<div className="absolute top-0 left-0 right-0 h-px bg-white/30" />
 			<StartMenuAccountAvatar />
 			<p className="flex-1 text-white font-bold text-[14px] drop-shadow-[1px_1px_1px_rgba(0,0,0,0.8)]">
-				John Doe
+				RAMEAU Valentin
 			</p>
 		</div>
 	);
@@ -265,8 +265,8 @@ function StartMenuFooter() {
 		<div className="flex items-center justify-end gap-6 bg-linear-to-b from-[#1c5ab5] via-[#2c72da] to-[#1c5ab5] py-2 px-4 border-t border-[#003399] relative">
 			{/* Glossy top highlight for footer */}
 			<div className="absolute top-0 left-0 right-0 h-px bg-white/20" />
-			<StartMenuFooterButton icon="/logoff.png" label="Log Off" />
-			<StartMenuFooterButton icon="/shutdown.png" label="Turn Off Computer" />
+			<StartMenuFooterButton icon="/assets/icons/shell32/338-logoff-48.ico" label="Log Off" />
+			<StartMenuFooterButton icon="/assets/icons/shell32/241-poweroff-48.ico" label="Turn Off Computer" />
 		</div>
 	);
 }
@@ -297,7 +297,7 @@ function StartMenuAccountAvatar() {
 			<img
 				alt="Account Avatar"
 				className="w-full h-full object-cover"
-				src="https://github.com/shadcn.png"
+				src="/assets/icons/profile-pictures/profile-picture.webp"
 			/>
 			{/* Subtle inner shadow for depth */}
 			<div className="absolute inset-0 shadow-[inset_0_0_4px_rgba(0,0,0,0.2)] pointer-events-none" />
