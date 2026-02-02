@@ -12,13 +12,13 @@ export function DesktopItemComponent(props: {
 		x: props.item.x,
 		y: props.item.y,
 		onUpdatePosition: props.onUpdatePosition,
+		onClick: () => props.onOpenItem(props.item.data),
 	});
 
 	return (
 		<li
 			className="absolute left-0 top-0 select-none"
 			onMouseDown={onMouseDown}
-			onDoubleClick={() => props.onOpenItem(props.item.data)}
 			style={{
 				transform: `translate3d(${props.item.x}px, ${props.item.y}px, 0)`,
 			}}
