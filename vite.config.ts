@@ -22,22 +22,4 @@ export default defineConfig({
 	optimizeDeps: {
 		exclude: ["wasm-vips"],
 	},
-	build: {
-		rollupOptions: {
-			external: ["wasm-vips"],
-		},
-	},
-	server: {
-		headers: {
-			"Cross-Origin-Embedder-Policy": "require-corp",
-			"Cross-Origin-Opener-Policy": "same-origin",
-		},
-	},
-	// Recommended: apply same headers to the preview server
-	preview: {
-		headers: {
-			"Cross-Origin-Embedder-Policy": "require-corp",
-			"Cross-Origin-Opener-Policy": "same-origin",
-		},
-	},
 });
