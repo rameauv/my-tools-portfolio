@@ -1,8 +1,6 @@
-import clsx from "clsx";
 import {
 	ArrowLeft,
 	ArrowRight,
-	ArrowUp,
 	ChevronDown,
 	Folder,
 	Grid,
@@ -13,6 +11,7 @@ import {
 } from "lucide-react";
 import type * as React from "react";
 import { useState } from "react";
+import { cn } from "~/utils/cn";
 import { useWindowContext } from "../../../window-snapping/WindowContext";
 import { appGithubProjects } from "../../app-github-project";
 import { MenuBar } from "../../shared/MenuBar";
@@ -50,7 +49,7 @@ export function Explorer() {
 			title: programDef.title,
 			iconSrc: programDef.iconSrc,
 			component: programDef.component,
-			componentProps: programDef.componentProps,
+			componentData: programDef.componentData,
 			defaultWidth: 900,
 			defaultHeight: 700,
 			groupingId: programDef.groupingId,
@@ -169,7 +168,7 @@ export function Explorer() {
 				{/* File View */}
 				<div className="flex-1 bg-white overflow-auto p-4 text-black">
 					<div
-						className={clsx(
+						className={cn(
 							viewMode === "icons"
 								? "w-full flex flex-wrap gap-6 content-start"
 								: "min-w-[600px] flex flex-col",
@@ -225,7 +224,7 @@ function ToolbarButton({
 }) {
 	return (
 		<button
-			className={clsx(
+			className={cn(
 				"flex items-center gap-1 px-1 py-1 rounded-xs border border-transparent",
 				!disabled &&
 					"hover:border-[#d1d1d1] hover:bg-white hover:shadow-xs active:border-gray-400 active:shadow-inner",
@@ -268,7 +267,7 @@ function SidebarSection({
 	return (
 		<div className="rounded-t-md overflow-hidden bg-[#d6dff7] shadow-md mb-2">
 			<div
-				className={clsx(
+				className={cn(
 					"px-3 py-1 font-bold flex justify-between items-center cursor-pointer",
 					"bg-gradient-to-r from-white/30 to-transparent text-[#215dc6]",
 				)}
@@ -315,14 +314,14 @@ function RepoIconItem({
 }) {
 	return (
 		<div
-			className={clsx(
+			className={cn(
 				"flex flex-col items-center w-20 group cursor-pointer",
 				selected && "opacity-100",
 			)}
 			onClick={onClick}
 		>
 			<div
-				className={clsx(
+				className={cn(
 					"w-12 h-12 flex items-center justify-center",
 					selected && "opacity-80",
 				)}
@@ -335,7 +334,7 @@ function RepoIconItem({
 				/>
 			</div>
 			<span
-				className={clsx(
+				className={cn(
 					"text-center mt-1 px-1 py-0.5 rounded-sm line-clamp-2 leading-tight break-all",
 					selected
 						? "bg-[#316ac5] text-white"
@@ -359,7 +358,7 @@ function RepoListItem({
 }) {
 	return (
 		<div
-			className={clsx(
+			className={cn(
 				"flex items-center px-2 py-0.5 cursor-pointer",
 				selected
 					? "bg-[#316ac5] text-white"
@@ -375,13 +374,13 @@ function RepoListItem({
 				/>
 				<span className="truncate">{repo.name}</span>
 			</div>
-			<div className={clsx("w-24 px-1 shrink-0", !selected && "text-gray-500")}>
+			<div className={cn("w-24 px-1 shrink-0", !selected && "text-gray-500")}>
 				1 KB
 			</div>
-			<div className={clsx("w-32 px-1 shrink-0", !selected && "text-gray-500")}>
+			<div className={cn("w-32 px-1 shrink-0", !selected && "text-gray-500")}>
 				{repo.language} File
 			</div>
-			<div className={clsx("w-40 px-1 shrink-0", !selected && "text-gray-500")}>
+			<div className={cn("w-40 px-1 shrink-0", !selected && "text-gray-500")}>
 				{repo.updatedAt}
 			</div>
 		</div>

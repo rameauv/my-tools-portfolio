@@ -11,7 +11,7 @@ import {
 	Star,
 	Underline,
 } from "lucide-react";
-import type * as React from "react";
+import React from "react";
 import Markdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import type { GithubRepo } from "../../app-github-explorer/internal/GithubRepo";
@@ -20,11 +20,15 @@ import { PROJECTS_CUSTOM_MARKDOWN } from "../../shared/projects/projects";
 import { Ruler } from "./Ruler";
 
 interface GithubProjectProps {
-	repo?: GithubRepo | null;
+	data?: {
+		repo: GithubRepo;
+	};
 }
 
-export function GithubProject({ repo }: GithubProjectProps) {
-	console.log("render WordViewer");
+export const GithubProject = React.memo(function GithubProject(
+	props: GithubProjectProps,
+) {
+	const repo = props.data?.repo;
 	if (!repo) {
 		return (
 			<div
@@ -88,11 +92,11 @@ export function GithubProject({ repo }: GithubProjectProps) {
 					<option>20</option>
 					<option>24</option>
 				</select>
-				<div className="w-[1px] h-6 bg-[#d1d1d1] mx-1" />
+				<div className="w-px h-6 bg-[#d1d1d1] mx-1" />
 				<ToolbarButton icon={<Bold size={14} />} />
 				<ToolbarButton icon={<Italic size={14} />} />
 				<ToolbarButton icon={<Underline size={14} />} />
-				<div className="w-[1px] h-6 bg-[#d1d1d1] mx-1" />
+				<div className="w-px h-6 bg-[#d1d1d1] mx-1" />
 				<ToolbarButton icon={<AlignLeft size={14} />} />
 				<ToolbarButton icon={<AlignCenter size={14} />} />
 				<ToolbarButton icon={<AlignRight size={14} />} />
@@ -268,7 +272,7 @@ export function GithubProject({ repo }: GithubProjectProps) {
 			</div>
 		</div>
 	);
-}
+});
 
 function ToolbarButton({ icon }: { icon: React.ReactNode }) {
 	return (

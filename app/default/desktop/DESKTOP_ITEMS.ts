@@ -49,6 +49,8 @@ export const DESKTOP_ITEMS: DesktopItem[] = [
 			title: appImageConverter.def.title,
 			component: appImageConverter.def.component,
 			groupingId: appImageConverter.def.groupingId,
+			defaultWidth: appImageConverter.def.defaultWidth,
+			defaultHeight: appImageConverter.def.defaultHeight,
 		},
 		x: 0,
 		y: 300,

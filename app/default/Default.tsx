@@ -1,13 +1,14 @@
 import type * as React from "react";
 import { useEffect, useEffectEvent, useRef, useState } from "react";
+import { cancelStaleRunningJobs } from "./apps/app-background-remover/internal/backgroundRemovalDB";
 import { appLinkedin } from "./apps/app-linkedin";
+import type { WindowContentProps } from "./apps/WindowContentProps";
 import { BottomBar } from "./bottom-bar/BottomBar";
 import { Desktop } from "./desktop/Desktop";
 import type { DesktopItemData } from "./desktop/DesktopItemData";
 import { Window, type WindowConfig } from "./window/Window";
 import { WindowProvider } from "./window-snapping/WindowContext";
 import { WindowSnapping } from "./window-snapping/WindowSnapping";
-import { cancelStaleRunningJobs } from "./apps/app-background-remover/internal/backgroundRemovalDB";
 
 let windowId = 0;
 
@@ -83,7 +84,6 @@ export function Default() {
 	}
 
 	function onClose(id: number) {
-		console.log("onClose", id);
 		setWindows(windows.filter((window) => window.id !== id));
 	}
 
@@ -91,8 +91,8 @@ export function Default() {
 		appId: string;
 		title: string;
 		iconSrc: string;
-		component: React.ComponentType<Record<string, unknown>>;
-		componentProps?: Record<string, unknown>;
+		component: React.ComponentType<WindowContentProps>;
+		componentData?: unknown;
 		groupingId: string;
 		defaultWidth?: number;
 		defaultHeight?: number;
@@ -113,7 +113,7 @@ export function Default() {
 			iconSrc: config.iconSrc,
 			isFocused: true,
 			component: config.component,
-			componentProps: config.componentProps,
+			componentData: config.componentData,
 			defaultWidth: config.defaultWidth,
 			defaultHeight: config.defaultHeight,
 			groupingId: config.groupingId,
@@ -133,6 +133,8 @@ export function Default() {
 			iconSrc: item.icon,
 			component: item.component,
 			groupingId: item.groupingId,
+			defaultWidth: item.defaultWidth,
+			defaultHeight: item.defaultHeight,
 		});
 	});
 
@@ -174,8 +176,8 @@ export function Default() {
 									windowsContainerRef={windowsContainerRef}
 								>
 									<Component
+										data={window.componentData}
 										key={`window-content-${window.id}`}
-										{...window.componentProps}
 									/>
 								</Window>
 							);
@@ -199,4 +201,3 @@ function Shell(props: {
 		</main>
 	);
 }
-

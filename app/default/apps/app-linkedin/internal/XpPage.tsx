@@ -1,7 +1,7 @@
-import clsx from "clsx";
 import * as React from "react";
 import { useState } from "react";
 import { assertAllOptionsHandled } from "~/utils/assertIsNever";
+import { cn } from "~/utils/cn";
 import { linkedinData } from "./data";
 import type { LinkedInProfile } from "./types";
 
@@ -144,7 +144,7 @@ function NavTab({
 }) {
 	return (
 		<button
-			className={clsx(
+			className={cn(
 				"px-4 py-2 text-[10px] @sm:text-xs font-semibold border-b-2 transition-colors whitespace-nowrap",
 				active
 					? "bg-white border-[#003366] text-[#003366]"
@@ -180,7 +180,7 @@ function SidebarNav({
 		<div className="space-y-1">
 			{links.map((link) => (
 				<button
-					className={clsx(
+					className={cn(
 						"w-full text-left px-3 py-2 text-xs rounded-sm border transition-colors",
 						activeSection === link.id
 							? "bg-[#dfe8f6] border-[#003366] text-[#003366] font-bold"
@@ -499,7 +499,7 @@ function InfoRow({
 }) {
 	const content = (
 		<div
-			className={clsx(
+			className={cn(
 				"flex flex-col @sm:flex-row gap-1 @sm:gap-2 py-1 text-[10px] @sm:text-xs",
 				href && "hover:bg-gray-100 transition-colors cursor-pointer",
 			)}
@@ -508,7 +508,7 @@ function InfoRow({
 				{label}:
 			</span>
 			<span
-				className={clsx("text-gray-600", href && "text-[#003366] underline")}
+				className={cn("text-gray-600", href && "text-[#003366] underline")}
 			>
 				{value}
 			</span>

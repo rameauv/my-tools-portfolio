@@ -1,5 +1,5 @@
-import clsx from "clsx";
 import { ArrowLeft, ArrowRight, Home, RotateCw, X } from "lucide-react";
+import { cn } from "~/utils/cn";
 import { MenuBar } from "../../shared/MenuBar";
 
 interface InternetExplorerProps {
@@ -145,7 +145,7 @@ function ToolbarButton({
 }) {
 	return (
 		<button
-			className={clsx(
+			className={cn(
 				"px-1 @sm:px-2 py-0.5 @sm:py-1 flex items-center gap-0.5 @sm:gap-1 text-[10px] @sm:text-xs border border-transparent rounded-sm shrink-0",
 				"hover:border-gray-400 hover:bg-white",
 				disabled && "opacity-50 cursor-not-allowed",
@@ -163,7 +163,7 @@ function ToolbarButton({
 			<span className={disabled ? "text-gray-400" : "text-black"}>{icon}</span>
 			{label && !hideLabelOnMobile && (
 				<span
-					className={clsx(
+					className={cn(
 						"hidden @sm:inline",
 						disabled ? "text-gray-400" : "text-black",
 					)}

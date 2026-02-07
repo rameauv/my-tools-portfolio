@@ -1,7 +1,6 @@
 import React from "react";
 import { Explorer } from "./Explorer";
 
-export const GitHubExplorer = React.memo(function AppTwo() {
-	console.log("render AppTwo");
+export const GitHubExplorer = React.memo(() => {
 	return <Explorer />;
 });

@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import type { ResizeDirection } from "./ResizeDirection";
 
+const MIN_X_POS = 0;
+const MIN_Y_POS = 0;
 const MIN_WIDTH = 200;
 const MIN_HEIGHT = 150;
 const TASKBAR_HEIGHT = 30;
@@ -18,7 +21,7 @@ interface UseWindowResizeParams {
 export function useWindowResize(params: UseWindowResizeParams) {
 	const { setWidth, setHeight, setX, setY, width, height, x, y } = params;
 	const [isResizing, setIsResizing] = useState(false);
-	const [resizeDirection, setResizeDirection] = useState<string | null>(null);
+	const [resizeDirection, setResizeDirection] = useState<ResizeDirection | null>(null);
 	const resizeStart = useRef({
 		x: 0,
 		y: 0,
@@ -35,7 +38,6 @@ export function useWindowResize(params: UseWindowResizeParams) {
 	});
 	const lastMousePos = useRef({ x: 0, y: 0 });
 
-	// Keep currentDimensions ref in sync with props
 	useEffect(() => {
 		currentDimensions.current = {
 			width: width,
@@ -46,7 +48,7 @@ export function useWindowResize(params: UseWindowResizeParams) {
 	}, [width, height, x, y]);
 
 	const onResizeMouseDown = useCallback(
-		(e: React.MouseEvent, direction: string) => {
+		(e: React.MouseEvent, direction: ResizeDirection) => {
 			if (e.button !== 0) return;
 			e.stopPropagation(); // Prevent triggering drag
 
@@ -78,21 +80,17 @@ export function useWindowResize(params: UseWindowResizeParams) {
 			const viewportWidth = window.innerWidth;
 			const viewportHeight = window.innerHeight;
 
-			// Use current dimensions as base (from ref, which is always up-to-date)
 			let newWidth = currentDimensions.current.width;
 			let newHeight = currentDimensions.current.height;
 			let newX = currentDimensions.current.x;
 			let newY = currentDimensions.current.y;
 
-			// Calculate new dimensions based on resize direction
 			if (resizeDirection.includes("e")) {
-				// Right edge or corners
 				const proposedWidth = newWidth + deltaX;
 				const maxWidth = viewportWidth - newX;
 				newWidth = Math.max(MIN_WIDTH, Math.min(proposedWidth, maxWidth));
 			}
 			if (resizeDirection.includes("w")) {
-				// Left edge or corners
 				const deltaWidth = -deltaX;
 				const proposedWidth = newWidth + deltaWidth;
 				const minX = 0;
@@ -106,13 +104,11 @@ export function useWindowResize(params: UseWindowResizeParams) {
 				newX = newX - actualDeltaWidth;
 			}
 			if (resizeDirection.includes("s")) {
-				// Bottom edge or corners
 				const proposedHeight = newHeight + deltaY;
 				const maxHeight = viewportHeight - newY - TASKBAR_HEIGHT;
 				newHeight = Math.max(MIN_HEIGHT, Math.min(proposedHeight, maxHeight));
 			}
 			if (resizeDirection.includes("n")) {
-				// Top edge or corners
 				const deltaHeight = -deltaY;
 				const proposedHeight = newHeight + deltaHeight;
 				const minY = 0;
@@ -126,38 +122,29 @@ export function useWindowResize(params: UseWindowResizeParams) {
 				newY = newY - actualDeltaHeight;
 			}
 
-			// Ensure window stays within viewport bounds
-			const minX = 0;
-			const minY = 0;
 			const maxX = viewportWidth - newWidth;
 			const maxY = viewportHeight - newHeight - TASKBAR_HEIGHT;
 
-			// Clamp position based on resize direction
 			if (resizeDirection.includes("w")) {
-				newX = Math.max(minX, Math.min(newX, maxX));
+				newX = Math.max(MIN_X_POS, Math.min(newX, maxX));
 			} else {
-				// For right-side resizing, ensure window doesn't go out of bounds
-				newX = Math.max(minX, Math.min(currentDimensions.current.x, maxX));
+				newX = Math.max(MIN_X_POS, Math.min(currentDimensions.current.x, maxX));
 			}
 
 			if (resizeDirection.includes("n")) {
-				newY = Math.max(minY, Math.min(newY, maxY));
+				newY = Math.max(MIN_Y_POS, Math.min(newY, maxY));
 			} else {
-				// For bottom-side resizing, ensure window doesn't go out of bounds
-				newY = Math.max(minY, Math.min(currentDimensions.current.y, maxY));
+				newY = Math.max(MIN_Y_POS, Math.min(currentDimensions.current.y, maxY));
 			}
 
-			// Final safety check: ensure minimum dimensions
 			newWidth = Math.max(MIN_WIDTH, newWidth);
 			newHeight = Math.max(MIN_HEIGHT, newHeight);
 
-			// Update dimensions and position
 			setWidth(newWidth);
 			setHeight(newHeight);
 			setX(newX);
 			setY(newY);
 
-			// Update ref immediately so next move event uses latest values
 			currentDimensions.current = {
 				width: newWidth,
 				height: newHeight,

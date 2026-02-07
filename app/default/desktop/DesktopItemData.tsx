@@ -1,4 +1,5 @@
 import type * as React from "react";
+import type { WindowContentProps } from "../apps/WindowContentProps";
 
 export interface DesktopItemData {
 	id: number;
@@ -6,5 +7,7 @@ export interface DesktopItemData {
 	icon: string;
 	title: string;
 	groupingId: string;
-	component: React.ComponentType<object>;
+	component: React.ComponentType<WindowContentProps>;
+	defaultWidth?: number;
+	defaultHeight?: number;
 }

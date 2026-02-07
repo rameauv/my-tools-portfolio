@@ -1,5 +1,6 @@
 import type * as React from "react";
 import { createContext, useContext, useMemo, useState } from "react";
+import type { WindowContentProps } from "../apps/WindowContentProps";
 
 interface WindowContextType {
 	isSnappingWindow: boolean;
@@ -51,10 +52,10 @@ interface OpenWindowConfig {
 	appId: string;
 	title: string;
 	iconSrc: string;
-	component: React.ComponentType<object>;
+	component: React.ComponentType<WindowContentProps>;
 	isMinimized?: boolean;
 	isFocused?: boolean;
-	componentProps?: Record<string, unknown>;
+	componentData?: unknown;
 	defaultWidth?: number;
 	defaultHeight?: number;
 	groupingId: string;

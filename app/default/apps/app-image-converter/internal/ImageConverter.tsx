@@ -39,6 +39,7 @@ export const ImageConverter = React.memo(function ImageConverter() {
 			const url = URL.createObjectURL(blob);
 			setResultUrl(url);
 			setIsConverting(false);
+			setConversionProgress("");
 		},
 		[targetFormat],
 	);
@@ -46,6 +47,7 @@ export const ImageConverter = React.memo(function ImageConverter() {
 	const onError = useCallback((_jobId: string, error: string) => {
 		setError(error);
 		setIsConverting(false);
+		setConversionProgress("");
 	}, []);
 
 	const { convertImage } = useImageConverterWorker({
@@ -199,6 +201,7 @@ export const ImageConverter = React.memo(function ImageConverter() {
 										<button
 											className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
 											onClick={downloadResult}
+											type="button"
 										>
 											<Download size={20} /> Download Converted Image
 										</button>
@@ -254,7 +257,7 @@ export const ImageConverter = React.memo(function ImageConverter() {
 											id="quality-slider"
 											max="100"
 											min="1"
-											onChange={(e) => setQuality(parseInt(e.target.value))}
+											onChange={(e) => setQuality(Number(e.target.value))}
 											type="range"
 											value={quality}
 										/>
@@ -279,7 +282,7 @@ export const ImageConverter = React.memo(function ImageConverter() {
 											id="compression-slider"
 											max="9"
 											min="0"
-											onChange={(e) => setCompression(parseInt(e.target.value))}
+											onChange={(e) => setCompression(Number(e.target.value))}
 											type="range"
 											value={compression}
 										/>

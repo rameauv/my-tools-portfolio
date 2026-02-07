@@ -1,6 +1,6 @@
-import clsx from "clsx";
 import { Camera, ChevronRight, Music, User } from "lucide-react";
 import { useState } from "react";
+import { cn } from "~/utils/cn";
 import { linkedinData } from "./data";
 import type { Certification, Education, LinkedInProfile } from "./types";
 
@@ -208,7 +208,7 @@ function TabButton({
 	if (mobile) {
 		return (
 			<button
-				className={clsx(
+				className={cn(
 					"px-3 py-1.5 rounded-md text-[10px] @sm:text-xs border text-white transition-all flex items-center shrink-0",
 					active
 						? "bg-white text-gray-800 border-gray-400 font-bold"
@@ -224,7 +224,7 @@ function TabButton({
 
 	return (
 		<button
-			className={clsx(
+			className={cn(
 				"w-[74px] h-[30px] rounded-r-md text-xs border border-l-0 text-white transition-all flex items-center pl-2 mb-0.5",
 				active
 					? "bg-white text-gray-800 border-gray-400 font-bold translate-x-[-2px] z-20 border-l border-l-white"
@@ -359,10 +359,7 @@ function DiaryView({ profile }: { profile: LinkedInProfile }) {
 	return (
 		<div className="space-y-4 @sm:space-y-6 p-1 @sm:p-2">
 			{profile.work_experience.map((exp) => (
-				<div
-					className="bg-white"
-					key={`${exp.company}-${exp.role}`}
-				>
+				<div className="bg-white" key={`${exp.company}-${exp.role}`}>
 					{/* Date Header */}
 					<div className="flex items-center gap-1 @sm:gap-2 mb-1 @sm:mb-2">
 						<span className="text-orange-500 font-bold text-[10px] @sm:text-[11px]">
