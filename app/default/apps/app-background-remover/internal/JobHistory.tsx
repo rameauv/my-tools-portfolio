@@ -1,4 +1,6 @@
+import { Download, Trash2 } from "lucide-react";
 import { memo } from "react";
+import { Button } from "../../shared/ds/Button";
 import type * as db from "./backgroundRemovalDB";
 
 interface JobHistoryProps {
@@ -41,23 +43,13 @@ export const JobHistory = memo((props: JobHistoryProps) => {
 								</div>
 								<div className="flex gap-2">
 									{job.status === "success" && job.processedImage && (
-										<button
-											className="rounded bg-green-600 px-2 py-1 text-white text-xs hover:bg-green-700"
-											onClick={() => props.downloadJobResult(job)}
-											title="Download result"
-											type="button"
-										>
+										<Button icon={<Download className="h-3.5 w-3.5" />} onClick={() => props.downloadJobResult(job)} type="button">
 											Download
-										</button>
+										</Button>
 									)}
-									<button
-										className="rounded bg-red-600 px-2 py-1 text-white text-xs hover:bg-red-700"
-										onClick={() => props.deleteJob(job.id)}
-										title="Delete job"
-										type="button"
-									>
+									<Button icon={<Trash2 className="h-3.5 w-3.5" />} onClick={() => props.deleteJob(job.id)} type="button">
 										Delete
-									</button>
+									</Button>
 								</div>
 							</div>
 						</div>

@@ -1,5 +1,6 @@
 import { Dialog } from "@base-ui/react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { Button } from "../../shared/ds/Button";
 import { ProgressBar } from "./ProgressBar";
 
 const JOB_QUERY_KEY = ["backgroundRemovalJob"] as const;
@@ -54,13 +55,9 @@ export function JobProgressDialog(props: { onCancel: () => void; onRetry: () => 
 						<div className="flex items-center justify-between">
 							<h3 className="font-semibold text-gray-900 text-sm">Background Removal Job</h3>
 							{isRunning && (
-								<button
-									className="font-medium text-red-600 text-xs hover:text-red-800"
-									onClick={props.onCancel}
-									type="button"
-								>
+								<Button onClick={props.onCancel} type="button">
 									Cancel
-								</button>
+								</Button>
 							)}
 						</div>
 
@@ -106,26 +103,14 @@ export function JobProgressDialog(props: { onCancel: () => void; onRetry: () => 
 						{/* Actions */}
 						<div className="flex gap-2">
 							{(isError || isCancelled) && (
-								<button
-									className="flex-1 rounded bg-blue-600 px-3 py-2 font-medium text-white text-xs transition-colors hover:bg-blue-700"
-									onClick={props.onRetry}
-									type="button"
-								>
+								<Button className="flex-1" onClick={props.onRetry} type="button">
 									Retry
-								</button>
+								</Button>
 							)}
 							{!isRunning && (
-								<button
-									className={`flex-1 rounded px-3 py-2 font-medium text-xs transition-colors ${
-										isError || isCancelled
-											? "bg-gray-200 text-gray-700 hover:bg-gray-300"
-											: "bg-gray-200 text-gray-700 hover:bg-gray-300"
-									}`}
-									onClick={handleDismiss}
-									type="button"
-								>
+								<Button className="flex-1" onClick={handleDismiss} type="button">
 									Dismiss
-								</button>
+								</Button>
 							)}
 						</div>
 					</div>

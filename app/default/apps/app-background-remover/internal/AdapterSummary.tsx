@@ -1,3 +1,4 @@
+import { Button } from "../../shared/ds/Button";
 import { AdapterName } from "./AdapterName";
 import type { GPUAdapter } from "./GPUAdapter";
 import { PowerPreferenceSelector } from "./PowerPreferenceSelector";
@@ -25,14 +26,9 @@ export function AdapterSummary(props: AdapterSummaryProps) {
 					onPowerPreferenceChange={props.onPowerPreferenceChange}
 					powerPreference={props.powerPreference}
 				/>
-				<button
-					className="mt-1 flex items-center gap-1 self-start text-blue-600 text-xs hover:text-blue-800"
-					onClick={props.onToggleExpand}
-					type="button"
-				>
-					<span>{props.isExpanded ? "▼" : "▶"}</span>
-					<span>{props.isExpanded ? "Hide" : "Show"} Details</span>
-				</button>
+				<Button className="mt-1 self-start" icon={<span>{props.isExpanded ? "▼" : "▶"}</span>} onClick={props.onToggleExpand} type="button">
+					{props.isExpanded ? "Hide" : "Show"} Details
+				</Button>
 			</div>
 		</div>
 	);

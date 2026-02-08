@@ -1,5 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
+import { Play, RotateCcw } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Button } from "../../shared/ds/Button";
 import * as db from "./backgroundRemovalDB";
 import { GpuInfo } from "./GpuInfo";
 import { JobHistory } from "./JobHistory";
@@ -226,13 +228,9 @@ export const BackgroundRemover = React.memo(() => {
 						<div className="font-medium text-blue-900 text-sm">
 							{removalJob.jobStatus === "pending" ? "Initializing..." : "Processing Image"}
 						</div>
-						<button
-							className="font-medium text-red-600 text-xs hover:text-red-800"
-							onClick={removalJob.cancelJob}
-							type="button"
-						>
+						<Button onClick={removalJob.cancelJob} type="button">
 							Cancel
-						</button>
+						</Button>
 					</div>
 					<ProgressBar className="mb-2" percentage={removalJob.progressPercentage} />
 					{removalJob.progress && <div className="text-blue-700 text-xs">{removalJob.progress}</div>}
@@ -250,13 +248,9 @@ export const BackgroundRemover = React.memo(() => {
 					{removalJob.error.code && (
 						<div className="mt-1 text-red-600 text-xs">Error code: {removalJob.error.code}</div>
 					)}
-					<button
-						className="mt-2 rounded bg-red-600 px-3 py-1 text-white text-xs hover:bg-red-700"
-						onClick={removalJob.retryJob}
-						type="button"
-					>
+					<Button className="mt-2" onClick={removalJob.retryJob} type="button">
 						Retry
-					</button>
+					</Button>
 				</div>
 			)}
 
@@ -297,14 +291,9 @@ export const BackgroundRemover = React.memo(() => {
 					</div>
 
 					{/* Process button */}
-					<button
-						className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-400"
-						disabled={removalJob.isJobRunning}
-						onClick={processImage}
-						type="button"
-					>
-						{removalJob.isJobRunning ? "Processing..." : "Remove Background"}
-					</button>
+					<Button disabled={removalJob.isJobRunning} icon={<Play className="h-3.5 w-3.5" />} onClick={processImage} type="button">
+						{removalJob.isJobRunning ? "Processing..." : "Run"}
+					</Button>
 
 					{/* Processed image */}
 					{processedImage && (
@@ -313,19 +302,15 @@ export const BackgroundRemover = React.memo(() => {
 							<div className="flex-1 overflow-hidden rounded-lg border bg-[0_0,0_10px,10px_-10px,-10px_0px] bg-[length:20px_20px] bg-[linear-gradient(45deg,#ccc_25%,transparent_25%),linear-gradient(-45deg,#ccc_25%,transparent_25%),linear-gradient(45deg,transparent_75%,#ccc_75%),linear-gradient(-45deg,transparent_75%,#ccc_75%)] bg-white">
 								<img alt="Processed" className="h-full w-full object-contain" src={processedImage} />
 							</div>
-							<button
-								className="mt-2 rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700"
-								onClick={downloadImage}
-								type="button"
-							>
+							<Button className="mt-2" onClick={downloadImage} type="button">
 								Download PNG
-							</button>
+							</Button>
 						</div>
 					)}
 
 					{/* Reset button */}
-					<button
-						className="rounded bg-gray-600 px-4 py-2 text-white hover:bg-gray-700"
+					<Button
+						icon={<RotateCcw className="h-3.5 w-3.5" />}
 						onClick={() => {
 							if (originalImage.url) {
 								URL.revokeObjectURL(originalImage.url);
@@ -341,8 +326,8 @@ export const BackgroundRemover = React.memo(() => {
 						}}
 						type="button"
 					>
-						Select New Image
-					</button>
+						Reset
+					</Button>
 				</div>
 			)}
 
