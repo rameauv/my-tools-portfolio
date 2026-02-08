@@ -14,7 +14,7 @@ import { useState } from "react";
 import { cn } from "~/utils/cn";
 import { useWindowContext } from "../../../window-snapping/WindowContext";
 import { appGithubProjects } from "../../app-github-project";
-import { MenuBar } from "../../shared/MenuBar";
+import { MenuBar } from "../../shared/ds/MenuBar";
 import { githubRepos } from "../../shared/projects/github-repos/githubRepos";
 import { PROJECTS_CUSTOM_MARKDOWN } from "../../shared/projects/projects";
 import { AddressBar } from "./AddressBar";
@@ -53,10 +53,7 @@ export function Explorer() {
 
 	return (
 		<div className="flex h-full select-none flex-col bg-white text-xs" style={{ fontFamily: "Tahoma, sans-serif" }}>
-			<MenuBar
-				className="flex items-center gap-4 border-[#d1d1d1] border-b bg-[#ece9d8] px-2 py-1 text-black"
-				itemClassName="border border-[#ece9d8] hover:bg-white hover:border-gray-300 px-1 cursor-pointer whitespace-nowrap"
-			/>
+			<MenuBar />
 
 			<div className="flex items-center gap-2 border-[#d1d1d1] border-b bg-[#ece9d8] p-1">
 				<div className="flex items-center gap-1">

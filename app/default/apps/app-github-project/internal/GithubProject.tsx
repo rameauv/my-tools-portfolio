@@ -3,7 +3,7 @@ import React from "react";
 import Markdown, { type Components } from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import type { GithubRepo } from "../../app-github-explorer/internal/GithubRepo";
-import { MenuBar } from "../../shared/MenuBar";
+import { MenuBar } from "../../shared/ds/MenuBar";
 import { PROJECTS_CUSTOM_MARKDOWN } from "../../shared/projects/projects";
 import { FormattingToolbar } from "./FormattingToolbar";
 import { LanguageBadge } from "./LanguageBadge";
@@ -57,11 +57,7 @@ export const GithubProject = React.memo((props: GithubProjectProps) => {
 
 	return (
 		<div className="flex h-full flex-col bg-[#ece9d8]" style={{ fontFamily: "Tahoma, sans-serif" }}>
-			<MenuBar
-				className="flex items-center gap-4 border-[#d1d1d1] border-b bg-[#ece9d8] px-2 py-1 text-black text-xs"
-				itemClassName="hover:bg-white hover:px-1 cursor-pointer"
-				items={MENU_BAR_ITEMS}
-			/>
+			<MenuBar items={MENU_BAR_ITEMS} />
 
 			<FormattingToolbar />
 

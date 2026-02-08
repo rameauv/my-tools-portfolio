@@ -1,6 +1,6 @@
 import { ArrowLeft, ArrowRight, Home, RotateCw, X } from "lucide-react";
 import { cn } from "~/utils/cn";
-import { MenuBar } from "../../shared/MenuBar";
+import { MenuBar } from "../../shared/ds/MenuBar";
 
 interface InternetExplorerProps {
 	children: React.ReactNode;

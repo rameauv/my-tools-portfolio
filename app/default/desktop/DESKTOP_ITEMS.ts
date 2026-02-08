@@ -1,4 +1,5 @@
 import { appBackgroundRemover } from "../apps/app-background-remover";
+import { appDs } from "../apps/app-ds";
 import { appMimeType } from "../apps/app-file-type-detector";
 import { appGitHubExplorer } from "../apps/app-github-explorer";
 import { appImageConverter } from "../apps/app-image-converter";
@@ -75,5 +76,19 @@ export const DESKTOP_ITEMS: DesktopItem[] = [
 		},
 		x: 0,
 		y: 400,
+	},
+	{
+		data: {
+			id: 6,
+			appId: appDs.def.appId,
+			icon: appDs.def.iconSrc,
+			title: appDs.def.title,
+			component: appDs.def.component,
+			groupingId: appDs.def.groupingId,
+			defaultWidth: appDs.def.defaultWidth,
+			defaultHeight: appDs.def.defaultHeight,
+		},
+		x: 0,
+		y: 500,
 	},
 ];
