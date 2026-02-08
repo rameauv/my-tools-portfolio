@@ -26,7 +26,12 @@ export function AdapterSummary(props: AdapterSummaryProps) {
 					onPowerPreferenceChange={props.onPowerPreferenceChange}
 					powerPreference={props.powerPreference}
 				/>
-				<Button className="mt-1 self-start" icon={<span>{props.isExpanded ? "▼" : "▶"}</span>} onClick={props.onToggleExpand} type="button">
+				<Button
+					className="mt-1 self-start"
+					icon={<span>{props.isExpanded ? "▼" : "▶"}</span>}
+					onClick={props.onToggleExpand}
+					type="button"
+				>
 					{props.isExpanded ? "Hide" : "Show"} Details
 				</Button>
 			</div>

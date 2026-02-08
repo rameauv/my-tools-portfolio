@@ -291,7 +291,12 @@ export const BackgroundRemover = React.memo(() => {
 					</div>
 
 					{/* Process button */}
-					<Button disabled={removalJob.isJobRunning} icon={<Play className="h-3.5 w-3.5" />} onClick={processImage} type="button">
+					<Button
+						disabled={removalJob.isJobRunning}
+						icon={<Play className="h-3.5 w-3.5" />}
+						onClick={processImage}
+						type="button"
+					>
 						{removalJob.isJobRunning ? "Processing..." : "Run"}
 					</Button>
 
