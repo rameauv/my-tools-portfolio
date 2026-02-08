@@ -1,3 +1,4 @@
+import { Play } from "lucide-react";
 import { Button } from "../../shared/ds/Button";
 import { AdapterName } from "./AdapterName";
 import type { GPUAdapter } from "./GPUAdapter";
@@ -28,7 +29,14 @@ export function AdapterSummary(props: AdapterSummaryProps) {
 				/>
 				<Button
 					className="mt-1 self-start"
-					icon={<span>{props.isExpanded ? "▼" : "▶"}</span>}
+					icon={
+						<Play
+							className={`size-3 transition-transform ${
+								props.isExpanded ? "rotate-90" : "rotate-0"
+							}`}
+							fill="black"
+						/>
+					}
 					onClick={props.onToggleExpand}
 					type="button"
 				>

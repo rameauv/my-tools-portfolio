@@ -228,9 +228,6 @@ export const BackgroundRemover = React.memo(() => {
 						<div className="font-medium text-blue-900 text-sm">
 							{removalJob.jobStatus === "pending" ? "Initializing..." : "Processing Image"}
 						</div>
-						<Button onClick={removalJob.cancelJob} type="button">
-							Cancel
-						</Button>
 					</div>
 					<ProgressBar className="mb-2" percentage={removalJob.progressPercentage} />
 					{removalJob.progress && <div className="text-blue-700 text-xs">{removalJob.progress}</div>}
