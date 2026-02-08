@@ -6,3 +6,10 @@
 /.react-router/
 /build/
 /scripts-private/
+
+# VS Code
+.vscode/*
+!.vscode/settings.json
+
+# libs
+/public/assets/libs/**
