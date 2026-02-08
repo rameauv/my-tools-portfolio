@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import * as db from "./backgroundRemovalDB";
 import { GpuInfo } from "./GpuInfo";
+import { JobHistory } from "./JobHistory";
 import { ProgressBar } from "./ProgressBar";
 import { useBackgroundRemovalJob } from "./useBackgroundRemovalJob";
 import { useWebGpuAdapters } from "./useWebGpuAdapters";
@@ -26,7 +27,7 @@ export const BackgroundRemover = React.memo(() => {
 	});
 
 	// Fetch job history
-	const { data: jobHistory = [], refetch: refetchHistory } = useQuery({
+	const jobHistoryQuery = useQuery({
 		queryKey: ["backgroundRemovalJobHistory"],
 		queryFn: async () => {
 			const jobs = await db.getAllJobs();
@@ -34,19 +35,20 @@ export const BackgroundRemover = React.memo(() => {
 			return jobs.sort((a, b) => b.timestamp - a.timestamp);
 		},
 		staleTime: 10,
+		initialData: [],
 	});
 
 	// Update processed image when job succeeds
-	// biome-ignore lint/correctness/useExhaustiveDependencies: we don't want to re-run this effect when refetchHistory changes
+	// biome-ignore lint/correctness/useExhaustiveDependencies: we don't want to re-run this effect when jobHistoryQuery.refetch changes
 	useEffect(() => {
-		refetchHistory();
+		jobHistoryQuery.refetch();
 		if (removalJob.jobStatus === "success" && removalJob.jobResultUrl) {
 			setProcessedImage(removalJob.jobResultUrl);
 		}
 	}, [removalJob.jobStatus, removalJob.jobResultUrl]);
 
 	// Check WebGPU availability
-	const { adapters } = useWebGpuAdapters();
+	const adaptersQuery = useWebGpuAdapters();
 
 	// Handle file selection
 	const handleFileSelect = useCallback(
@@ -142,12 +144,12 @@ export const BackgroundRemover = React.memo(() => {
 		async (jobId: string) => {
 			try {
 				await db.deleteJob(jobId);
-				refetchHistory();
+				jobHistoryQuery.refetch();
 			} catch (error) {
 				console.error("Failed to delete job:", error);
 			}
 		},
-		[refetchHistory],
+		[jobHistoryQuery.refetch],
 	);
 
 	// Format date
@@ -169,21 +171,26 @@ export const BackgroundRemover = React.memo(() => {
 		};
 	}, []);
 
+	// biome-ignore lint/correctness/useExhaustiveDependencies: we want to re-run this effect when processedImage changes
+	useEffect(() => {
+		jobHistoryQuery.refetch();
+	}, [processedImage, jobHistoryQuery.refetch]);
+
 	return (
 		<div className="flex h-full flex-col gap-4 bg-gray-50 p-4">
 			{/* Header */}
 			<div className="flex items-center justify-between">
 				<h2 className="font-semibold text-xl">Background Remover</h2>
 				<div className="flex items-center gap-2">
-					{adapters !== null && adapters !== undefined && (
+					{adaptersQuery.adapters !== null && adaptersQuery.adapters !== undefined && (
 						<div
 							className={`rounded px-2 py-1 text-xs ${
-								adapters.lowPowerAdapter || adapters.highPerformanceAdapter
+								adaptersQuery.adapters.lowPowerAdapter || adaptersQuery.adapters.highPerformanceAdapter
 									? "bg-green-100 text-green-800"
 									: "bg-yellow-100 text-yellow-800"
 							}`}
 						>
-							{adapters.lowPowerAdapter || adapters.highPerformanceAdapter
+							{adaptersQuery.adapters.lowPowerAdapter || adaptersQuery.adapters.highPerformanceAdapter
 								? "WebGPU Available"
 								: "WebGPU Not Available"}
 						</div>
@@ -193,7 +200,7 @@ export const BackgroundRemover = React.memo(() => {
 
 			{/* GPU Info Section */}
 			<GpuInfo
-				adapters={adapters}
+				adapters={adaptersQuery.adapters}
 				isPowerPreferenceLocked={removalJob.isJobRunning}
 				onPowerPreferenceChange={setPowerPreference}
 				powerPreference={powerPreference}
@@ -327,61 +334,12 @@ export const BackgroundRemover = React.memo(() => {
 			)}
 
 			{/* Job History */}
-			<div className="mt-4 border-t pt-4">
-				<h3 className="mb-3 font-semibold text-lg">Job History</h3>
-				{jobHistory.length === 0 ? (
-					<div className="py-4 text-center text-gray-500 text-sm">No job history yet</div>
-				) : (
-					<div className="max-h-96 space-y-2 overflow-y-auto">
-						{jobHistory.map((job) => (
-							<div className="rounded-lg border border-gray-300 bg-white p-3" key={job.id}>
-								<div className="flex items-start justify-between gap-2">
-									<div className="min-w-0 flex-1">
-										<div className="mb-1 flex items-center gap-2">
-											<span
-												className={`rounded px-2 py-1 font-medium text-xs ${
-													job.status === "success"
-														? "bg-green-100 text-green-800"
-														: job.status === "failed"
-															? "bg-red-100 text-red-800"
-															: job.status === "cancelled"
-																? "bg-gray-100 text-gray-800"
-																: "bg-blue-100 text-blue-800"
-												}`}
-											>
-												{job.status}
-											</span>
-											<span className="text-gray-500 text-xs">{formatDate(job.timestamp)}</span>
-										</div>
-										<div className="text-gray-600 text-xs">Power: {job.powerPreference}</div>
-										{job.error && <div className="mt-1 text-red-600 text-xs">{job.error.message}</div>}
-									</div>
-									<div className="flex gap-2">
-										{job.status === "success" && job.processedImage && (
-											<button
-												className="rounded bg-green-600 px-2 py-1 text-white text-xs hover:bg-green-700"
-												onClick={() => downloadJobResult(job)}
-												title="Download result"
-												type="button"
-											>
-												Download
-											</button>
-										)}
-										<button
-											className="rounded bg-red-600 px-2 py-1 text-white text-xs hover:bg-red-700"
-											onClick={() => deleteJob(job.id)}
-											title="Delete job"
-											type="button"
-										>
-											Delete
-										</button>
-									</div>
-								</div>
-							</div>
-						))}
-					</div>
-				)}
-			</div>
+			<JobHistory
+				deleteJob={deleteJob}
+				downloadJobResult={downloadJobResult}
+				formatDate={formatDate}
+				jobs={jobHistoryQuery.data ?? []}
+			/>
 		</div>
 	);
 });
