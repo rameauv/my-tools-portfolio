@@ -1,15 +1,15 @@
-import { pipeline, env } from "@huggingface/transformers";
+import { type BackgroundRemovalPipeline, env, type ProgressInfo, pipeline } from "@huggingface/transformers";
 
 // Worker message types
 interface ProcessImageMessage {
-	type: 'PROCESS_IMAGE';
+	type: "PROCESS_IMAGE";
 	jobId: string;
 	imageData: ArrayBuffer;
-	powerPreference: 'high-performance' | 'low-power';
+	powerPreference: "high-performance" | "low-power";
 }
 
 interface CancelMessage {
-	type: 'CANCEL';
+	type: "CANCEL";
 	jobId: string;
 }
 
@@ -17,20 +17,20 @@ type WorkerMessage = ProcessImageMessage | CancelMessage;
 
 // Worker response types
 interface ProgressResponse {
-	type: 'PROGRESS';
+	type: "PROGRESS";
 	jobId: string;
 	progress: string;
 	percentage: number;
 }
 
 interface SuccessResponse {
-	type: 'SUCCESS';
+	type: "SUCCESS";
 	jobId: string;
 	result: ArrayBuffer;
 }
 
 interface ErrorResponse {
-	type: 'ERROR';
+	type: "ERROR";
 	jobId: string;
 	error: {
 		message: string;
@@ -39,24 +39,21 @@ interface ErrorResponse {
 }
 
 interface CancelledResponse {
-	type: 'CANCELLED';
+	type: "CANCELLED";
 	jobId: string;
 }
 
-type WorkerResponse = ProgressResponse | SuccessResponse | ErrorResponse | CancelledResponse;
-
-let pipelineInstance: any = null;
+let pipelineInstance: BackgroundRemovalPipeline | null = null;
 let currentJobId: string | null = null;
 let abortController: AbortController | null = null;
 
-async function initializePipeline(powerPreference: 'high-performance' | 'low-power'): Promise<void> {
+async function initializePipeline(powerPreference: "high-performance" | "low-power"): Promise<void> {
 	if (!currentJobId) {
 		throw new Error("Current job ID not set");
 	}
 	if (pipelineInstance) {
 		return;
 	}
-
 
 	// Note: WebGPU may not be available in workers, so we'll use WASM
 	// The powerPreference is passed but may not be fully utilized in worker context
@@ -65,7 +62,7 @@ async function initializePipeline(powerPreference: 'high-performance' | 'low-pow
 		env.backends.onnx.webgpu.powerPreference = powerPreference;
 	} else {
 		const errorResponse: ErrorResponse = {
-			type: 'ERROR',
+			type: "ERROR",
 			jobId: currentJobId ?? "",
 			error: {
 				message: "WebGPU backend not supported",
@@ -76,7 +73,7 @@ async function initializePipeline(powerPreference: 'high-performance' | 'low-pow
 	}
 	const segmenter = await pipeline("background-removal", "onnx-community/BEN2-ONNX", {
 		device: "webgpu",
-		progress_callback: (progressInfo: any) => {
+		progress_callback: (progressInfo: ProgressInfo) => {
 			console.log("progressInfo", progressInfo);
 			if (currentJobId) {
 				let progress = "";
@@ -114,7 +111,7 @@ async function initializePipeline(powerPreference: 'high-performance' | 'low-pow
 
 				if (progress) {
 					const response: ProgressResponse = {
-						type: 'PROGRESS',
+						type: "PROGRESS",
 						jobId: currentJobId,
 						progress,
 						percentage,
@@ -131,7 +128,7 @@ async function initializePipeline(powerPreference: 'high-performance' | 'low-pow
 async function processImage(
 	jobId: string,
 	imageData: ArrayBuffer,
-	powerPreference: 'high-performance' | 'low-power',
+	powerPreference: "high-performance" | "low-power",
 ): Promise<void> {
 	try {
 		console.log("processImage", jobId, imageData, powerPreference);
@@ -156,7 +153,7 @@ async function processImage(
 		const imageUrl = URL.createObjectURL(blob);
 		// Send progress update
 		const progressResponse: ProgressResponse = {
-			type: 'PROGRESS',
+			type: "PROGRESS",
 			jobId,
 			progress: "Processing image...",
 			percentage: 50,
@@ -165,7 +162,9 @@ async function processImage(
 
 		// Process the image
 		console.log("pipelineInstance", pipelineInstance);
-		const outputs = await pipelineInstance(imageUrl, { signal: abortController.signal });
+		const outputs = await pipelineInstance(imageUrl, {
+			signal: abortController.signal,
+		});
 		console.log("outputs", outputs);
 		const rawImage = outputs[0];
 		const resultBlob = await rawImage.toBlob();
@@ -178,7 +177,7 @@ async function processImage(
 
 		// Send success response
 		const successResponse: SuccessResponse = {
-			type: 'SUCCESS',
+			type: "SUCCESS",
 			jobId,
 			result: resultArrayBuffer,
 		};
@@ -188,15 +187,28 @@ async function processImage(
 		abortController = null;
 		pipelineInstance.dispose();
 		self.close();
-	} catch (error: any) {
+	} catch (error: unknown) {
 		console.error("error", error);
+		const errorMessage =
+			typeof error === "object" && error !== null && "message" in error && typeof error.message === "string"
+				? error.message
+				: "Unknown error occurred";
+		const errorName =
+			typeof error === "object" && error !== null && "name" in error && typeof error.name === "string"
+				? error.name
+				: "Unknown error";
+		const errorCode =
+			typeof error === "object" && error !== null && "code" in error && typeof error.code === "string"
+				? error.code
+				: "Unknown error code";
+
 		currentJobId = null;
 		abortController = null;
 
 		// Check if it was cancelled
-		if (error?.name === 'AbortError' || error?.message?.includes('abort')) {
+		if (errorName === "AbortError" || errorMessage?.includes("abort")) {
 			const cancelledResponse: CancelledResponse = {
-				type: 'CANCELLED',
+				type: "CANCELLED",
 				jobId,
 			};
 			self.postMessage(cancelledResponse);
@@ -206,11 +218,11 @@ async function processImage(
 
 		// Send error response
 		const errorResponse: ErrorResponse = {
-			type: 'ERROR',
+			type: "ERROR",
 			jobId,
 			error: {
-				message: error?.message || "Unknown error occurred",
-				code: error?.code || error?.name,
+				message: errorMessage || "Unknown error occurred",
+				code: errorCode || errorName,
 			},
 		};
 		self.postMessage(errorResponse);
@@ -225,18 +237,18 @@ function cancelJob(jobId: string): void {
 }
 
 // Handle messages from main thread
-self.addEventListener('message', async (event: MessageEvent<WorkerMessage>) => {
+self.addEventListener("message", async (event: MessageEvent<WorkerMessage>) => {
 	const message = event.data;
 	console.log("message", message);
 
 	switch (message.type) {
-		case 'PROCESS_IMAGE':
+		case "PROCESS_IMAGE":
 			await processImage(message.jobId, message.imageData, message.powerPreference);
 			break;
-		case 'CANCEL':
+		case "CANCEL":
 			cancelJob(message.jobId);
 			break;
 		default:
-			console.warn('Unknown message type:', message);
+			console.warn("Unknown message type:", message);
 	}
 });

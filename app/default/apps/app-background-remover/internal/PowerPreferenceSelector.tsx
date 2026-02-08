@@ -1,36 +1,30 @@
 interface PowerPreferenceSelectorProps {
-	powerPreference: 'high-performance' | 'low-power';
+	powerPreference: "high-performance" | "low-power";
 	isPowerPreferenceLocked: boolean;
-	onPowerPreferenceChange: (preference: 'high-performance' | 'low-power') => void;
+	onPowerPreferenceChange: (preference: "high-performance" | "low-power") => void;
 }
 
-export function PowerPreferenceSelector({
-	powerPreference,
-	isPowerPreferenceLocked,
-	onPowerPreferenceChange,
-}: PowerPreferenceSelectorProps) {
+export function PowerPreferenceSelector(props: PowerPreferenceSelectorProps) {
 	return (
-		<div className="flex items-center gap-2 mt-2">
-			<label htmlFor="power-preference-select" className="text-sm font-medium text-gray-700">
+		<div className="mt-2 flex items-center gap-2">
+			<label className="font-medium text-gray-700 text-sm" htmlFor="power-preference-select">
 				Power Preference:
 			</label>
 			<select
-				id="power-preference-select"
-				value={powerPreference}
-				disabled={isPowerPreferenceLocked}
-				onChange={(e) => {
-					onPowerPreferenceChange(e.target.value as 'high-performance' | 'low-power');
-				}}
-				className={`text-sm border border-gray-300 rounded px-2 py-1 bg-white text-gray-900 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 ${
-					isPowerPreferenceLocked ? 'opacity-60 cursor-not-allowed bg-gray-50' : ''
+				className={`rounded border border-gray-300 bg-white px-2 py-1 text-gray-900 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+					props.isPowerPreferenceLocked ? "cursor-not-allowed bg-gray-50 opacity-60" : ""
 				}`}
+				disabled={props.isPowerPreferenceLocked}
+				id="power-preference-select"
+				onChange={(e) => {
+					props.onPowerPreferenceChange(e.target.value as "high-performance" | "low-power");
+				}}
+				value={props.powerPreference}
 			>
 				<option value="high-performance">High Performance</option>
 				<option value="low-power">Low Power</option>
 			</select>
-			{isPowerPreferenceLocked && (
-				<span className="text-xs text-gray-500 italic">(Locked)</span>
-			)}
+			{props.isPowerPreferenceLocked && <span className="text-gray-500 text-xs italic">(Locked)</span>}
 		</div>
 	);
 }

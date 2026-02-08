@@ -30,11 +30,7 @@ interface UseImageConverterWorkerOptions {
 	onError?: (jobId: string, error: string) => void;
 }
 
-export function useImageConverterWorker({
-	onProgress,
-	onSuccess,
-	onError,
-}: UseImageConverterWorkerOptions) {
+export function useImageConverterWorker({ onProgress, onSuccess, onError }: UseImageConverterWorkerOptions) {
 	const workerRef = useRef<Worker | null>(null);
 	const statusHandler = useRef({
 		onProgress,
@@ -59,10 +55,7 @@ export function useImageConverterWorker({
 				workerRef.current.terminate();
 			}
 
-			const worker = new Worker(
-				new URL("./image-converter.worker.ts", import.meta.url),
-				{ type: "module" },
-			);
+			const worker = new Worker(new URL("./image-converter.worker.ts", import.meta.url), { type: "module" });
 			workerRef.current = worker;
 
 			worker.postMessage(
@@ -81,16 +74,10 @@ export function useImageConverterWorker({
 					const response = event.data;
 					switch (response.type) {
 						case "PROGRESS":
-							statusHandler.current.onProgress?.(
-								response.jobId,
-								response.message,
-							);
+							statusHandler.current.onProgress?.(response.jobId, response.message);
 							break;
 						case "SUCCESS":
-							statusHandler.current.onSuccess?.(
-								response.jobId,
-								response.result,
-							);
+							statusHandler.current.onSuccess?.(response.jobId, response.result);
 							resolve(response.result);
 							worker.terminate();
 							workerRef.current = null;

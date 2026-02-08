@@ -1,42 +1,37 @@
 import { AdapterName } from "./AdapterName";
+import type { GPUAdapter } from "./GPUAdapter";
 import { PowerPreferenceSelector } from "./PowerPreferenceSelector";
 
 interface AdapterSummaryProps {
 	adapters: {
-		lowPowerAdapter: any | null;
-		highPerformanceAdapter: any | null;
+		lowPowerAdapter: GPUAdapter | null;
+		highPerformanceAdapter: GPUAdapter | null;
 	};
-	powerPreference: 'high-performance' | 'low-power';
+	powerPreference: "high-performance" | "low-power";
 	isPowerPreferenceLocked: boolean;
-	onPowerPreferenceChange: (preference: 'high-performance' | 'low-power') => void;
+	onPowerPreferenceChange: (preference: "high-performance" | "low-power") => void;
 	isExpanded: boolean;
 	onToggleExpand: () => void;
 }
 
-export function AdapterSummary({
-	adapters,
-	powerPreference,
-	isPowerPreferenceLocked,
-	onPowerPreferenceChange,
-	isExpanded,
-	onToggleExpand,
-}: AdapterSummaryProps) {
+export function AdapterSummary(props: AdapterSummaryProps) {
 	return (
-		<div className="bg-white border border-gray-300 rounded-lg p-3">
+		<div className="rounded-lg border border-gray-300 bg-white p-3">
 			<div className="flex flex-col gap-2">
-				<AdapterName adapter={adapters.lowPowerAdapter} label="Low-Power Adapter" />
-				<AdapterName adapter={adapters.highPerformanceAdapter} label="High-Performance Adapter" />
+				<AdapterName adapter={props.adapters.lowPowerAdapter} label="Low-Power Adapter" />
+				<AdapterName adapter={props.adapters.highPerformanceAdapter} label="High-Performance Adapter" />
 				<PowerPreferenceSelector
-					powerPreference={powerPreference}
-					isPowerPreferenceLocked={isPowerPreferenceLocked}
-					onPowerPreferenceChange={onPowerPreferenceChange}
+					isPowerPreferenceLocked={props.isPowerPreferenceLocked}
+					onPowerPreferenceChange={props.onPowerPreferenceChange}
+					powerPreference={props.powerPreference}
 				/>
 				<button
-					onClick={onToggleExpand}
-					className="text-xs text-blue-600 hover:text-blue-800 mt-1 flex items-center gap-1 self-start"
+					className="mt-1 flex items-center gap-1 self-start text-blue-600 text-xs hover:text-blue-800"
+					onClick={props.onToggleExpand}
+					type="button"
 				>
-					<span>{isExpanded ? "▼" : "▶"}</span>
-					<span>{isExpanded ? "Hide" : "Show"} Details</span>
+					<span>{props.isExpanded ? "▼" : "▶"}</span>
+					<span>{props.isExpanded ? "Hide" : "Show"} Details</span>
 				</button>
 			</div>
 		</div>

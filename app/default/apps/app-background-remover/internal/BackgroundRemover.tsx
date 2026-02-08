@@ -11,29 +11,17 @@ interface ImageState {
 	url: string | null;
 }
 
-export const BackgroundRemover = React.memo(function BackgroundRemover() {
+export const BackgroundRemover = React.memo(() => {
 	const [originalImage, setOriginalImage] = useState<ImageState>({
 		file: null,
 		url: null,
 	});
-	const [powerPreference, setPowerPreference] = useState<
-		"high-performance" | "low-power"
-	>("high-performance");
+	const [powerPreference, setPowerPreference] = useState<"high-performance" | "low-power">("high-performance");
 	const [processedImage, setProcessedImage] = useState<string | null>(null);
 	const fileInputRef = useRef<HTMLInputElement>(null);
 
 	// Use job management hook
-	const {
-		jobStatus,
-		progress,
-		progressPercentage,
-		error,
-		processImageMutation,
-		cancelJob,
-		retryJob,
-		isJobRunning,
-		jobResultUrl,
-	} = useBackgroundRemovalJob({
+	const removalJob = useBackgroundRemovalJob({
 		powerPreference,
 	});
 
@@ -48,16 +36,14 @@ export const BackgroundRemover = React.memo(function BackgroundRemover() {
 		staleTime: 10,
 	});
 
-
-
 	// Update processed image when job succeeds
 	// biome-ignore lint/correctness/useExhaustiveDependencies: we don't want to re-run this effect when refetchHistory changes
-		useEffect(() => {
+	useEffect(() => {
 		refetchHistory();
-		if (jobStatus === "success" && jobResultUrl) {
-			setProcessedImage(jobResultUrl);
+		if (removalJob.jobStatus === "success" && removalJob.jobResultUrl) {
+			setProcessedImage(removalJob.jobResultUrl);
 		}
-	}, [jobStatus, jobResultUrl]);
+	}, [removalJob.jobStatus, removalJob.jobResultUrl]);
 
 	// Check WebGPU availability
 	const { adapters } = useWebGpuAdapters();
@@ -107,7 +93,7 @@ export const BackgroundRemover = React.memo(function BackgroundRemover() {
 		if (!originalImage.file || !originalImage.url) {
 			return;
 		}
-		if (isJobRunning) {
+		if (removalJob.isJobRunning) {
 			return; // Prevent concurrent jobs
 		}
 		if (processedImage) {
@@ -115,7 +101,7 @@ export const BackgroundRemover = React.memo(function BackgroundRemover() {
 		}
 
 		setProcessedImage(null);
-		processImageMutation.mutate(originalImage.url, {
+		removalJob.processImageMutation.mutate(originalImage.url, {
 			onSuccess: async (resultArrayBuffer) => {
 				// Convert ArrayBuffer to blob URL
 				const blob = new Blob([resultArrayBuffer]);
@@ -123,7 +109,7 @@ export const BackgroundRemover = React.memo(function BackgroundRemover() {
 				setProcessedImage(resultUrl);
 			},
 		});
-	}, [originalImage, processImageMutation, isJobRunning, processedImage]);
+	}, [originalImage, removalJob.processImageMutation, removalJob.isJobRunning, processedImage]);
 
 	// Download processed image
 	const downloadImage = useCallback(() => {
@@ -177,21 +163,21 @@ export const BackgroundRemover = React.memo(function BackgroundRemover() {
 			if (processedImage) {
 				URL.revokeObjectURL(processedImage);
 			}
-			if (jobResultUrl) {
-				URL.revokeObjectURL(jobResultUrl);
+			if (removalJob.jobResultUrl) {
+				URL.revokeObjectURL(removalJob.jobResultUrl);
 			}
 		};
 	}, []);
 
 	return (
-		<div className="flex flex-col h-full p-4 gap-4 bg-gray-50">
+		<div className="flex h-full flex-col gap-4 bg-gray-50 p-4">
 			{/* Header */}
 			<div className="flex items-center justify-between">
-				<h2 className="text-xl font-semibold">Background Remover</h2>
+				<h2 className="font-semibold text-xl">Background Remover</h2>
 				<div className="flex items-center gap-2">
 					{adapters !== null && adapters !== undefined && (
 						<div
-							className={`text-xs px-2 py-1 rounded ${
+							className={`rounded px-2 py-1 text-xs ${
 								adapters.lowPowerAdapter || adapters.highPerformanceAdapter
 									? "bg-green-100 text-green-800"
 									: "bg-yellow-100 text-yellow-800"
@@ -208,49 +194,45 @@ export const BackgroundRemover = React.memo(function BackgroundRemover() {
 			{/* GPU Info Section */}
 			<GpuInfo
 				adapters={adapters}
-				isPowerPreferenceLocked={isJobRunning}
+				isPowerPreferenceLocked={removalJob.isJobRunning}
 				onPowerPreferenceChange={setPowerPreference}
 				powerPreference={powerPreference}
 			/>
 
 			{/* Job Status Section */}
-			{isJobRunning && (
-				<div className="bg-blue-50 border border-blue-300 rounded-lg p-4">
-					<div className="flex items-center justify-between mb-2">
-						<div className="text-sm font-medium text-blue-900">
-							{jobStatus === "pending" ? "Initializing..." : "Processing Image"}
+			{removalJob.isJobRunning && (
+				<div className="rounded-lg border border-blue-300 bg-blue-50 p-4">
+					<div className="mb-2 flex items-center justify-between">
+						<div className="font-medium text-blue-900 text-sm">
+							{removalJob.jobStatus === "pending" ? "Initializing..." : "Processing Image"}
 						</div>
 						<button
-							className="text-xs text-red-600 hover:text-red-800 font-medium"
-							onClick={cancelJob}
+							className="font-medium text-red-600 text-xs hover:text-red-800"
+							onClick={removalJob.cancelJob}
 							type="button"
 						>
 							Cancel
 						</button>
 					</div>
-					<ProgressBar className="mb-2" percentage={progressPercentage} />
-					{progress && <div className="text-xs text-blue-700">{progress}</div>}
-					{progressPercentage > 0 && (
-						<div className="text-xs text-blue-600 text-right mt-1">
-							{progressPercentage}%
-						</div>
+					<ProgressBar className="mb-2" percentage={removalJob.progressPercentage} />
+					{removalJob.progress && <div className="text-blue-700 text-xs">{removalJob.progress}</div>}
+					{removalJob.progressPercentage > 0 && (
+						<div className="mt-1 text-right text-blue-600 text-xs">{removalJob.progressPercentage}%</div>
 					)}
 				</div>
 			)}
 
 			{/* Error message */}
-			{error && (
-				<div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
-					<div className="font-medium mb-1">Processing failed</div>
-					<div className="text-sm">{error.message}</div>
-					{error.code && (
-						<div className="text-xs text-red-600 mt-1">
-							Error code: {error.code}
-						</div>
+			{removalJob.error && (
+				<div className="rounded border border-red-400 bg-red-100 px-4 py-3 text-red-700">
+					<div className="mb-1 font-medium">Processing failed</div>
+					<div className="text-sm">{removalJob.error.message}</div>
+					{removalJob.error.code && (
+						<div className="mt-1 text-red-600 text-xs">Error code: {removalJob.error.code}</div>
 					)}
 					<button
-						className="mt-2 px-3 py-1 bg-red-600 text-white text-xs rounded hover:bg-red-700"
-						onClick={retryJob}
+						className="mt-2 rounded bg-red-600 px-3 py-1 text-white text-xs hover:bg-red-700"
+						onClick={removalJob.retryJob}
 						type="button"
 					>
 						Retry
@@ -261,16 +243,14 @@ export const BackgroundRemover = React.memo(function BackgroundRemover() {
 			{/* Upload area */}
 			{!originalImage.url && (
 				<div
-					className="flex-1 border-2 border-dashed border-gray-300 rounded-lg p-8 flex flex-col items-center justify-center cursor-pointer hover:border-gray-400 transition-colors"
+					className="flex flex-1 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-gray-300 border-dashed p-8 transition-colors hover:border-gray-400"
 					onClick={() => fileInputRef.current?.click()}
 					onDragOver={handleDragOver}
 					onDrop={handleDrop}
 				>
 					<div className="text-center">
-						<p className="text-lg font-medium mb-2">
-							Drag & drop an image here
-						</p>
-						<p className="text-sm text-gray-500 mb-4">or click to browse</p>
+						<p className="mb-2 font-medium text-lg">Drag & drop an image here</p>
+						<p className="mb-4 text-gray-500 text-sm">or click to browse</p>
 						<input
 							accept="image/*"
 							className="hidden"
@@ -287,44 +267,34 @@ export const BackgroundRemover = React.memo(function BackgroundRemover() {
 
 			{/* Image preview and processing */}
 			{originalImage.url && (
-				<div className="flex-1 flex flex-col gap-4">
+				<div className="flex flex-1 flex-col gap-4">
 					{/* Original image */}
-					<div className="flex-1 flex flex-col">
-						<h3 className="text-sm font-medium mb-2">Original Image</h3>
-						<div className="flex-1 border rounded-lg overflow-hidden bg-white">
-							<img
-								alt="Original"
-								className="w-full h-full object-contain"
-								src={originalImage.url}
-							/>
+					<div className="flex flex-1 flex-col">
+						<h3 className="mb-2 font-medium text-sm">Original Image</h3>
+						<div className="flex-1 overflow-hidden rounded-lg border bg-white">
+							<img alt="Original" className="h-full w-full object-contain" src={originalImage.url} />
 						</div>
 					</div>
 
 					{/* Process button */}
 					<button
-						className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-						disabled={isJobRunning}
+						className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:bg-gray-400"
+						disabled={removalJob.isJobRunning}
 						onClick={processImage}
 						type="button"
 					>
-						{isJobRunning ? "Processing..." : "Remove Background"}
+						{removalJob.isJobRunning ? "Processing..." : "Remove Background"}
 					</button>
 
 					{/* Processed image */}
 					{processedImage && (
-						<div className="flex-1 flex flex-col">
-							<h3 className="text-sm font-medium mb-2">
-								Result (Transparent Background)
-							</h3>
-							<div className="flex-1 border rounded-lg overflow-hidden bg-white bg-[linear-gradient(45deg,#ccc_25%,transparent_25%),linear-gradient(-45deg,#ccc_25%,transparent_25%),linear-gradient(45deg,transparent_75%,#ccc_75%),linear-gradient(-45deg,transparent_75%,#ccc_75%)] bg-[length:20px_20px] bg-[0_0,0_10px,10px_-10px,-10px_0px]">
-								<img
-									alt="Processed"
-									className="w-full h-full object-contain"
-									src={processedImage}
-								/>
+						<div className="flex flex-1 flex-col">
+							<h3 className="mb-2 font-medium text-sm">Result (Transparent Background)</h3>
+							<div className="flex-1 overflow-hidden rounded-lg border bg-[0_0,0_10px,10px_-10px,-10px_0px] bg-[length:20px_20px] bg-[linear-gradient(45deg,#ccc_25%,transparent_25%),linear-gradient(-45deg,#ccc_25%,transparent_25%),linear-gradient(45deg,transparent_75%,#ccc_75%),linear-gradient(-45deg,transparent_75%,#ccc_75%)] bg-white">
+								<img alt="Processed" className="h-full w-full object-contain" src={processedImage} />
 							</div>
 							<button
-								className="mt-2 px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+								className="mt-2 rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700"
 								onClick={downloadImage}
 								type="button"
 							>
@@ -335,7 +305,7 @@ export const BackgroundRemover = React.memo(function BackgroundRemover() {
 
 					{/* Reset button */}
 					<button
-						className="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700"
+						className="rounded bg-gray-600 px-4 py-2 text-white hover:bg-gray-700"
 						onClick={() => {
 							if (originalImage.url) {
 								URL.revokeObjectURL(originalImage.url);
@@ -357,24 +327,19 @@ export const BackgroundRemover = React.memo(function BackgroundRemover() {
 			)}
 
 			{/* Job History */}
-			<div className="border-t pt-4 mt-4">
-				<h3 className="text-lg font-semibold mb-3">Job History</h3>
+			<div className="mt-4 border-t pt-4">
+				<h3 className="mb-3 font-semibold text-lg">Job History</h3>
 				{jobHistory.length === 0 ? (
-					<div className="text-sm text-gray-500 text-center py-4">
-						No job history yet
-					</div>
+					<div className="py-4 text-center text-gray-500 text-sm">No job history yet</div>
 				) : (
-					<div className="space-y-2 max-h-96 overflow-y-auto">
+					<div className="max-h-96 space-y-2 overflow-y-auto">
 						{jobHistory.map((job) => (
-							<div
-								className="border border-gray-300 rounded-lg p-3 bg-white"
-								key={job.id}
-							>
+							<div className="rounded-lg border border-gray-300 bg-white p-3" key={job.id}>
 								<div className="flex items-start justify-between gap-2">
-									<div className="flex-1 min-w-0">
-										<div className="flex items-center gap-2 mb-1">
+									<div className="min-w-0 flex-1">
+										<div className="mb-1 flex items-center gap-2">
 											<span
-												className={`text-xs font-medium px-2 py-1 rounded ${
+												className={`rounded px-2 py-1 font-medium text-xs ${
 													job.status === "success"
 														? "bg-green-100 text-green-800"
 														: job.status === "failed"
@@ -386,23 +351,15 @@ export const BackgroundRemover = React.memo(function BackgroundRemover() {
 											>
 												{job.status}
 											</span>
-											<span className="text-xs text-gray-500">
-												{formatDate(job.timestamp)}
-											</span>
+											<span className="text-gray-500 text-xs">{formatDate(job.timestamp)}</span>
 										</div>
-										<div className="text-xs text-gray-600">
-											Power: {job.powerPreference}
-										</div>
-										{job.error && (
-											<div className="text-xs text-red-600 mt-1">
-												{job.error.message}
-											</div>
-										)}
+										<div className="text-gray-600 text-xs">Power: {job.powerPreference}</div>
+										{job.error && <div className="mt-1 text-red-600 text-xs">{job.error.message}</div>}
 									</div>
 									<div className="flex gap-2">
 										{job.status === "success" && job.processedImage && (
 											<button
-												className="px-2 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700"
+												className="rounded bg-green-600 px-2 py-1 text-white text-xs hover:bg-green-700"
 												onClick={() => downloadJobResult(job)}
 												title="Download result"
 												type="button"
@@ -411,7 +368,7 @@ export const BackgroundRemover = React.memo(function BackgroundRemover() {
 											</button>
 										)}
 										<button
-											className="px-2 py-1 text-xs bg-red-600 text-white rounded hover:bg-red-700"
+											className="rounded bg-red-600 px-2 py-1 text-white text-xs hover:bg-red-700"
 											onClick={() => deleteJob(job.id)}
 											title="Delete job"
 											type="button"

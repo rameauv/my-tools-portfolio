@@ -3,7 +3,7 @@ import * as React from "react";
 
 function KoreanColorsLogo() {
 	return (
-		<div className="relative w-5 h-5 flex items-center justify-center mr-1">
+		<div className="relative mr-1 flex h-5 w-5 items-center justify-center">
 			<svg
 				aria-hidden="true"
 				className="drop-shadow-[1px_1px_1px_rgba(0,0,0,0.3)]"
@@ -32,14 +32,7 @@ function KoreanColorsLogo() {
 				</g>
 
 				{/* Subtle inner glow/border to match XP style if desired, or keep it clean */}
-				<circle
-					cx="50"
-					cy="50"
-					fill="none"
-					r="48"
-					stroke="rgba(255,255,255,0.2)"
-					strokeWidth="2"
-				/>
+				<circle cx="50" cy="50" fill="none" r="48" stroke="rgba(255,255,255,0.2)" strokeWidth="2" />
 			</svg>
 		</div>
 	);
@@ -51,34 +44,7 @@ export function StartButton(props: { children: React.ReactNode }) {
 	return (
 		<Dialog.Root modal={false} onOpenChange={setOpen} open={open}>
 			<Dialog.Trigger
-				className="
-          group
-          relative
-          flex items-center
-          h-full px-4
-          text-white font-bold text-[16px] italic
-          cursor-pointer
-          border-none
-          outline-none
-          transition-all duration-75
-          focus:outline-none
-          
-          /* XP Green Gradient */
-          bg-linear-to-b from-[#3c9a38] via-[#4aaf47] to-[#2e7d32]
-          
-          /* 3D Border and shadow */
-          shadow-[inset_2px_2px_3px_rgba(255,255,255,0.4),inset_-2px_-2px_3px_rgba(0,0,0,0.3),2px_0_5px_rgba(0,0,0,0.2)]
-          
-          /* The classic XP start button rounding */
-          rounded-r-[15px] rounded-l-[2px]
-          
-          /* Hover state */
-          hover:brightness-110
-          
-          /* Active/pressed state */
-          active:brightness-90
-          active:shadow-[inset_3px_3px_5px_rgba(0,0,0,0.4)]
-        "
+				className="group /* XP Green Gradient */ /* 3D Border and */ /* The classic XP start button rounding */ /* Hover state */ /* Active/pressed state */ relative flex h-full cursor-pointer items-center rounded-r-[15px] rounded-l-[2px] border-none bg-linear-to-b from-[#3c9a38] via-[#4aaf47] to-[#2e7d32] px-4 font-bold text-[16px] text-white italic shadow shadow-[inset_2px_2px_3px_rgba(255,255,255,0.4),inset_-2px_-2px_3px_rgba(0,0,0,0.3),2px_0_5px_rgba(0,0,0,0.2)] outline-none transition-all duration-75 hover:brightness-110 focus:outline-none active:shadow-[inset_3px_3px_5px_rgba(0,0,0,0.4)] active:brightness-90"
 				style={{
 					fontFamily: '"Trebuchet MS", sans-serif',
 					textShadow: "1px 1px 2px rgba(0,0,0,0.7)",
@@ -86,13 +52,11 @@ export function StartButton(props: { children: React.ReactNode }) {
 			>
 				<div className="relative z-10 flex items-center">
 					<KoreanColorsLogo />
-					<span className="ml-1 -mt-0.5 tracking-tight text-[15px] hidden md:block">
-						사직하기
-					</span>
+					<span className="-mt-0.5 ml-1 hidden text-[15px] tracking-tight md:block">사직하기</span>
 				</div>
 			</Dialog.Trigger>
 			<Dialog.Portal>
-				<Dialog.Popup className="fixed bottom-[30px] left-0 min-w-[400px] animate-in fade-in slide-in-from-bottom-2 duration-150 z-200 overflow-hidden rounded-tr-lg">
+				<Dialog.Popup className="fade-in slide-in-from-bottom-2 fixed bottom-[30px] left-0 z-200 min-w-[400px] animate-in overflow-hidden rounded-tr-lg duration-150">
 					{props.children}
 				</Dialog.Popup>
 			</Dialog.Portal>

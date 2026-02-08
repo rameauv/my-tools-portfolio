@@ -1,5 +1,3 @@
-import * as React from "react";
-
 interface MenuBarItem {
 	label: string;
 	hideOnMobile?: boolean;
@@ -28,14 +26,7 @@ export function MenuBar({
 	return (
 		<div className={`@container ${className}`}>
 			{items.map((item) => (
-				<span
-					className={
-						item.hideOnMobile
-							? `hidden @sm:inline ${itemClassName}`
-							: itemClassName
-					}
-					key={item.label}
-				>
+				<span className={item.hideOnMobile ? `@sm:inline hidden ${itemClassName}` : itemClassName} key={item.label}>
 					{item.label}
 				</span>
 			))}

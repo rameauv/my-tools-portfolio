@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { ResizeDirection } from "./ResizeDirection";
+import type { ResizeDirection } from "../models/ResizeDirection";
 
 const MIN_X_POS = 0;
 const MIN_Y_POS = 0;
@@ -19,7 +19,6 @@ interface UseWindowResizeParams {
 }
 
 export function useWindowResize(params: UseWindowResizeParams) {
-	const { setWidth, setHeight, setX, setY, width, height, x, y } = params;
 	const [isResizing, setIsResizing] = useState(false);
 	const [resizeDirection, setResizeDirection] = useState<ResizeDirection | null>(null);
 	const resizeStart = useRef({
@@ -31,43 +30,40 @@ export function useWindowResize(params: UseWindowResizeParams) {
 		winHeight: 0,
 	});
 	const currentDimensions = useRef({
-		width: width,
-		height: height,
-		x: x,
-		y: y,
+		width: params.width,
+		height: params.height,
+		x: params.x,
+		y: params.y,
 	});
 	const lastMousePos = useRef({ x: 0, y: 0 });
 
 	useEffect(() => {
 		currentDimensions.current = {
-			width: width,
-			height: height,
-			x: x,
-			y: y,
+			width: params.width,
+			height: params.height,
+			x: params.x,
+			y: params.y,
 		};
-	}, [width, height, x, y]);
+	}, [params.width, params.height, params.x, params.y]);
 
-	const onResizeMouseDown = useCallback(
-		(e: React.MouseEvent, direction: ResizeDirection) => {
-			if (e.button !== 0) return;
-			e.stopPropagation(); // Prevent triggering drag
+	const onResizeMouseDown = useCallback((e: React.MouseEvent, direction: ResizeDirection) => {
+		if (e.button !== 0) return;
+		e.stopPropagation(); // Prevent triggering drag
 
-			setIsResizing(true);
-			setResizeDirection(direction);
-			const mouseX = e.clientX;
-			const mouseY = e.clientY;
-			resizeStart.current = {
-				x: mouseX,
-				y: mouseY,
-				winX: currentDimensions.current.x,
-				winY: currentDimensions.current.y,
-				winWidth: currentDimensions.current.width,
-				winHeight: currentDimensions.current.height,
-			};
-			lastMousePos.current = { x: mouseX, y: mouseY };
-		},
-		[],
-	);
+		setIsResizing(true);
+		setResizeDirection(direction);
+		const mouseX = e.clientX;
+		const mouseY = e.clientY;
+		resizeStart.current = {
+			x: mouseX,
+			y: mouseY,
+			winX: currentDimensions.current.x,
+			winY: currentDimensions.current.y,
+			winWidth: currentDimensions.current.width,
+			winHeight: currentDimensions.current.height,
+		};
+		lastMousePos.current = { x: mouseX, y: mouseY };
+	}, []);
 
 	const onResizeMouseMove = useCallback(
 		(e: MouseEvent) => {
@@ -95,10 +91,7 @@ export function useWindowResize(params: UseWindowResizeParams) {
 				const proposedWidth = newWidth + deltaWidth;
 				const minX = 0;
 				const maxWidth = newX + newWidth - minX;
-				const constrainedWidth = Math.max(
-					MIN_WIDTH,
-					Math.min(proposedWidth, maxWidth),
-				);
+				const constrainedWidth = Math.max(MIN_WIDTH, Math.min(proposedWidth, maxWidth));
 				const actualDeltaWidth = constrainedWidth - newWidth;
 				newWidth = constrainedWidth;
 				newX = newX - actualDeltaWidth;
@@ -113,10 +106,7 @@ export function useWindowResize(params: UseWindowResizeParams) {
 				const proposedHeight = newHeight + deltaHeight;
 				const minY = 0;
 				const maxHeight = newY + newHeight - minY;
-				const constrainedHeight = Math.max(
-					MIN_HEIGHT,
-					Math.min(proposedHeight, maxHeight),
-				);
+				const constrainedHeight = Math.max(MIN_HEIGHT, Math.min(proposedHeight, maxHeight));
 				const actualDeltaHeight = constrainedHeight - newHeight;
 				newHeight = constrainedHeight;
 				newY = newY - actualDeltaHeight;
@@ -140,10 +130,10 @@ export function useWindowResize(params: UseWindowResizeParams) {
 			newWidth = Math.max(MIN_WIDTH, newWidth);
 			newHeight = Math.max(MIN_HEIGHT, newHeight);
 
-			setWidth(newWidth);
-			setHeight(newHeight);
-			setX(newX);
-			setY(newY);
+			params.setWidth(newWidth);
+			params.setHeight(newHeight);
+			params.setX(newX);
+			params.setY(newY);
 
 			currentDimensions.current = {
 				width: newWidth,
@@ -152,7 +142,7 @@ export function useWindowResize(params: UseWindowResizeParams) {
 				y: newY,
 			};
 		},
-		[isResizing, resizeDirection, setWidth, setHeight, setX, setY],
+		[isResizing, resizeDirection, params.setWidth, params.setHeight, params.setX, params.setY],
 	);
 
 	const onResizeMouseUp = useCallback(() => {

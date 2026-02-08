@@ -1,8 +1,9 @@
-import * as React from "react";
+import type * as React from "react";
 
 export interface MenuItem {
-  label: string;
-  icon?: React.ReactNode;
-  children?: MenuItem[];
-  onClick?: () => void;
+	label: string;
+	icon?: React.ReactNode;
+	children?: MenuItem[];
+	onClick?: () => void;
+	id: number;
 }

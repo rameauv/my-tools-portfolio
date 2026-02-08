@@ -1,20 +1,23 @@
 import { useQuery } from "@tanstack/react-query";
+import type { GPUAdapter } from "./GPUAdapter";
 
 export function useWebGpuAdapters() {
 	const { data: adapters } = useQuery({
-		queryKey: ['webgpu-adapters'],
+		queryKey: ["webgpu-adapters"],
 		queryFn: async () => {
 			try {
 				if ("gpu" in navigator && navigator.gpu) {
-					const gpu = navigator.gpu as { requestAdapter(options: { powerPreference: 'high-performance' | 'low-power' | undefined }): Promise<any> };
+					const gpu = navigator.gpu as {
+						requestAdapter(options: {
+							powerPreference: "high-performance" | "low-power" | undefined;
+						}): Promise<GPUAdapter | null>;
+					};
 					const lowPowerAdapter = await gpu.requestAdapter({
-						powerPreference: 'low-power'
+						powerPreference: "low-power",
 					});
 					const highPerformanceAdapter = await gpu.requestAdapter({
-						powerPreference: 'high-performance'
+						powerPreference: "high-performance",
 					});
-					console.log("lowPowerAdapter", lowPowerAdapter);
-					console.log("highPerformanceAdapter", highPerformanceAdapter);
 					return {
 						lowPowerAdapter,
 						highPerformanceAdapter,

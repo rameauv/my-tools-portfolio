@@ -1,40 +1,43 @@
 import { useState } from "react";
-import { AdapterSummary } from "./AdapterSummary";
 import { AdapterDetails } from "./AdapterDetails";
+import { AdapterSummary } from "./AdapterSummary";
+import type { GPUAdapter } from "./GPUAdapter";
 
 interface GpuInfoProps {
-	adapters: {
-		lowPowerAdapter: any | null;
-		highPerformanceAdapter: any | null;
-	} | null | undefined;
-	powerPreference: 'high-performance' | 'low-power';
+	adapters:
+		| {
+				lowPowerAdapter: GPUAdapter | null;
+				highPerformanceAdapter: GPUAdapter | null;
+		  }
+		| null
+		| undefined;
+	powerPreference: "high-performance" | "low-power";
 	isPowerPreferenceLocked: boolean;
-	onPowerPreferenceChange: (preference: 'high-performance' | 'low-power') => void;
+	onPowerPreferenceChange: (preference: "high-performance" | "low-power") => void;
 }
 
-export function GpuInfo({
-	adapters,
-	powerPreference,
-	isPowerPreferenceLocked,
-	onPowerPreferenceChange,
-}: GpuInfoProps) {
+export function GpuInfo(props: GpuInfoProps) {
 	const [isAdapterDetailsExpanded, setIsAdapterDetailsExpanded] = useState(false);
 
-	if (adapters === null || adapters === undefined || (!adapters.lowPowerAdapter && !adapters.highPerformanceAdapter)) {
+	if (
+		props.adapters === null ||
+		props.adapters === undefined ||
+		(!props.adapters.lowPowerAdapter && !props.adapters.highPerformanceAdapter)
+	) {
 		return null;
 	}
 
 	return (
 		<>
 			<AdapterSummary
-				adapters={adapters}
-				powerPreference={powerPreference}
-				isPowerPreferenceLocked={isPowerPreferenceLocked}
-				onPowerPreferenceChange={onPowerPreferenceChange}
+				adapters={props.adapters}
 				isExpanded={isAdapterDetailsExpanded}
+				isPowerPreferenceLocked={props.isPowerPreferenceLocked}
+				onPowerPreferenceChange={props.onPowerPreferenceChange}
 				onToggleExpand={() => setIsAdapterDetailsExpanded(!isAdapterDetailsExpanded)}
+				powerPreference={props.powerPreference}
 			/>
-			{isAdapterDetailsExpanded && <AdapterDetails adapters={adapters} />}
+			{isAdapterDetailsExpanded && <AdapterDetails adapters={props.adapters} />}
 		</>
 	);
 }

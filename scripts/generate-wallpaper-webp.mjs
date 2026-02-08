@@ -1,13 +1,13 @@
-import sharp from 'sharp';
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-import { existsSync } from 'fs';
+import { existsSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+import sharp from "sharp";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const inputPath = join(__dirname, '../public/assets/wallpapers/bliss/wallpaper.jpg');
-const outputDir = join(__dirname, '../public/assets/wallpapers/bliss');
+const inputPath = join(__dirname, "../public/assets/wallpapers/bliss/wallpaper.jpg");
+const outputDir = join(__dirname, "../public/assets/wallpapers/bliss");
 
 // Sizes to generate
 const sizes = [640, 1024, 1280, 1920, 2560, 3840];
@@ -36,16 +36,14 @@ async function generateWebPVersions() {
 			await sharp(inputPath)
 				.resize(width, height, {
 					kernel: sharp.kernel.lanczos3, // High-quality resampling
-					fit: 'cover',
+					fit: "cover",
 				})
 				.webp({ quality })
 				.toFile(outputPath);
 
 			const stats = await sharp(outputPath).metadata();
 			const fileSizeKB = (stats.size / 1024).toFixed(2);
-			console.log(
-				`✓ Generated wallpaper-${width}w.webp (${width}x${height}, ${fileSizeKB} KB)`,
-			);
+			console.log(`✓ Generated wallpaper-${width}w.webp (${width}x${height}, ${fileSizeKB} KB)`);
 		} catch (error) {
 			console.error(`Error generating ${outputPath}:`, error);
 			process.exit(1);
@@ -56,6 +54,6 @@ async function generateWebPVersions() {
 }
 
 generateWebPVersions().catch((error) => {
-	console.error('Fatal error:', error);
+	console.error("Fatal error:", error);
 	process.exit(1);
 });

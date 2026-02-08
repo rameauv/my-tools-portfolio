@@ -1,17 +1,8 @@
 {
 	"$schema": "./biome-schema-2-3-11.json",
-	"vcs": {
-		"enabled": true,
-		"clientKind": "git",
-		"useIgnoreFile": true
-	},
-	"files": {
-		"ignoreUnknown": false
-	},
-	"formatter": {
-		"enabled": true,
-		"indentStyle": "tab"
-	},
+	"vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
+	"files": { "ignoreUnknown": false },
+	"formatter": { "enabled": true, "indentStyle": "tab", "lineWidth": 120 },
 	"linter": {
 		"enabled": true,
 		"rules": {
@@ -20,24 +11,23 @@
 				"noStaticElementInteractions": "off",
 				"useKeyWithMouseEvents": "off",
 				"useKeyWithClickEvents": "off"
+			},
+			"nursery": {
+				"useSortedClasses": {
+					"level": "warn",
+					"fix": "safe",
+					"options": {
+						"functions": ["clsx", "cn"]
+					}
+				}
 			}
 		}
 	},
-	"javascript": {
-		"formatter": {
-			"quoteStyle": "double"
-		}
-	},
+	"javascript": { "formatter": { "quoteStyle": "double" } },
 	"css": {
-		"parser": {
-			"tailwindDirectives": true
-		},
-		"formatter": {
-			"enabled": true
-		},
-		"linter": {
-			"enabled": true
-		}
+		"parser": { "tailwindDirectives": true },
+		"formatter": { "enabled": true },
+		"linter": { "enabled": true }
 	},
 	"assist": {
 		"enabled": true,

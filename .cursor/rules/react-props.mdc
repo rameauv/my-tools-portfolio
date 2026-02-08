@@ -1,0 +1,28 @@
+---
+description: React component props and hook returns — access via object, do not destructure
+globs: **/*.tsx
+alwaysApply: false
+---
+
+# React component props
+
+In React components, do **not** destructure props in the function signature. Accept a single `props` argument and use `props.` to access each property in the component body.
+
+Apply this pattern to all function components: use `props` (or a single typed parameter) and reference `props.name`, `props.children`, etc., in the JSX and logic.
+
+# Hook return values
+
+When a hook returns an **object**, do **not** destructure the return value. Store the result in a variable and access properties via that variable.
+
+**Exclusion:** This does not apply to hooks that return a tuple/array, such as `useState` and `useReducer`. Array destructuring is idiomatic for those (e.g. `const [value, setValue] = useState(0)`).
+
+```tsx
+// ❌ BAD — destructuring hook return (object)
+const { jobStatus, progress, processImage } = useBackgroundRemovalJob({ powerPreference });
+
+// ✅ GOOD — access via object
+const removalJob = useBackgroundRemovalJob({ powerPreference });
+// ... use removalJob.jobStatus, removalJob.progress, removalJob.processImage
+```
+
+Apply this pattern to hooks that return an object: use a single variable (e.g. `removalJob`, `query`, `form`) and reference `variable.property` throughout the component.

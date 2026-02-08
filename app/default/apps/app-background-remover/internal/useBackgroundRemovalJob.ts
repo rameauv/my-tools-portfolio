@@ -1,9 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useRef } from "react";
-import { useBackgroundRemovalWorker } from "./useBackgroundRemovalWorker";
 import * as db from "./backgroundRemovalDB";
+import { useBackgroundRemovalWorker } from "./useBackgroundRemovalWorker";
 
-export type JobStatus = 'idle' | 'pending' | 'processing' | 'success' | 'error' | 'cancelled';
+export type JobStatus = "idle" | "pending" | "processing" | "success" | "error" | "cancelled";
 
 interface JobState {
 	id: string;
@@ -14,27 +14,25 @@ interface JobState {
 		message: string;
 		code?: string;
 	};
-	powerPreference: 'high-performance' | 'low-power';
+	powerPreference: "high-performance" | "low-power";
 	startTime: number;
 	endTime?: number;
 	resultUrl?: string;
 }
 
 interface UseBackgroundRemovalJobOptions {
-	powerPreference: 'high-performance' | 'low-power';
+	powerPreference: "high-performance" | "low-power";
 }
 
-const JOB_QUERY_KEY = ['backgroundRemovalJob'] as const;
+const JOB_QUERY_KEY = ["backgroundRemovalJob"] as const;
 
-export function useBackgroundRemovalJob({
-	powerPreference,
-}: UseBackgroundRemovalJobOptions) {
+export function useBackgroundRemovalJob(options: UseBackgroundRemovalJobOptions) {
 	const queryClient = useQueryClient();
 	const abortControllerRef = useRef<AbortController | null>(null);
 	const currentJobIdRef = useRef<string | null>(null);
 
 	// Get current job state
-	const { data: jobState } = useQuery<JobState | null>({
+	const jobQuery = useQuery<JobState | null>({
 		queryKey: JOB_QUERY_KEY,
 		queryFn: () => {
 			return queryClient.getQueryData<JobState | null>(JOB_QUERY_KEY) ?? null;
@@ -44,7 +42,7 @@ export function useBackgroundRemovalJob({
 	});
 
 	// Worker hook
-	const { processImage: processImageInWorker, cancelJob: cancelJobInWorker } = useBackgroundRemovalWorker({
+	const removalWorker = useBackgroundRemovalWorker({
 		onProgress: (jobId, progress, percentage) => {
 			if (jobId === currentJobIdRef.current) {
 				queryClient.setQueryData<JobState | null>(JOB_QUERY_KEY, (old) => {
@@ -75,11 +73,11 @@ export function useBackgroundRemovalJob({
 
 				const finalState: JobState = {
 					id: jobId,
-					status: 'success',
+					status: "success",
 					progress: "Processing complete!",
 					progressPercentage: 100,
-					powerPreference,
-					startTime: jobState?.startTime || Date.now(),
+					powerPreference: options.powerPreference,
+					startTime: jobQuery.data?.startTime || Date.now(),
 					endTime: Date.now(),
 					resultUrl,
 				};
@@ -89,7 +87,7 @@ export function useBackgroundRemovalJob({
 				// Update IndexedDB
 				const storedJob = await db.getJob(jobId);
 				if (storedJob) {
-					await db.updateJobStatus(jobId, 'success', {
+					await db.updateJobStatus(jobId, "success", {
 						processedImage: blob,
 						progress: "Processing complete!",
 						progressPercentage: 100,
@@ -105,12 +103,12 @@ export function useBackgroundRemovalJob({
 			if (jobId === currentJobIdRef.current) {
 				const finalState: JobState = {
 					id: jobId,
-					status: 'error',
+					status: "error",
 					progress: "",
 					progressPercentage: 0,
 					error,
-					powerPreference,
-					startTime: jobState?.startTime || Date.now(),
+					powerPreference: options.powerPreference,
+					startTime: jobQuery.data?.startTime || Date.now(),
 					endTime: Date.now(),
 				};
 
@@ -119,7 +117,7 @@ export function useBackgroundRemovalJob({
 				// Update IndexedDB
 				const storedJob = await db.getJob(jobId);
 				if (storedJob) {
-					await db.updateJobStatus(jobId, 'failed', {
+					await db.updateJobStatus(jobId, "failed", {
 						error,
 						endTime: Date.now(),
 					});
@@ -133,11 +131,11 @@ export function useBackgroundRemovalJob({
 			if (jobId === currentJobIdRef.current) {
 				const finalState: JobState = {
 					id: jobId,
-					status: 'cancelled',
+					status: "cancelled",
 					progress: "",
 					progressPercentage: 0,
-					powerPreference,
-					startTime: jobState?.startTime || Date.now(),
+					powerPreference: options.powerPreference,
+					startTime: jobQuery.data?.startTime || Date.now(),
 					endTime: Date.now(),
 				};
 
@@ -146,7 +144,7 @@ export function useBackgroundRemovalJob({
 				// Update IndexedDB
 				const storedJob = await db.getJob(jobId);
 				if (storedJob) {
-					await db.updateJobStatus(jobId, 'cancelled', {
+					await db.updateJobStatus(jobId, "cancelled", {
 						endTime: Date.now(),
 					});
 				}
@@ -158,11 +156,11 @@ export function useBackgroundRemovalJob({
 	});
 
 	// Process image mutation
-	const processImageMutation = useMutation({
+	const imageMutation = useMutation({
 		mutationFn: async (imageUrl: string) => {
 			// Check if there's already a job running
 			const currentJob = queryClient.getQueryData<JobState | null>(JOB_QUERY_KEY);
-			if (currentJob && (currentJob.status === 'pending' || currentJob.status === 'processing')) {
+			if (currentJob && (currentJob.status === "pending" || currentJob.status === "processing")) {
 				throw new Error("A job is already running");
 			}
 
@@ -176,10 +174,10 @@ export function useBackgroundRemovalJob({
 			// Create initial job state
 			const initialState: JobState = {
 				id: jobId,
-				status: 'pending',
+				status: "pending",
 				progress: "Initializing...",
 				progressPercentage: 0,
-				powerPreference,
+				powerPreference: options.powerPreference,
 				startTime,
 			};
 
@@ -192,10 +190,10 @@ export function useBackgroundRemovalJob({
 			// Save job to IndexedDB
 			await db.saveJob({
 				id: jobId,
-				status: 'running',
+				status: "running",
 				timestamp: startTime,
 				startTime,
-				powerPreference,
+				powerPreference: options.powerPreference,
 				originalImage: originalImageBlob,
 				progress: "Initializing...",
 				progressPercentage: 0,
@@ -204,38 +202,31 @@ export function useBackgroundRemovalJob({
 			// Update state to processing
 			queryClient.setQueryData<JobState | null>(JOB_QUERY_KEY, {
 				...initialState,
-				status: 'processing',
+				status: "processing",
 				progress: "Processing image...",
 			});
-
-			// Process image in worker
-			try {
-				const result = await processImageInWorker(jobId, imageUrl, powerPreference);
-				// The result is handled by onSuccess callback
-				return result;
-			} catch (error: any) {
-				// Error is handled by onError callback
-				throw error;
-			}
+			const result = await removalWorker.processImage(jobId, imageUrl, options.powerPreference);
+			// The result is handled by onSuccess callback
+			return result;
 		},
 	});
 
 	const cancelJob = useCallback(() => {
 		if (currentJobIdRef.current) {
-			cancelJobInWorker(currentJobIdRef.current);
+			removalWorker.cancelJob(currentJobIdRef.current);
 			abortControllerRef.current?.abort();
 		}
-	}, [cancelJobInWorker]);
+	}, [removalWorker.cancelJob]);
 
 	const retryJob = useCallback(async () => {
 		const currentJob = queryClient.getQueryData<JobState | null>(JOB_QUERY_KEY);
-		if (currentJob && (currentJob.status === 'error' || currentJob.status === 'cancelled')) {
+		if (currentJob && (currentJob.status === "error" || currentJob.status === "cancelled")) {
 			// Get the original image from IndexedDB
 			try {
 				const storedJob = await db.getJob(currentJob.id);
-				if (storedJob && storedJob.originalImage) {
+				if (storedJob?.originalImage) {
 					const imageUrl = URL.createObjectURL(storedJob.originalImage);
-					processImageMutation.mutate(imageUrl, {
+					imageMutation.mutate(imageUrl, {
 						onSettled: () => {
 							// Clean up the blob URL after mutation completes
 							URL.revokeObjectURL(imageUrl);
@@ -248,17 +239,17 @@ export function useBackgroundRemovalJob({
 				console.error("Failed to retry job:", error);
 			}
 		}
-	}, [processImageMutation, queryClient]);
+	}, [imageMutation, queryClient]);
 
 	return {
-		jobStatus: jobState?.status || 'idle',
-		progress: jobState?.progress || "",
-		progressPercentage: jobState?.progressPercentage || 0,
-		error: jobState?.error,
-		processImageMutation,
+		jobStatus: jobQuery.data?.status || "idle",
+		progress: jobQuery.data?.progress || "",
+		progressPercentage: jobQuery.data?.progressPercentage || 0,
+		error: jobQuery.data?.error,
+		processImageMutation: imageMutation,
 		cancelJob,
 		retryJob,
-		isJobRunning: jobState?.status === 'pending' || jobState?.status === 'processing',
-		jobResultUrl: jobState?.resultUrl,
+		isJobRunning: jobQuery.data?.status === "pending" || jobQuery.data?.status === "processing",
+		jobResultUrl: jobQuery.data?.resultUrl,
 	};
 }

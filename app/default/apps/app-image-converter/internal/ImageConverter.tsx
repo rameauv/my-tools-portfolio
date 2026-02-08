@@ -1,11 +1,4 @@
-import {
-	Download,
-	Image as ImageIcon,
-	RefreshCw,
-	Settings2,
-	Upload,
-	X,
-} from "lucide-react";
+import { Download, Image as ImageIcon, RefreshCw, Settings2, Upload, X } from "lucide-react";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useImageConverterWorker } from "./useImageConverterWorker";
 
@@ -16,7 +9,7 @@ interface ImageState {
 
 const SUPPORTED_FORMATS = ["WEBP", "JPEG", "PNG"];
 
-export const ImageConverter = React.memo(function ImageConverter() {
+export const ImageConverter = React.memo(() => {
 	const [image, setImage] = useState<ImageState>({ file: null, url: null });
 	const [targetFormat, setTargetFormat] = useState("WEBP");
 	const [quality, setQuality] = useState(80);
@@ -50,7 +43,7 @@ export const ImageConverter = React.memo(function ImageConverter() {
 		setConversionProgress("");
 	}, []);
 
-	const { convertImage } = useImageConverterWorker({
+	const imageConverterWorker = useImageConverterWorker({
 		onProgress,
 		onSuccess,
 		onError,
@@ -94,15 +87,16 @@ export const ImageConverter = React.memo(function ImageConverter() {
 
 		try {
 			const buffer = await image.file.arrayBuffer();
-			await convertImage(`job-${Date.now()}`, buffer, targetFormat, {
+			await imageConverterWorker.convertImage(`job-${Date.now()}`, buffer, targetFormat, {
 				quality,
 				compression,
 			});
-		} catch (err: any) {
-			setError(err.message || "Failed to start conversion");
+		} catch (err: unknown) {
+			const error = err instanceof Error ? err : new Error("Failed to start conversion");
+			setError(error.message || "Failed to start conversion");
 			setIsConverting(false);
 		}
-	}, [image.file, targetFormat, quality, compression, convertImage]);
+	}, [image.file, targetFormat, quality, compression, imageConverterWorker.convertImage]);
 
 	const downloadResult = useCallback(() => {
 		if (!resultUrl) return;
@@ -122,26 +116,24 @@ export const ImageConverter = React.memo(function ImageConverter() {
 	}, [image.url, resultUrl]);
 
 	return (
-		<div className="flex flex-col h-full bg-[#f0f0f0] overflow-hidden">
+		<div className="flex h-full flex-col overflow-hidden bg-[#f0f0f0]">
 			{/* Windows-style Header or App Bar would go here if needed, 
 			    but usually the Window component handles the title bar */}
 
-			<div className="flex-1 overflow-y-auto p-6 space-y-6">
+			<div className="flex-1 space-y-6 overflow-y-auto p-6">
 				{/* Upload Area */}
 				{!image.url ? (
 					<div
-						className="border-2 border-dashed border-gray-400 rounded-xl p-12 flex flex-col items-center justify-center bg-white hover:bg-gray-50 transition-colors cursor-pointer group"
+						className="group flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-gray-400 border-dashed bg-white p-12 transition-colors hover:bg-gray-50"
 						onClick={() => fileInputRef.current?.click()}
 						onDragOver={(e) => e.preventDefault()}
 						onDrop={handleDrop}
 					>
-						<div className="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+						<div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-blue-50 text-blue-600 transition-transform group-hover:scale-110">
 							<Upload size={32} />
 						</div>
-						<h3 className="text-xl font-medium text-gray-800">
-							Drop your image here
-						</h3>
-						<p className="text-gray-500 mt-2 text-center">
+						<h3 className="font-medium text-gray-800 text-xl">Drop your image here</h3>
+						<p className="mt-2 text-center text-gray-500">
 							Supports PNG, JPEG, WEBP, and more.
 							<br />
 							Processing happens entirely in your browser.
@@ -155,51 +147,42 @@ export const ImageConverter = React.memo(function ImageConverter() {
 						/>
 					</div>
 				) : (
-					<div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+					<div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
 						{/* Preview Column */}
 						<div className="space-y-4">
-							<div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-								<div className="bg-gray-50 px-4 py-2 border-b border-gray-200 flex items-center justify-between">
-									<span className="text-sm font-medium text-gray-700 flex items-center gap-2">
+							<div className="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm">
+								<div className="flex items-center justify-between border-gray-200 border-b bg-gray-50 px-4 py-2">
+									<span className="flex items-center gap-2 font-medium text-gray-700 text-sm">
 										<ImageIcon size={16} /> Original Preview
 									</span>
 									<button
-										className="text-gray-400 hover:text-red-500 transition-colors"
+										className="text-gray-400 transition-colors hover:text-red-500"
 										onClick={() => setImage({ file: null, url: null })}
 										type="button"
 									>
 										<X size={16} />
 									</button>
 								</div>
-								<div className="aspect-video relative bg-slate-100 flex items-center justify-center p-4">
+								<div className="relative flex aspect-video items-center justify-center bg-slate-100 p-4">
 									{image.url && (
-										<img
-											alt="Original"
-											className="max-h-full max-w-full object-contain shadow-lg"
-											src={image.url}
-										/>
+										<img alt="Original" className="max-h-full max-w-full object-contain shadow-lg" src={image.url} />
 									)}
 								</div>
 							</div>
 
 							{resultUrl && (
-								<div className="bg-white rounded-xl shadow-sm border border-blue-200 overflow-hidden">
-									<div className="bg-blue-50 px-4 py-2 border-b border-blue-100 flex items-center justify-between">
-										<span className="text-sm font-medium text-blue-700 flex items-center gap-2">
-											<RefreshCw className="animate-spin-slow" size={16} />{" "}
-											Converted Result
+								<div className="overflow-hidden rounded-xl border border-blue-200 bg-white shadow-sm">
+									<div className="flex items-center justify-between border-blue-100 border-b bg-blue-50 px-4 py-2">
+										<span className="flex items-center gap-2 font-medium text-blue-700 text-sm">
+											<RefreshCw className="animate-spin-slow" size={16} /> Converted Result
 										</span>
 									</div>
-									<div className="aspect-video relative bg-[#e5e7eb] flex items-center justify-center p-4 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:16px_16px]">
-										<img
-											alt="Result"
-											className="max-h-full max-w-full object-contain shadow-lg"
-											src={resultUrl}
-										/>
+									<div className="relative flex aspect-video items-center justify-center bg-[#e5e7eb] bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] p-4 [background-size:16px_16px]">
+										<img alt="Result" className="max-h-full max-w-full object-contain shadow-lg" src={resultUrl} />
 									</div>
-									<div className="p-4 bg-gray-50 border-t border-gray-200">
+									<div className="border-gray-200 border-t bg-gray-50 p-4">
 										<button
-											className="w-full flex items-center justify-center gap-2 bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-lg transition-colors"
+											className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-600 px-4 py-2 font-medium text-white transition-colors hover:bg-green-700"
 											onClick={downloadResult}
 											type="button"
 										>
@@ -212,25 +195,21 @@ export const ImageConverter = React.memo(function ImageConverter() {
 
 						{/* Settings Column */}
 						<div className="space-y-6">
-							<div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 space-y-6">
-								<div className="flex items-center gap-2 mb-2">
+							<div className="space-y-6 rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+								<div className="mb-2 flex items-center gap-2">
 									<Settings2 className="text-blue-600" size={20} />
-									<h2 className="text-lg font-semibold text-gray-800">
-										Conversion Settings
-									</h2>
+									<h2 className="font-semibold text-gray-800 text-lg">Conversion Settings</h2>
 								</div>
 
 								<div className="space-y-2">
-									<span className="text-sm font-medium text-gray-700">
-										Target Format
-									</span>
+									<span className="font-medium text-gray-700 text-sm">Target Format</span>
 									<div className="flex gap-2">
 										{SUPPORTED_FORMATS.map((fmt) => (
 											<button
-												className={`flex-1 py-2 px-3 rounded-lg border font-medium transition-all ${
+												className={`flex-1 rounded-lg border px-3 py-2 font-medium transition-all ${
 													targetFormat === fmt
-														? "bg-blue-600 border-blue-600 text-white shadow-md shadow-blue-100"
-														: "bg-white border-gray-300 text-gray-600 hover:border-blue-400"
+														? "border-blue-600 bg-blue-600 text-white shadow-blue-100 shadow-md"
+														: "border-gray-300 bg-white text-gray-600 hover:border-blue-400"
 												}`}
 												key={fmt}
 												onClick={() => setTargetFormat(fmt)}
@@ -245,15 +224,11 @@ export const ImageConverter = React.memo(function ImageConverter() {
 								{targetFormat !== "PNG" && (
 									<div className="space-y-3">
 										<div className="flex justify-between">
-											<span className="text-sm font-medium text-gray-700">
-												Quality
-											</span>
-											<span className="text-sm font-bold text-blue-600">
-												{quality}%
-											</span>
+											<span className="font-medium text-gray-700 text-sm">Quality</span>
+											<span className="font-bold text-blue-600 text-sm">{quality}%</span>
 										</div>
 										<input
-											className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+											className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 accent-blue-600"
 											id="quality-slider"
 											max="100"
 											min="1"
@@ -261,24 +236,18 @@ export const ImageConverter = React.memo(function ImageConverter() {
 											type="range"
 											value={quality}
 										/>
-										<p className="text-xs text-gray-500 italic">
-											Higher quality results in larger file size.
-										</p>
+										<p className="text-gray-500 text-xs italic">Higher quality results in larger file size.</p>
 									</div>
 								)}
 
 								{targetFormat === "PNG" && (
 									<div className="space-y-3">
 										<div className="flex justify-between">
-											<span className="text-sm font-medium text-gray-700">
-												Compression Level
-											</span>
-											<span className="text-sm font-bold text-blue-600">
-												{compression}
-											</span>
+											<span className="font-medium text-gray-700 text-sm">Compression Level</span>
+											<span className="font-bold text-blue-600 text-sm">{compression}</span>
 										</div>
 										<input
-											className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+											className="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 accent-blue-600"
 											id="compression-slider"
 											max="9"
 											min="0"
@@ -286,17 +255,16 @@ export const ImageConverter = React.memo(function ImageConverter() {
 											type="range"
 											value={compression}
 										/>
-										<p className="text-xs text-gray-500 italic">
-											0 is fastest (no compression), 9 is slowest (maximum
-											compression).
+										<p className="text-gray-500 text-xs italic">
+											0 is fastest (no compression), 9 is slowest (maximum compression).
 										</p>
 									</div>
 								)}
 
 								<button
-									className={`w-full py-3 px-4 rounded-xl font-bold text-lg shadow-lg transition-all flex items-center justify-center gap-3 ${
+									className={`flex w-full items-center justify-center gap-3 rounded-xl px-4 py-3 font-bold text-lg shadow-lg transition-all ${
 										isConverting
-											? "bg-gray-200 text-gray-500 cursor-not-allowed"
+											? "cursor-not-allowed bg-gray-200 text-gray-500"
 											: "bg-blue-600 text-white hover:bg-blue-700 hover:shadow-blue-200"
 									}`}
 									disabled={isConverting}
@@ -305,8 +273,7 @@ export const ImageConverter = React.memo(function ImageConverter() {
 								>
 									{isConverting ? (
 										<>
-											<RefreshCw className="animate-spin" size={24} />{" "}
-											Converting...
+											<RefreshCw className="animate-spin" size={24} /> Converting...
 										</>
 									) : (
 										"Convert Image"
@@ -315,30 +282,24 @@ export const ImageConverter = React.memo(function ImageConverter() {
 
 								{(isConverting || conversionProgress) && (
 									<div className="space-y-2">
-										<div className="flex justify-between text-xs font-medium text-blue-700 uppercase tracking-wider">
+										<div className="flex justify-between font-medium text-blue-700 text-xs uppercase tracking-wider">
 											<span>Processing Status</span>
-											<span>
-												{conversionProgress.includes("%")
-													? conversionProgress
-													: "Working..."}
-											</span>
+											<span>{conversionProgress.includes("%") ? conversionProgress : "Working..."}</span>
 										</div>
-										<div className="w-full bg-gray-100 rounded-full h-2 overflow-hidden">
+										<div className="h-2 w-full overflow-hidden rounded-full bg-gray-100">
 											<div
-												className={`bg-blue-600 h-full rounded-full ${isConverting ? "animate-pulse" : ""}`}
+												className={`h-full rounded-full bg-blue-600 ${isConverting ? "animate-pulse" : ""}`}
 												style={{ width: "100%" }}
 											></div>
 										</div>
-										<p className="text-xs text-gray-500 text-center">
-											{conversionProgress}
-										</p>
+										<p className="text-center text-gray-500 text-xs">{conversionProgress}</p>
 									</div>
 								)}
 
 								{error && (
-									<div className="p-4 bg-red-50 border border-red-100 rounded-lg flex gap-3 text-red-700">
+									<div className="flex gap-3 rounded-lg border border-red-100 bg-red-50 p-4 text-red-700">
 										<X className="shrink-0" />
-										<div className="text-sm font-medium">{error}</div>
+										<div className="font-medium text-sm">{error}</div>
 									</div>
 								)}
 							</div>

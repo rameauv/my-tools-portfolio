@@ -1,43 +1,34 @@
 import { Menu, Popover } from "@base-ui/react";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import type { WindowConfig } from "../window/Window";
+import { useEffect, useMemo, useRef, useState } from "react";
+import type { WindowConfig } from "../window/models/WindowConfig";
 import { StartButton } from "./StartButton";
 import { StartMenu } from "./StartMenu";
 import { StatusSectionClock } from "./StatusSectionClock";
 
-export function BottomBar(props: {
-	windows: WindowConfig[];
-	onToggleWindow: (id: number) => void;
-}) {
+export function BottomBar(props: { windows: WindowConfig[]; onToggleWindow: (id: number) => void }) {
 	return (
 		<footer
-			className="flex items-center h-[30px] bg-linear-to-b from-[#245edb] via-[#3f8cf3] to-[#245edb] shadow-[inset_0_1px_0_rgba(255,255,255,0.3)] relative z-50"
+			className="relative z-50 flex h-[30px] items-center bg-linear-to-b from-[#245edb] via-[#3f8cf3] to-[#245edb] shadow-[inset_0_1px_0_rgba(255,255,255,0.3)]"
 			style={{
 				borderTop: "1px solid #00309c",
 			}}
 		>
-			<div className="shrink-0 h-full">
+			<div className="h-full shrink-0">
 				<StartButton>
 					<StartMenu />
 				</StartButton>
 			</div>
-			<div className="flex-1 h-full px-1 overflow-hidden flex items-center justify-start">
-				<Taskbar
-					onToggleWindow={props.onToggleWindow}
-					windows={props.windows}
-				/>
+			<div className="flex h-full flex-1 items-center justify-start overflow-hidden px-1">
+				<Taskbar onToggleWindow={props.onToggleWindow} windows={props.windows} />
 			</div>
-			<div className="shrink-0 h-full">
+			<div className="h-full shrink-0">
 				<StatusIconsSection />
 			</div>
 		</footer>
 	);
 }
 
-function Taskbar(props: {
-	windows: WindowConfig[];
-	onToggleWindow: (id: number) => void;
-}) {
+function Taskbar(props: { windows: WindowConfig[]; onToggleWindow: (id: number) => void }) {
 	const containerRef = useRef<HTMLDivElement>(null);
 	const [availableWidth, setAvailableWidth] = useState(0);
 
@@ -86,18 +77,11 @@ function Taskbar(props: {
 		};
 
 		// Sort entries by number of windows (descending) to group the ones with most windows first
-		const sortedEntries = [...entries].sort(
-			(a, b) => b.windows.length - a.windows.length,
-		);
+		const sortedEntries = [...entries].sort((a, b) => b.windows.length - a.windows.length);
 
-		while (
-			calculateWidth(sortedEntries) > availableWidth &&
-			availableWidth > 0
-		) {
+		while (calculateWidth(sortedEntries) > availableWidth && availableWidth > 0) {
 			// Find the first entry that has more than 1 window and is not grouped
-			const toGroup = sortedEntries.find(
-				(e) => !e.isGrouped && e.windows.length > 1,
-			);
+			const toGroup = sortedEntries.find((e) => !e.isGrouped && e.windows.length > 1);
 			if (!toGroup) break;
 			toGroup.isGrouped = true;
 		}
@@ -112,10 +96,7 @@ function Taskbar(props: {
 	}, [taskbarItems]);
 
 	return (
-		<div
-			className="w-full h-full flex items-center gap-1 overflow-hidden"
-			ref={containerRef}
-		>
+		<div className="flex h-full w-full items-center gap-1 overflow-hidden" ref={containerRef}>
 			{finalItems.flatMap((entry) => {
 				if (entry.isGrouped) {
 					return [
@@ -155,25 +136,17 @@ export function TaskbarButton(props: {
 }) {
 	return (
 		<div
-			className={`
-        flex items-center h-[24px] min-w-[40px] max-w-[200px] flex-1 px-2 rounded-sm cursor-pointer select-none overflow-hidden
-        ${
-					props.active
-						? "bg-[#1e52b7] shadow-[inset_1px_1px_2px_rgba(0,0,0,0.5)] border-[#163f8c]"
-						: "bg-linear-to-b from-[#3c81f0] to-[#245edb] hover:from-[#4c91ff] hover:to-[#346efb] shadow-[inset_1px_1px_1px_rgba(255,255,255,0.3)] border-[#1c56c5]"
-				}
-        border ${props.className ?? ""}
+			className={`flex h-[24px] min-w-[40px] max-w-[200px] flex-1 cursor-pointer select-none items-center overflow-hidden rounded-sm px-2 ${
+				props.active
+					? "border-[#163f8c] bg-[#1e52b7] shadow-[inset_1px_1px_2px_rgba(0,0,0,0.5)]"
+					: "border-[#1c56c5] bg-linear-to-b from-[#3c81f0] to-[#245edb] shadow-[inset_1px_1px_1px_rgba(255,255,255,0.3)] hover:from-[#4c91ff] hover:to-[#346efb]"
+			}border ${props.className ?? ""}
       `}
 			onClick={() => props.onClick()}
 			title={props.title}
 		>
-			{props.icon && (
-				<img alt="" className="w-4 h-4 mr-1.5 shrink-0" src={props.icon} />
-			)}
-			<span
-				className="text-white text-[11px] truncate"
-				style={{ fontFamily: "Tahoma, sans-serif" }}
-			>
+			{props.icon && <img alt="" className="mr-1.5 h-4 w-4 shrink-0" src={props.icon} />}
+			<span className="truncate text-[11px] text-white" style={{ fontFamily: "Tahoma, sans-serif" }}>
 				{props.title}
 			</span>
 		</div>
@@ -197,37 +170,28 @@ export function GroupedTaskbarButton(props: {
 	return (
 		<Popover.Root>
 			<Popover.Trigger
-				className={`
-          flex items-center h-[24px] min-w-[40px] max-w-[200px] flex-1 px-2 rounded-sm cursor-pointer select-none overflow-hidden
-          ${
-						isAnyActive
-							? "bg-[#1e52b7] shadow-[inset_1px_1px_2px_rgba(0,0,0,0.5)] border-[#163f8c]"
-							: "bg-linear-to-b from-[#3c81f0] to-[#245edb] hover:from-[#4c91ff] hover:to-[#346efb] shadow-[inset_1px_1px_1px_rgba(255,255,255,0.3)] border-[#1c56c5]"
-					}
-          border
-        `}
+				className={`flex h-[24px] min-w-[40px] max-w-[200px] flex-1 cursor-pointer select-none items-center overflow-hidden rounded-sm px-2 ${
+					isAnyActive
+						? "border-[#163f8c] bg-[#1e52b7] shadow-[inset_1px_1px_2px_rgba(0,0,0,0.5)]"
+						: "border-[#1c56c5] bg-linear-to-b from-[#3c81f0] to-[#245edb] shadow-[inset_1px_1px_1px_rgba(255,255,255,0.3)] hover:from-[#4c91ff] hover:to-[#346efb]"
+				}border`}
 			>
-				{props.icon && (
-					<img alt="" className="w-4 h-4 mr-1.5 shrink-0" src={props.icon} />
-				)}
-				<span
-					className="text-white text-[11px] truncate flex-1 text-left"
-					style={{ fontFamily: "Tahoma, sans-serif" }}
-				>
+				{props.icon && <img alt="" className="mr-1.5 h-4 w-4 shrink-0" src={props.icon} />}
+				<span className="flex-1 truncate text-left text-[11px] text-white" style={{ fontFamily: "Tahoma, sans-serif" }}>
 					{props.title}
 				</span>
-				<span className="text-white text-[9px] ml-1">▼</span>
+				<span className="ml-1 text-[9px] text-white">▼</span>
 			</Popover.Trigger>
 			<Popover.Portal>
 				<Popover.Positioner align="start" side="top" sideOffset={4}>
 					<Popover.Popup
-						className="bg-[#ece9d8] border-2 border-[#0054e3] shadow-xl py-1 min-w-[150px] z-50"
+						className="z-50 min-w-[150px] border-2 border-[#0054e3] bg-[#ece9d8] py-1 shadow-xl"
 						style={{ fontFamily: "Tahoma, sans-serif" }}
 					>
 						<Menu.Root>
 							{props.windows.map((window) => (
 								<Menu.Item
-									className="px-4 py-1.5 text-[11px] text-black hover:bg-[#316ac5] hover:text-white cursor-default truncate"
+									className="cursor-default truncate px-4 py-1.5 text-[11px] text-black hover:bg-[#316ac5] hover:text-white"
 									key={window.id}
 									onClick={() => props.onToggleWindow(window.id)}
 								>
@@ -242,10 +206,10 @@ export function GroupedTaskbarButton(props: {
 	);
 }
 
-function StatusIconsSection(props: {}) {
+function StatusIconsSection() {
 	return (
 		<div
-			className="flex items-center gap-2 h-full px-2 border-l border-[#00309c] shadow-[inset_1px_0_0_rgba(255,255,255,0.2)]"
+			className="flex h-full items-center gap-2 border-[#00309c] border-l px-2 shadow-[inset_1px_0_0_rgba(255,255,255,0.2)]"
 			style={{
 				background: "linear-gradient(to bottom, #107ceb 0%, #107ceb 100%)",
 				backgroundColor: "#107ceb",

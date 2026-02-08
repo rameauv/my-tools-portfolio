@@ -8,8 +8,7 @@ export const linkedinData: LinkedInProfile = {
 		contact: {
 			phone: "010-6540-2066",
 			email: "valentin.rameau@outlook.fr",
-			linkedin:
-				"https://www.linkedin.com/in/valentin-rameau-3a1404112/",
+			linkedin: "https://www.linkedin.com/in/valentin-rameau-3a1404112/",
 		},
 		visa_status: "E-7 visa",
 	},
@@ -69,32 +68,16 @@ export const linkedinData: LinkedInProfile = {
 		},
 	],
 	skills: {
-		programming_languages: [
-			"TypeScript",
-			"Javascript",
-			"C#",
-		],
-		frontend: [
-			"Next.js",
-			"React",
-			"Angular",
-			"Ionic",
-		],
-		backend_cloud: [
-			"Node.js",
-			"ASP.NET Core",
-			"AWS (EC2, S3)",
-			"Docker",
-			"tRPC",
-		],
+		programming_languages: ["TypeScript", "Javascript", "C#"],
+		frontend: ["Next.js", "React", "Angular", "Ionic"],
+		backend_cloud: ["Node.js", "ASP.NET Core", "AWS (EC2, S3)", "Docker", "tRPC"],
 		tools: ["Git", "Cypress (E2E)"],
 		frameworks: ["Scrum"],
 	},
 	projects: [
 		{
 			name: "Swiper.js library contribution",
-			description:
-				"Had a bugfix merged in the Swiper.js library linked to preloading (JS)",
+			description: "Had a bugfix merged in the Swiper.js library linked to preloading (JS)",
 		},
 		{
 			name: "Morphman Anki plugin",
@@ -108,8 +91,7 @@ export const linkedinData: LinkedInProfile = {
 		},
 		{
 			name: "Conway's Game of Life",
-			description:
-				"Implemented the Conway's Game of Life on the PlayStation Vita (C)",
+			description: "Implemented the Conway's Game of Life on the PlayStation Vita (C)",
 		},
 	],
 	languages: [

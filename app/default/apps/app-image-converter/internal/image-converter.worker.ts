@@ -14,28 +14,7 @@ interface ConvertImageMessage {
 
 type WorkerMessage = ConvertImageMessage;
 
-// Worker response types
-interface ProgressResponse {
-	type: "PROGRESS";
-	jobId: string;
-	message: string;
-}
-
-interface SuccessResponse {
-	type: "SUCCESS";
-	jobId: string;
-	result: ArrayBuffer;
-}
-
-interface ErrorResponse {
-	type: "ERROR";
-	jobId: string;
-	error: string;
-}
-
-// Worker response types
-
-let vipsInstance: any = null; // We'll keep any for now as the type definition is complex to reference directly in worker without full wasm-vips types imported cleanly
+let vipsInstance: Awaited<ReturnType<typeof Vips>> | null = null;
 
 async function getVips() {
 	if (vipsInstance) return vipsInstance;
@@ -58,7 +37,7 @@ async function getVips() {
 		vipsInstance.concurrency(1);
 
 		return vipsInstance;
-	} catch (error: any) {
+	} catch (error: unknown) {
 		console.error("VIPS init error:", error);
 		throw error;
 	}
@@ -86,7 +65,7 @@ async function convertImage(
 		const ext = `.${targetFormat.toLowerCase()}`;
 
 		// Map settings to vips options based on target format
-		const options: Record<string, any> = {};
+		const options: Record<string, unknown> = {};
 
 		if (targetFormat.toUpperCase() === "PNG") {
 			if (settings.compression !== undefined) {
@@ -120,8 +99,7 @@ async function convertImage(
 		); // Transfer the buffer
 	} catch (error: unknown) {
 		console.error("Conversion error:", error);
-		const errorMessage =
-			error instanceof Error ? error.message : "Unknown conversion error";
+		const errorMessage = error instanceof Error ? error.message : "Unknown conversion error";
 		(self as unknown as Worker).postMessage({
 			type: "ERROR",
 			jobId,

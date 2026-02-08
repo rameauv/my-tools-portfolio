@@ -7,4 +7,6 @@ export const def: AppDef = {
 	iconSrc: "/assets/app/background-remover/icon.webp",
 	component: BackgroundRemover,
 	groupingId: "BACKGROUND_REMOVER",
+	defaultWidth: 900,
+	defaultHeight: 700,
 };

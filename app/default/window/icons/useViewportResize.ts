@@ -1,11 +1,10 @@
-import type { MutableRefObject } from "react";
 import { useEffect, useRef } from "react";
 
 const TASKBAR_HEIGHT = 30;
 const MIN_WIDTH = 200;
 const MIN_HEIGHT = 150;
 
-export type WindowBoundsRef = MutableRefObject<{
+export type WindowBoundsRef = React.RefObject<{
 	x: number;
 	y: number;
 	width: number;
@@ -61,10 +60,7 @@ export function useViewportResize(
 				newY = Math.max(0, Math.min(current.y, maxY));
 				// If position adjustment isn't enough, reduce height
 				if (newY + newHeight > viewportHeight - TASKBAR_HEIGHT) {
-					newHeight = Math.max(
-						MIN_HEIGHT,
-						viewportHeight - newY - TASKBAR_HEIGHT,
-					);
+					newHeight = Math.max(MIN_HEIGHT, viewportHeight - newY - TASKBAR_HEIGHT);
 				}
 			}
 
@@ -89,12 +85,7 @@ export function useViewportResize(
 			}
 
 			// Only update if changes were made
-			if (
-				newX !== current.x ||
-				newY !== current.y ||
-				newWidth !== current.width ||
-				newHeight !== current.height
-			) {
+			if (newX !== current.x || newY !== current.y || newWidth !== current.width || newHeight !== current.height) {
 				set.setX(newX);
 				set.setY(newY);
 				set.setWidth(newWidth);

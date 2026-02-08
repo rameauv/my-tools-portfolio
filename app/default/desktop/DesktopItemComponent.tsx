@@ -17,7 +17,7 @@ export function DesktopItemComponent(props: {
 
 	return (
 		<li
-			className="absolute left-0 top-0 select-none"
+			className="absolute top-0 left-0 select-none"
 			onMouseDown={onMouseDown}
 			style={{
 				transform: `translate3d(${props.item.x}px, ${props.item.y}px, 0)`,

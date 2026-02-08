@@ -1,9 +1,4 @@
-import {
-	useEffect,
-	useEffectEvent,
-	useRef,
-	useState,
-} from "react";
+import { useEffect, useEffectEvent, useRef, useState } from "react";
 
 interface UseDesktopItemDragParams {
 	x: number;
@@ -47,7 +42,6 @@ export function useDesktopItemDrag(params: UseDesktopItemDragParams) {
 	});
 
 	const onMouseUpEvent = useEffectEvent(() => {
-		console.log("onMouseUpEvent", isPressed);
 		setIsPressed(false);
 		setIsDragging(false);
 		if (!hasMoved.current && params.onClick) params.onClick();

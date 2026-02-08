@@ -7,47 +7,34 @@ interface CascadingMenuItemProps {
 	item: MenuItem;
 }
 
-export function CascadingMenuItem({ item }: CascadingMenuItemProps) {
+export function CascadingMenuItem(props: CascadingMenuItemProps) {
 	const [open, setOpen] = React.useState(false);
-	const hasChildren = item.children && item.children.length > 0;
+	const hasChildren = props.item.children && props.item.children.length > 0;
 
 	if (hasChildren) {
 		return (
 			<Popover.Root onOpenChange={setOpen} open={open}>
 				<Popover.Trigger
-					className="
-            flex items-center justify-between w-full px-4 py-1.5
-            text-sm text-gray-700 cursor-default
-            hover:bg-[#2f71cd] hover:text-white
-            group
-          "
+					className="group flex w-full cursor-default items-center justify-between px-4 py-1.5 text-gray-700 text-sm hover:bg-[#2f71cd] hover:text-white"
 					onMouseEnter={() => setOpen(true)}
 					onMouseLeave={() => setOpen(false)}
 				>
 					<div className="flex items-center gap-2">
-						{item.icon && <span className="w-4 h-4">{item.icon}</span>}
-						<span>{item.label}</span>
+						{props.item.icon && <span className="h-4 w-4">{props.item.icon}</span>}
+						<span>{props.item.label}</span>
 					</div>
-					<span className="text-[10px] ml-4 group-hover:text-white">▶</span>
+					<span className="ml-4 text-[10px] group-hover:text-white">▶</span>
 				</Popover.Trigger>
 				<Popover.Portal>
-					<Popover.Positioner
-						align="start"
-						side="right"
-						sideOffset={2}
-						style={{ zIndex: 100 }}
-					>
+					<Popover.Positioner align="start" side="right" sideOffset={2} style={{ zIndex: 100 }}>
 						<Popover.Popup
-							className="
-                bg-white border border-gray-300 shadow-md py-1 min-w-[160px]
-                animate-in fade-in zoom-in-95 duration-100
-              "
+							className="fade-in zoom-in-95 min-w-[160px] animate-in border border-gray-300 bg-white py-1 shadow-md duration-100"
 							onMouseEnter={() => setOpen(true)}
 							onMouseLeave={() => setOpen(false)}
 						>
 							<Menu.Root>
-								{item.children?.map((child, index) => (
-									<CascadingMenuItem item={child} key={index} />
+								{props.item.children?.map((child) => (
+									<CascadingMenuItem item={child} key={child.id} />
 								))}
 							</Menu.Root>
 						</Popover.Popup>
@@ -59,16 +46,11 @@ export function CascadingMenuItem({ item }: CascadingMenuItemProps) {
 
 	return (
 		<Menu.Item
-			className="
-        flex items-center gap-2 w-full px-4 py-1.5
-        text-sm text-gray-700 cursor-default
-        hover:bg-[#2f71cd] hover:text-white
-        outline-none
-      "
-			onClick={item.onClick}
+			className="flex w-full cursor-default items-center gap-2 px-4 py-1.5 text-gray-700 text-sm outline-none hover:bg-[#2f71cd] hover:text-white"
+			onClick={props.item.onClick}
 		>
-			{item.icon && <span className="w-4 h-4">{item.icon}</span>}
-			<span>{item.label}</span>
+			{props.item.icon && <span className="h-4 w-4">{props.item.icon}</span>}
+			<span>{props.item.label}</span>
 		</Menu.Item>
 	);
 }

@@ -31,46 +31,38 @@ export function LinkedInViewer() {
 	if (!profile) return <div className="p-4">No profile data found.</div>;
 
 	const nameParts = extractNameParts(profile.personal_information.name);
-	const vanityName = extractVanityName(
-		profile.personal_information.contact.linkedin,
-	);
+	const vanityName = extractVanityName(profile.personal_information.contact.linkedin);
 
 	return (
 		<div
-			className="@container w-full h-full bg-[#b3b3b3] p-2 @@sm:p-4 flex items-center justify-center overflow-auto font-sans select-none"
+			className="@container flex h-full w-full select-none items-center justify-center overflow-auto bg-[#b3b3b3] @@sm:p-4 p-2 font-sans"
 			style={{
 				backgroundImage: "radial-gradient(#999 1px, transparent 1px)",
 				backgroundSize: "4px 4px",
 			}}
 		>
 			{/* Main Binder Container */}
-			<div className="w-full max-w-[850px] min-h-[580px] h-auto @sm:h-[580px] bg-[#a0a0a0] rounded-lg @sm:rounded-xl p-2 @sm:p-3 shadow-2xl relative flex flex-col @sm:flex-row gap-2">
+			<div className="relative flex @sm:h-[580px] h-auto min-h-[580px] w-full max-w-[850px] @sm:flex-row flex-col gap-2 @sm:rounded-xl rounded-lg bg-[#a0a0a0] @sm:p-3 p-2 shadow-2xl">
 				{/* Inner White Container (The "Paper") */}
-				<div className="w-full h-full bg-white rounded-lg border-2 border-white flex flex-col @sm:flex-row relative">
+				<div className="relative flex h-full w-full @sm:flex-row flex-col rounded-lg border-2 border-white bg-white">
 					{/* Left Panel */}
-					<div className="w-full @sm:w-[240px] h-auto @sm:h-full bg-[#f0f0f0] border-b @sm:border-b-0 @sm:border-r border-gray-300 p-2 @sm:p-3 flex flex-col gap-2 @sm:gap-3 shrink-0">
-						<div className="bg-white border border-gray-300 rounded p-1 text-xs text-center text-gray-500 mb-1 shadow-sm">
-							TODAY <span className="text-red-500 font-bold">28</span> | TOTAL{" "}
-							<span className="font-bold">2026</span>
+					<div className="flex @sm:h-full h-auto @sm:w-[240px] w-full shrink-0 flex-col @sm:gap-3 gap-2 border-gray-300 @sm:border-r border-b @sm:border-b-0 bg-[#f0f0f0] @sm:p-3 p-2">
+						<div className="mb-1 rounded border border-gray-300 bg-white p-1 text-center text-gray-500 text-xs shadow-sm">
+							TODAY <span className="font-bold text-red-500">28</span> | TOTAL <span className="font-bold">2026</span>
 						</div>
 
-						<div className="flex-1 bg-white border border-gray-300 rounded p-4 flex flex-col items-center gap-4 shadow-sm relative overflow-hidden">
+						<div className="relative flex flex-1 flex-col items-center gap-4 overflow-hidden rounded border border-gray-300 bg-white p-4 shadow-sm">
 							{/* Profile Pic */}
-							<div className="w-24 h-24 @sm:w-40 @sm:h-40 bg-gray-200 border border-gray-300 p-1 mx-auto">
-								<img
-									alt="Profile"
-									className="w-full h-full object-cover"
-									src="/my-documents.png"
-								/>
+							<div className="mx-auto @sm:h-40 h-24 @sm:w-40 w-24 border border-gray-300 bg-gray-200 p-1">
+								<img alt="Profile" className="h-full w-full object-cover" src="/my-documents.png" />
 							</div>
 
-							<div className="w-full text-center space-y-2">
-								<p className="text-xs text-blue-800 leading-relaxed border-b border-dotted border-gray-400 pb-2">
-									{profile.personal_information.job_title ||
-										"Software Engineer"}
+							<div className="w-full space-y-2 text-center">
+								<p className="border-gray-400 border-b border-dotted pb-2 text-blue-800 text-xs leading-relaxed">
+									{profile.personal_information.job_title || "Software Engineer"}
 								</p>
 
-								<div className="text-xs text-gray-600 text-left w-full px-2 space-y-1 mt-2">
+								<div className="mt-2 w-full space-y-1 px-2 text-left text-gray-600 text-xs">
 									<div className="flex items-center gap-1">
 										<span className="font-bold text-gray-800">Name</span>
 										<span>
@@ -88,12 +80,12 @@ export function LinkedInViewer() {
 								</div>
 
 								<div className="mt-4 w-full">
-									<div className="flex items-center justify-between text-[10px] text-gray-500 cursor-pointer hover:text-orange-500 transition-colors">
+									<div className="flex cursor-pointer items-center justify-between text-[10px] text-gray-500 transition-colors hover:text-orange-500">
 										<span>Edit Profile</span>
 										<ChevronRight size={10} />
 									</div>
-									<div className="w-full h-px bg-gray-200 my-1" />
-									<div className="flex items-center justify-between text-[10px] text-gray-500 cursor-pointer hover:text-orange-500 transition-colors">
+									<div className="my-1 h-px w-full bg-gray-200" />
+									<div className="flex cursor-pointer items-center justify-between text-[10px] text-gray-500 transition-colors hover:text-orange-500">
 										<span>History</span>
 										<ChevronRight size={10} />
 									</div>
@@ -103,19 +95,19 @@ export function LinkedInViewer() {
 					</div>
 
 					{/* Right Panel (Content) */}
-					<div className="flex-1 h-full bg-white p-1 @sm:p-2 flex flex-col relative z-10">
+					<div className="relative z-10 flex h-full flex-1 flex-col bg-white @sm:p-2 p-1">
 						{/* Header */}
-						<div className="w-full flex flex-col @sm:flex-row @sm:justify-between @sm:items-end border-b border-gray-300 pb-1 @sm:pb-2 mb-1 @sm:mb-2 px-1 @sm:px-2 gap-1">
-							<div className="text-sm @sm:text-lg font-bold text-blue-900 tracking-tight">
+						<div className="@sm:mb-2 mb-1 flex w-full @sm:flex-row flex-col @sm:items-end @sm:justify-between gap-1 border-gray-300 border-b @sm:px-2 px-1 @sm:pb-2 pb-1">
+							<div className="font-bold @sm:text-lg text-blue-900 text-sm tracking-tight">
 								{nameParts.firstName}'s Minihompy
 							</div>
-							<div className="text-[9px] @sm:text-[10px] text-gray-500 mb-0 @sm:mb-1 truncate">
+							<div className="@sm:mb-1 mb-0 truncate @sm:text-[10px] text-[9px] text-gray-500">
 								http://www.cyworld.com/{vanityName || "valentin"}
 							</div>
 						</div>
 
 						{/* Content Area */}
-						<div className="flex-1 overflow-y-auto custom-scrollbar p-1 @sm:p-2 bg-white">
+						<div className="custom-scrollbar flex-1 overflow-y-auto bg-white @sm:p-2 p-1">
 							{activeTab === "home" && <HomeView profile={profile} />}
 							{activeTab === "profile" && <ProfileView profile={profile} />}
 							{activeTab === "diary" && <DiaryView profile={profile} />}
@@ -125,60 +117,25 @@ export function LinkedInViewer() {
 					</div>
 
 					{/* Side Tabs - Desktop: Right side, Mobile: Bottom */}
-					<div className="absolute -right-[76px] top-10 hidden @sm:flex flex-col gap-1 z-0">
-						<TabButton
-							active={activeTab === "home"}
-							label="Home"
-							onClick={() => setActiveTab("home")}
-						/>
-						<TabButton
-							active={activeTab === "profile"}
-							label="Profile"
-							onClick={() => setActiveTab("profile")}
-						/>
-						<TabButton
-							active={activeTab === "diary"}
-							label="Diary"
-							onClick={() => setActiveTab("diary")}
-						/>
-						<TabButton
-							active={activeTab === "photo"}
-							label="Photo"
-							onClick={() => setActiveTab("photo")}
-						/>
-						<TabButton
-							active={activeTab === "guestbook"}
-							label="Guest"
-							onClick={() => setActiveTab("guestbook")}
-						/>
+					<div className="absolute top-10 -right-[76px] z-0 @sm:flex hidden flex-col gap-1">
+						<TabButton active={activeTab === "home"} label="Home" onClick={() => setActiveTab("home")} />
+						<TabButton active={activeTab === "profile"} label="Profile" onClick={() => setActiveTab("profile")} />
+						<TabButton active={activeTab === "diary"} label="Diary" onClick={() => setActiveTab("diary")} />
+						<TabButton active={activeTab === "photo"} label="Photo" onClick={() => setActiveTab("photo")} />
+						<TabButton active={activeTab === "guestbook"} label="Guest" onClick={() => setActiveTab("guestbook")} />
 					</div>
 
 					{/* Mobile Tabs - Bottom */}
-					<div className="@sm:hidden w-full flex gap-1 p-2 bg-[#f0f0f0] border-t border-gray-300 overflow-x-auto">
-						<TabButton
-							active={activeTab === "home"}
-							label="Home"
-							mobile
-							onClick={() => setActiveTab("home")}
-						/>
+					<div className="flex @sm:hidden w-full gap-1 overflow-x-auto border-gray-300 border-t bg-[#f0f0f0] p-2">
+						<TabButton active={activeTab === "home"} label="Home" mobile onClick={() => setActiveTab("home")} />
 						<TabButton
 							active={activeTab === "profile"}
 							label="Profile"
 							mobile
 							onClick={() => setActiveTab("profile")}
 						/>
-						<TabButton
-							active={activeTab === "diary"}
-							label="Diary"
-							mobile
-							onClick={() => setActiveTab("diary")}
-						/>
-						<TabButton
-							active={activeTab === "photo"}
-							label="Photo"
-							mobile
-							onClick={() => setActiveTab("photo")}
-						/>
+						<TabButton active={activeTab === "diary"} label="Diary" mobile onClick={() => setActiveTab("diary")} />
+						<TabButton active={activeTab === "photo"} label="Photo" mobile onClick={() => setActiveTab("photo")} />
 						<TabButton
 							active={activeTab === "guestbook"}
 							label="Guest"
@@ -194,30 +151,20 @@ export function LinkedInViewer() {
 
 // -- Sub Components --
 
-function TabButton({
-	label,
-	active,
-	onClick,
-	mobile = false,
-}: {
-	label: string;
-	active: boolean;
-	onClick: () => void;
-	mobile?: boolean;
-}) {
-	if (mobile) {
+function TabButton(props: { label: string; active: boolean; onClick: () => void; mobile?: boolean }) {
+	if (props.mobile) {
 		return (
 			<button
 				className={cn(
-					"px-3 py-1.5 rounded-md text-[10px] @sm:text-xs border text-white transition-all flex items-center shrink-0",
-					active
-						? "bg-white text-gray-800 border-gray-400 font-bold"
-						: "bg-[#238db4] border-[#1b7291] hover:bg-[#2aa6d3]",
+					"flex shrink-0 items-center rounded-md border px-3 py-1.5 @sm:text-xs text-[10px] text-white transition-all",
+					props.active
+						? "border-gray-400 bg-white font-bold text-gray-800"
+						: "border-[#1b7291] bg-[#238db4] hover:bg-[#2aa6d3]",
 				)}
-				onClick={onClick}
+				onClick={props.onClick}
 				type="button"
 			>
-				{label}
+				{props.label}
 			</button>
 		);
 	}
@@ -225,31 +172,29 @@ function TabButton({
 	return (
 		<button
 			className={cn(
-				"w-[74px] h-[30px] rounded-r-md text-xs border border-l-0 text-white transition-all flex items-center pl-2 mb-0.5",
-				active
-					? "bg-white text-gray-800 border-gray-400 font-bold translate-x-[-2px] z-20 border-l border-l-white"
-					: "bg-[#238db4] border-[#1b7291] hover:bg-[#2aa6d3]",
+				"mb-0.5 flex h-[30px] w-[74px] items-center rounded-r-md border border-l-0 pl-2 text-white text-xs transition-all",
+				props.active
+					? "z-20 translate-x-[-2px] border-gray-400 border-l border-l-white bg-white font-bold text-gray-800"
+					: "border-[#1b7291] bg-[#238db4] hover:bg-[#2aa6d3]",
 			)}
-			onClick={onClick}
+			onClick={props.onClick}
 			type="button"
 		>
-			{label}
+			{props.label}
 		</button>
 	);
 }
 
-function HomeView({ profile }: { profile: LinkedInProfile }) {
+function HomeView(props: { profile: LinkedInProfile }) {
 	return (
-		<div className="flex flex-col gap-2 @sm:gap-4 h-full">
+		<div className="flex h-full flex-col @sm:gap-4 gap-2">
 			{/* BGM Player Mock */}
-			<div className="w-full bg-[#efefef] border border-gray-300 p-0.5 @sm:p-1 flex items-center justify-between text-[9px] @sm:text-[11px] rounded-sm px-1 @sm:px-2">
-				<div className="flex items-center gap-0.5 @sm:gap-1 min-w-0">
-					<Music className="@sm:w-3 @sm:h-3 text-gray-500 shrink-0" size={10} />
-					<span className="font-bold text-gray-700 truncate">
-						Now Playing: Developer's Life - Coding All Night.mp3
-					</span>
+			<div className="flex w-full items-center justify-between rounded-sm border border-gray-300 bg-[#efefef] @sm:p-1 p-0.5 @sm:px-2 px-1 @sm:text-[11px] text-[9px]">
+				<div className="flex min-w-0 items-center @sm:gap-1 gap-0.5">
+					<Music className="@sm:h-3 @sm:w-3 shrink-0 text-gray-500" size={10} />
+					<span className="truncate font-bold text-gray-700">Now Playing: Developer's Life - Coding All Night.mp3</span>
 				</div>
-				<div className="flex gap-1 @sm:gap-2 text-gray-400 shrink-0">
+				<div className="flex shrink-0 @sm:gap-2 gap-1 text-gray-400">
 					<span>◀</span>
 					<span>II</span>
 					<span>▶</span>
@@ -257,59 +202,52 @@ function HomeView({ profile }: { profile: LinkedInProfile }) {
 			</div>
 
 			{/* Latest Posts Preview */}
-			<div className="flex gap-1 @sm:gap-2 text-[9px] @sm:text-[11px] text-gray-600 mb-1 @sm:mb-2 px-0.5 @sm:px-1">
-				<span className="text-orange-500 font-bold shrink-0">News</span>
-				<span className="flex-1 truncate">
-					Updated portfolio with new projects!
-				</span>
-				<span className="text-gray-400 shrink-0 hidden @sm:inline">10.28</span>
+			<div className="@sm:mb-2 mb-1 flex @sm:gap-2 gap-1 @sm:px-1 px-0.5 @sm:text-[11px] text-[9px] text-gray-600">
+				<span className="shrink-0 font-bold text-orange-500">News</span>
+				<span className="flex-1 truncate">Updated portfolio with new projects!</span>
+				<span className="@sm:inline hidden shrink-0 text-gray-400">10.28</span>
 			</div>
 
 			{/* Miniroom */}
-			<div className="w-full bg-[#c3d6e2] border border-gray-300 rounded p-2 @sm:p-4 relative h-[180px] @sm:h-[250px] shadow-inner flex flex-col items-center justify-center">
-				<div className="absolute top-1 @sm:top-2 left-1 @sm:left-2 text-[9px] @sm:text-[10px] text-gray-500">
+			<div className="relative flex @sm:h-[250px] h-[180px] w-full flex-col items-center justify-center rounded border border-gray-300 bg-[#c3d6e2] @sm:p-4 p-2 shadow-inner">
+				<div className="absolute @sm:top-2 top-1 @sm:left-2 left-1 @sm:text-[10px] text-[9px] text-gray-500">
 					My Miniroom
 				</div>
 
 				{/* Simple CSS Art Room */}
-				<div className="relative w-[200px] h-[120px] @sm:w-[300px] @sm:h-[180px]">
+				<div className="relative @sm:h-[180px] h-[120px] @sm:w-[300px] w-[200px]">
 					{/* Floor */}
-					<div className="absolute bottom-0 w-full h-[60px] bg-[#e0cba8] border-t border-[#c0a880] transform skew-x-[-20deg] origin-bottom-left z-0"></div>
+					<div className="absolute bottom-0 z-0 h-[60px] w-full origin-bottom-left skew-x-[-20deg] transform border-[#c0a880] border-t bg-[#e0cba8]"></div>
 					{/* Wall L */}
-					<div className="absolute top-0 left-0 w-[100px] h-[120px] bg-[#eef4f8] border-r border-gray-300 transform skew-y-20 origin-top-right z-0"></div>
+					<div className="absolute top-0 left-0 z-0 h-[120px] w-[100px] origin-top-right skew-y-20 transform border-gray-300 border-r bg-[#eef4f8]"></div>
 					{/* Wall R */}
-					<div className="absolute top-0 right-0 w-[200px] h-[120px] bg-[#dcebf5] z-0"></div>
+					<div className="absolute top-0 right-0 z-0 h-[120px] w-[200px] bg-[#dcebf5]"></div>
 
 					{/* Avatar (Pixel-ish) */}
-					<div className="absolute bottom-10 left-1/2 transform -translate-x-1/2 flex flex-col items-center z-10">
-						<div className="w-8 h-8 bg-black rounded-full mb-1 border-2 border-white"></div>{" "}
-						{/* Head */}
-						<div className="w-6 h-10 bg-blue-600 rounded-t-lg"></div>{" "}
-						{/* Body */}
-						<div className="bg-white px-2 py-0.5 text-[9px] border border-gray-400 rounded mt-1 shadow-sm whitespace-nowrap">
+					<div className="absolute bottom-10 left-1/2 z-10 flex -translate-x-1/2 transform flex-col items-center">
+						<div className="mb-1 h-8 w-8 rounded-full border-2 border-white bg-black"></div> {/* Head */}
+						<div className="h-10 w-6 rounded-t-lg bg-blue-600"></div> {/* Body */}
+						<div className="mt-1 whitespace-nowrap rounded border border-gray-400 bg-white px-2 py-0.5 text-[9px] shadow-sm">
 							Welcome to my home!
 						</div>
 					</div>
 
 					{/* Furniture: Desk */}
-					<div className="absolute bottom-16 right-10 w-16 h-10 bg-amber-800 rounded-sm z-10">
-						<div className="absolute -top-4 left-2 w-8 h-6 bg-black border-2 border-gray-600 rounded-t-md"></div>{" "}
+					<div className="absolute right-10 bottom-16 z-10 h-10 w-16 rounded-sm bg-amber-800">
+						<div className="absolute -top-4 left-2 h-6 w-8 rounded-t-md border-2 border-gray-600 bg-black"></div>{" "}
 						{/* Monitor */}
 					</div>
 				</div>
 			</div>
 
 			{/* What's Friends Say (Headline) */}
-			<div className="mt-1 @sm:mt-2 border-t border-dotted border-gray-300 pt-1 @sm:pt-2">
-				<h3 className="text-[10px] @sm:text-xs font-bold text-blue-800 mb-1 @sm:mb-2">
-					Updated News
-				</h3>
-				<div className="text-[9px] @sm:text-[11px] text-gray-600 space-y-0.5 @sm:space-y-1">
-					<p>• {profile.personal_information.job_title}</p>
+			<div className="@sm:mt-2 mt-1 border-gray-300 border-t border-dotted @sm:pt-2 pt-1">
+				<h3 className="@sm:mb-2 mb-1 font-bold @sm:text-xs text-[10px] text-blue-800">Updated News</h3>
+				<div className="@sm:space-y-1 space-y-0.5 @sm:text-[11px] text-[9px] text-gray-600">
+					<p>• {props.profile.personal_information.job_title}</p>
 					<p>
 						• Currently working at{" "}
-						{profile.work_experience.find((p) => p.end_date === "Present")
-							?.company || "Unknown"}
+						{props.profile.work_experience.find((p) => p.end_date === "Present")?.company || "Unknown"}
 					</p>
 				</div>
 			</div>
@@ -317,36 +255,31 @@ function HomeView({ profile }: { profile: LinkedInProfile }) {
 	);
 }
 
-function ProfileView({ profile }: { profile: LinkedInProfile }) {
-	const vanityName = extractVanityName(
-		profile.personal_information.contact.linkedin,
-	);
+function ProfileView(props: { profile: LinkedInProfile }) {
+	const vanityName = extractVanityName(props.profile.personal_information.contact.linkedin);
 	return (
-		<div className="p-1 @sm:p-2">
-			<div className="bg-[#fcfcfc] border border-gray-200 p-2 @sm:p-4 rounded shadow-sm">
-				<h2 className="text-xs @sm:text-sm font-bold text-blue-800 mb-2 @sm:mb-3 border-b border-gray-200 pb-1">
+		<div className="@sm:p-2 p-1">
+			<div className="rounded border border-gray-200 bg-[#fcfcfc] @sm:p-4 p-2 shadow-sm">
+				<h2 className="@sm:mb-3 mb-2 border-gray-200 border-b pb-1 font-bold @sm:text-sm text-blue-800 text-xs">
 					Intro
 				</h2>
-				<div className="text-[10px] @sm:text-xs text-gray-700 leading-relaxed whitespace-pre-line">
-					{profile.summary}
+				<div className="whitespace-pre-line @sm:text-xs text-[10px] text-gray-700 leading-relaxed">
+					{props.profile.summary}
 				</div>
 
-				<h2 className="text-xs @sm:text-sm font-bold text-blue-800 mt-4 @sm:mt-6 mb-2 @sm:mb-3 border-b border-gray-200 pb-1">
+				<h2 className="@sm:mt-6 mt-4 @sm:mb-3 mb-2 border-gray-200 border-b pb-1 font-bold @sm:text-sm text-blue-800 text-xs">
 					Contact
 				</h2>
-				<div className="text-[10px] @sm:text-xs text-gray-700 space-y-1 @sm:space-y-2">
-					{profile.personal_information.location && (
+				<div className="@sm:space-y-2 space-y-1 @sm:text-xs text-[10px] text-gray-700">
+					{props.profile.personal_information.location && (
 						<p>
-							<span className="font-bold inline-block w-12 @sm:w-16">
-								Location:
-							</span>{" "}
-							{profile.personal_information.location}
+							<span className="inline-block @sm:w-16 w-12 font-bold">Location:</span>{" "}
+							{props.profile.personal_information.location}
 						</p>
 					)}
 					{vanityName && (
 						<p>
-							<span className="font-bold inline-block w-12 @sm:w-16">ID:</span>{" "}
-							{vanityName}
+							<span className="inline-block @sm:w-16 w-12 font-bold">ID:</span> {vanityName}
 						</p>
 					)}
 				</div>
@@ -355,45 +288,36 @@ function ProfileView({ profile }: { profile: LinkedInProfile }) {
 	);
 }
 
-function DiaryView({ profile }: { profile: LinkedInProfile }) {
+function DiaryView(props: { profile: LinkedInProfile }) {
 	return (
-		<div className="space-y-4 @sm:space-y-6 p-1 @sm:p-2">
-			{profile.work_experience.map((exp) => (
+		<div className="@sm:space-y-6 space-y-4 @sm:p-2 p-1">
+			{props.profile.work_experience.map((exp) => (
 				<div className="bg-white" key={`${exp.company}-${exp.role}`}>
 					{/* Date Header */}
-					<div className="flex items-center gap-1 @sm:gap-2 mb-1 @sm:mb-2">
-						<span className="text-orange-500 font-bold text-[10px] @sm:text-[11px]">
-							{exp.start_date || "Unknown"}
-						</span>
-						<div className="h-px bg-gray-200 flex-1"></div>
+					<div className="@sm:mb-2 mb-1 flex items-center @sm:gap-2 gap-1">
+						<span className="font-bold @sm:text-[11px] text-[10px] text-orange-500">{exp.start_date || "Unknown"}</span>
+						<div className="h-px flex-1 bg-gray-200"></div>
 					</div>
 
 					{/* Diary Entry */}
-					<div className="bg-[#f9f9f9] p-2 @sm:p-4 border border-gray-200 rounded-sm shadow-sm">
-						<h3 className="font-bold text-xs @sm:text-sm text-gray-800 mb-1">
-							{exp.role}
-						</h3>
-						<div className="text-[10px] @sm:text-xs text-blue-600 mb-2 @sm:mb-3 font-semibold flex items-center gap-1 @sm:gap-2 flex-wrap">
+					<div className="rounded-sm border border-gray-200 bg-[#f9f9f9] @sm:p-4 p-2 shadow-sm">
+						<h3 className="mb-1 font-bold @sm:text-sm text-gray-800 text-xs">{exp.role}</h3>
+						<div className="@sm:mb-3 mb-2 flex flex-wrap items-center @sm:gap-2 gap-1 font-semibold @sm:text-xs text-[10px] text-blue-600">
 							<span className="min-w-0">{exp.company}</span>
 							{exp.location && (
-								<span className="text-gray-400 font-normal text-[9px] @sm:text-[10px]">
-									({exp.location})
-								</span>
+								<span className="font-normal @sm:text-[10px] text-[9px] text-gray-400">({exp.location})</span>
 							)}
 						</div>
 
-						<div className="text-[10px] @sm:text-xs text-gray-600 leading-relaxed whitespace-pre-wrap font-sans">
+						<div className="whitespace-pre-wrap font-sans @sm:text-xs text-[10px] text-gray-600 leading-relaxed">
 							{exp.description}
 						</div>
 
 						{/* Achievements */}
 						{exp.achievements && exp.achievements.length > 0 && (
-							<div className="mt-2 @sm:mt-4 space-y-1">
+							<div className="@sm:mt-4 mt-2 space-y-1">
 								{exp.achievements.map((achievement) => (
-									<div
-										className="text-[10px] @sm:text-xs text-gray-700"
-										key={achievement}
-									>
+									<div className="@sm:text-xs text-[10px] text-gray-700" key={achievement}>
 										• {achievement}
 									</div>
 								))}
@@ -402,7 +326,7 @@ function DiaryView({ profile }: { profile: LinkedInProfile }) {
 					</div>
 
 					{/* Footer */}
-					<div className="mt-1 text-[9px] @sm:text-[10px] text-gray-400 text-right">
+					<div className="mt-1 text-right @sm:text-[10px] text-[9px] text-gray-400">
 						Feeling: 💻 Productive | Weather: ☀️ Sunny
 					</div>
 				</div>
@@ -411,47 +335,41 @@ function DiaryView({ profile }: { profile: LinkedInProfile }) {
 	);
 }
 
-function PhotoView({ profile }: { profile: LinkedInProfile }) {
+function PhotoView(props: { profile: LinkedInProfile }) {
 	// Combine education and certifications into a photo gallery style
 	const items: (Education | Certification)[] = [
-		...(profile.education || []),
-		...(profile.certifications || []),
+		...(props.profile.education || []),
+		...(props.profile.certifications || []),
 	];
 
 	return (
-		<div className="grid grid-cols-1 @sm:grid-cols-2 gap-2 @sm:gap-4 p-1 @sm:p-2">
+		<div className="grid @sm:grid-cols-2 grid-cols-1 @sm:gap-4 gap-2 @sm:p-2 p-1">
 			{items.map((item) => {
 				const uniqueKey =
-					"institution" in item
-						? `${item.institution}-${item.degree || ""}`
-						: `${item.name}-${item.level || ""}`;
+					"institution" in item ? `${item.institution}-${item.degree || ""}` : `${item.name}-${item.level || ""}`;
 				return (
 					<div
-						className="bg-white border border-gray-300 p-1.5 @sm:p-2 shadow-sm flex flex-col items-center text-center hover:border-orange-300 transition-colors cursor-pointer group"
+						className="group flex cursor-pointer flex-col items-center border border-gray-300 bg-white @sm:p-2 p-1.5 text-center shadow-sm transition-colors hover:border-orange-300"
 						key={uniqueKey}
 					>
-						<div className="w-full aspect-square bg-gray-100 mb-1 @sm:mb-2 flex items-center justify-center overflow-hidden border border-gray-200">
-							<div className="text-gray-300 group-hover:text-orange-300 transition-colors">
-								<Camera className="@sm:w-8 @sm:h-8" size={24} />
+						<div className="@sm:mb-2 mb-1 flex aspect-square w-full items-center justify-center overflow-hidden border border-gray-200 bg-gray-100">
+							<div className="text-gray-300 transition-colors group-hover:text-orange-300">
+								<Camera className="@sm:h-8 @sm:w-8" size={24} />
 							</div>
 						</div>
-						<h4 className="font-bold text-[10px] @sm:text-xs text-gray-800 line-clamp-1">
+						<h4 className="line-clamp-1 font-bold @sm:text-xs text-[10px] text-gray-800">
 							{"institution" in item ? item.institution : item.name}
 						</h4>
-						<p className="text-[9px] @sm:text-[10px] text-gray-500">
-							{"degree" in item ? item.degree : item.level}
-						</p>
-						<p className="text-[9px] @sm:text-[10px] text-gray-400 mt-0.5 @sm:mt-1">
-							{"start_year" in item
-								? `${item.start_year} ~ ${item.end_year || ""}`
-								: item.year}
+						<p className="@sm:text-[10px] text-[9px] text-gray-500">{"degree" in item ? item.degree : item.level}</p>
+						<p className="@sm:mt-1 mt-0.5 @sm:text-[10px] text-[9px] text-gray-400">
+							{"start_year" in item ? `${item.start_year} ~ ${item.end_year || ""}` : item.year}
 						</p>
 					</div>
 				);
 			})}
 
 			{items.length === 0 && (
-				<div className="col-span-1 @sm:col-span-2 text-center text-gray-400 py-6 @sm:py-10 text-[10px] @sm:text-xs">
+				<div className="@sm:col-span-2 col-span-1 @sm:py-10 py-6 text-center @sm:text-xs text-[10px] text-gray-400">
 					No photos uploaded yet.
 				</div>
 			)}
@@ -459,27 +377,27 @@ function PhotoView({ profile }: { profile: LinkedInProfile }) {
 	);
 }
 
-function GuestbookView({ profile }: { profile: LinkedInProfile }) {
+function GuestbookView(props: { profile: LinkedInProfile }) {
 	// Flatten skills object into a single array
 	const allSkills = [
-		...(profile.skills.programming_languages || []),
-		...(profile.skills.frontend || []),
-		...(profile.skills.backend_cloud || []),
-		...(profile.skills.tools || []),
-		...(profile.skills.frameworks || []),
+		...(props.profile.skills.programming_languages || []),
+		...(props.profile.skills.frontend || []),
+		...(props.profile.skills.backend_cloud || []),
+		...(props.profile.skills.tools || []),
+		...(props.profile.skills.frameworks || []),
 	];
 
 	return (
-		<div className="space-y-3 @sm:space-y-4 p-1 @sm:p-2">
+		<div className="@sm:space-y-4 space-y-3 @sm:p-2 p-1">
 			{/* Write Entry Mock */}
-			<div className="bg-[#f0f0f0] p-2 @sm:p-3 border border-gray-300 rounded-sm mb-4 @sm:mb-6">
-				<div className="flex gap-1 @sm:gap-2 mb-1 @sm:mb-2">
-					<div className="w-6 h-6 @sm:w-8 @sm:h-8 bg-gray-300 rounded-full shrink-0"></div>
-					<div className="flex-1 bg-white border border-gray-300 h-6 @sm:h-8 flex items-center px-1 @sm:px-2 text-[10px] @sm:text-xs text-gray-400 min-w-0">
+			<div className="@sm:mb-6 mb-4 rounded-sm border border-gray-300 bg-[#f0f0f0] @sm:p-3 p-2">
+				<div className="@sm:mb-2 mb-1 flex @sm:gap-2 gap-1">
+					<div className="@sm:h-8 h-6 @sm:w-8 w-6 shrink-0 rounded-full bg-gray-300"></div>
+					<div className="flex @sm:h-8 h-6 min-w-0 flex-1 items-center border border-gray-300 bg-white @sm:px-2 px-1 @sm:text-xs text-[10px] text-gray-400">
 						Write a message...
 					</div>
 					<button
-						className="bg-[#238db4] text-white px-2 @sm:px-3 text-[10px] @sm:text-xs rounded-sm shrink-0 whitespace-nowrap"
+						className="shrink-0 whitespace-nowrap rounded-sm bg-[#238db4] @sm:px-3 px-2 @sm:text-xs text-[10px] text-white"
 						type="button"
 					>
 						Ok
@@ -489,40 +407,28 @@ function GuestbookView({ profile }: { profile: LinkedInProfile }) {
 
 			{/* Skill List as Guestbook Entries */}
 			{allSkills.map((skill, index) => (
-				<div
-					className="bg-white border-b border-gray-200 pb-1.5 @sm:pb-2 mb-1.5 @sm:mb-2"
-					key={skill}
-				>
-					<div className="flex justify-between items-center bg-[#f5f5f5] px-1 @sm:px-2 py-0.5 @sm:py-1 mb-1 rounded-sm flex-wrap gap-1">
-						<div className="flex items-center gap-0.5 @sm:gap-1 text-[10px] @sm:text-[11px]">
-							<span className="font-bold text-blue-800">
-								NO. {allSkills.length - index}
-							</span>
-							<span className="text-gray-500 font-bold ml-1 @sm:ml-2">
-								Recruiter
-							</span>
-							<span className="text-gray-400 hidden @sm:inline">
-								(2026.01.12)
-							</span>
+				<div className="@sm:mb-2 mb-1.5 border-gray-200 border-b bg-white @sm:pb-2 pb-1.5" key={skill}>
+					<div className="mb-1 flex flex-wrap items-center justify-between gap-1 rounded-sm bg-[#f5f5f5] @sm:px-2 px-1 @sm:py-1 py-0.5">
+						<div className="flex items-center @sm:gap-1 gap-0.5 @sm:text-[11px] text-[10px]">
+							<span className="font-bold text-blue-800">NO. {allSkills.length - index}</span>
+							<span className="@sm:ml-2 ml-1 font-bold text-gray-500">Recruiter</span>
+							<span className="@sm:inline hidden text-gray-400">(2026.01.12)</span>
 						</div>
-						<div className="flex gap-1 text-[9px] @sm:text-[10px] text-gray-400">
+						<div className="flex gap-1 @sm:text-[10px] text-[9px] text-gray-400">
 							<span>Secret</span> | <span>Delete</span>
 						</div>
 					</div>
 
-					<div className="flex gap-2 @sm:gap-3 px-1 @sm:px-2">
-						<div className="w-12 h-12 @sm:w-16 @sm:h-16 bg-gray-100 border border-gray-200 flex items-center justify-center shrink-0">
-							<User className="@sm:w-6 @sm:h-6 text-gray-300" size={18} />
+					<div className="flex @sm:gap-3 gap-2 @sm:px-2 px-1">
+						<div className="flex @sm:h-16 h-12 @sm:w-16 w-12 shrink-0 items-center justify-center border border-gray-200 bg-gray-100">
+							<User className="@sm:h-6 @sm:w-6 text-gray-300" size={18} />
 						</div>
-						<div className="flex-1 text-[10px] @sm:text-xs text-gray-700 py-0.5 @sm:py-1 min-w-0">
+						<div className="min-w-0 flex-1 @sm:py-1 py-0.5 @sm:text-xs text-[10px] text-gray-700">
 							<p>
 								Wow! You are really good at{" "}
-								<span className="font-bold text-orange-600 bg-orange-50 px-0.5 @sm:px-1">
-									{skill}
-								</span>
-								!
+								<span className="bg-orange-50 @sm:px-1 px-0.5 font-bold text-orange-600">{skill}</span>!
 							</p>
-							<p className="mt-0.5 @sm:mt-1">We should definitely hire you.</p>
+							<p className="@sm:mt-1 mt-0.5">We should definitely hire you.</p>
 						</div>
 					</div>
 				</div>

@@ -1,4 +1,4 @@
-export type JobStatus = 'running' | 'failed' | 'success' | 'cancelled';
+export type JobStatus = "running" | "failed" | "success" | "cancelled";
 
 export interface StoredJob {
 	id: string;
@@ -6,7 +6,7 @@ export interface StoredJob {
 	timestamp: number;
 	startTime: number;
 	endTime?: number;
-	powerPreference: 'high-performance' | 'low-power';
+	powerPreference: "high-performance" | "low-power";
 	originalImage: Blob;
 	processedImage?: Blob; // Only present for successful jobs
 	error?: {
@@ -17,9 +17,9 @@ export interface StoredJob {
 	progressPercentage?: number; // Progress percentage (0-100)
 }
 
-const DB_NAME = 'backgroundRemovalDB';
+const DB_NAME = "backgroundRemovalDB";
 const DB_VERSION = 1;
-const STORE_NAME = 'jobs';
+const STORE_NAME = "jobs";
 
 let dbPromise: Promise<IDBDatabase> | null = null;
 
@@ -42,9 +42,9 @@ function openDB(): Promise<IDBDatabase> {
 		request.onupgradeneeded = (event) => {
 			const db = (event.target as IDBOpenDBRequest).result;
 			if (!db.objectStoreNames.contains(STORE_NAME)) {
-				const objectStore = db.createObjectStore(STORE_NAME, { keyPath: 'id' });
-				objectStore.createIndex('status', 'status', { unique: false });
-				objectStore.createIndex('timestamp', 'timestamp', { unique: false });
+				const objectStore = db.createObjectStore(STORE_NAME, { keyPath: "id" });
+				objectStore.createIndex("status", "status", { unique: false });
+				objectStore.createIndex("timestamp", "timestamp", { unique: false });
 			}
 		};
 	});
@@ -55,7 +55,7 @@ function openDB(): Promise<IDBDatabase> {
 export async function saveJob(job: StoredJob): Promise<void> {
 	const db = await openDB();
 	return new Promise((resolve, reject) => {
-		const transaction = db.transaction([STORE_NAME], 'readwrite');
+		const transaction = db.transaction([STORE_NAME], "readwrite");
 		const store = transaction.objectStore(STORE_NAME);
 		const request = store.put(job);
 
@@ -72,11 +72,11 @@ export async function saveJob(job: StoredJob): Promise<void> {
 export async function updateJobStatus(
 	id: string,
 	status: JobStatus,
-	updates?: Partial<Pick<StoredJob, 'error' | 'processedImage' | 'progress' | 'progressPercentage' | 'endTime'>>,
+	updates?: Partial<Pick<StoredJob, "error" | "processedImage" | "progress" | "progressPercentage" | "endTime">>,
 ): Promise<void> {
 	const db = await openDB();
 	return new Promise((resolve, reject) => {
-		const transaction = db.transaction([STORE_NAME], 'readwrite');
+		const transaction = db.transaction([STORE_NAME], "readwrite");
 		const store = transaction.objectStore(STORE_NAME);
 		const getRequest = store.get(id);
 
@@ -93,7 +93,7 @@ export async function updateJobStatus(
 				...(updates || {}),
 			};
 
-			if (status === 'cancelled' || status === 'failed' || status === 'success') {
+			if (status === "cancelled" || status === "failed" || status === "success") {
 				updatedJob.endTime = Date.now();
 			}
 
@@ -115,7 +115,7 @@ export async function updateJobStatus(
 export async function getJob(id: string): Promise<StoredJob | undefined> {
 	const db = await openDB();
 	return new Promise((resolve, reject) => {
-		const transaction = db.transaction([STORE_NAME], 'readonly');
+		const transaction = db.transaction([STORE_NAME], "readonly");
 		const store = transaction.objectStore(STORE_NAME);
 		const request = store.get(id);
 
@@ -132,7 +132,7 @@ export async function getJob(id: string): Promise<StoredJob | undefined> {
 export async function getAllJobs(): Promise<StoredJob[]> {
 	const db = await openDB();
 	return new Promise((resolve, reject) => {
-		const transaction = db.transaction([STORE_NAME], 'readonly');
+		const transaction = db.transaction([STORE_NAME], "readonly");
 		const store = transaction.objectStore(STORE_NAME);
 		const request = store.getAll();
 
@@ -149,9 +149,9 @@ export async function getAllJobs(): Promise<StoredJob[]> {
 export async function getJobsByStatus(status: JobStatus): Promise<StoredJob[]> {
 	const db = await openDB();
 	return new Promise((resolve, reject) => {
-		const transaction = db.transaction([STORE_NAME], 'readonly');
+		const transaction = db.transaction([STORE_NAME], "readonly");
 		const store = transaction.objectStore(STORE_NAME);
-		const index = store.index('status');
+		const index = store.index("status");
 		const request = index.getAll(status);
 
 		request.onsuccess = () => {
@@ -167,7 +167,7 @@ export async function getJobsByStatus(status: JobStatus): Promise<StoredJob[]> {
 export async function deleteJob(id: string): Promise<void> {
 	const db = await openDB();
 	return new Promise((resolve, reject) => {
-		const transaction = db.transaction([STORE_NAME], 'readwrite');
+		const transaction = db.transaction([STORE_NAME], "readwrite");
 		const store = transaction.objectStore(STORE_NAME);
 		const request = store.delete(id);
 
@@ -181,27 +181,18 @@ export async function deleteJob(id: string): Promise<void> {
 	});
 }
 
-/**
- * Marks all jobs with status "running" as "cancelled".
- * This should be called on app startup to clean up jobs that were interrupted
- * by browser close or other unexpected termination.
- */
-export async function cancelStaleRunningJobs(): Promise<number> {
-	const runningJobs = await getJobsByStatus('running');
+export async function cancelRunningJobs(): Promise<number> {
+	const runningJobs = await getJobsByStatus("running");
 	const now = Date.now();
-	const STALE_THRESHOLD = 60 * 60 * 1000; // 1 hour
 
 	let cancelledCount = 0;
 
 	for (const job of runningJobs) {
-		// Mark as cancelled if it's been running for more than 1 hour, or just mark all as cancelled
-		const isStale = now - job.startTime > STALE_THRESHOLD;
-		if (isStale || true) { // Always cancel stale running jobs on startup
-			await updateJobStatus(job.id, 'cancelled', {
-				endTime: now,
-			});
-			cancelledCount++;
-		}
+		// Always cancel stale running jobs on startup
+		await updateJobStatus(job.id, "cancelled", {
+			endTime: now,
+		});
+		cancelledCount++;
 	}
 
 	return cancelledCount;

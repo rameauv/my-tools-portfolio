@@ -12,17 +12,9 @@ interface WindowContextType {
 
 const WindowContext = createContext<WindowContextType | undefined>(undefined);
 
-export function WindowProvider({
-	children,
-	openWindow,
-}: {
-	children: React.ReactNode;
-	openWindow: (config: OpenWindowConfig) => void;
-}) {
+export function WindowProvider(params: { children: React.ReactNode; openWindow: (config: OpenWindowConfig) => void }) {
 	const [isSnappingWindow, setIsSnappingWindow] = useState(false);
-	const [snappingSide, setSnappingSide] = useState<"left" | "right" | null>(
-		null,
-	);
+	const [snappingSide, setSnappingSide] = useState<"left" | "right" | null>(null);
 
 	const value = useMemo(
 		() => ({
@@ -30,14 +22,12 @@ export function WindowProvider({
 			setIsSnappingWindow,
 			snappingSide,
 			setSnappingSide,
-			openWindow,
+			openWindow: params.openWindow,
 		}),
-		[isSnappingWindow, snappingSide, openWindow],
+		[isSnappingWindow, snappingSide, params.openWindow],
 	);
 
-	return (
-		<WindowContext.Provider value={value}>{children}</WindowContext.Provider>
-	);
+	return <WindowContext.Provider value={value}>{params.children}</WindowContext.Provider>;
 }
 
 export function useWindowContext() {

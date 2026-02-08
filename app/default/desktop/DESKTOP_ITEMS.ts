@@ -1,4 +1,5 @@
 import { appBackgroundRemover } from "../apps/app-background-remover";
+import { appMimeType } from "../apps/app-file-type-detector";
 import { appGitHubExplorer } from "../apps/app-github-explorer";
 import { appImageConverter } from "../apps/app-image-converter";
 import { appLinkedin } from "../apps/app-linkedin";
@@ -13,6 +14,8 @@ export const DESKTOP_ITEMS: DesktopItem[] = [
 			title: appGitHubExplorer.def.title,
 			component: appGitHubExplorer.def.component,
 			groupingId: appGitHubExplorer.def.groupingId,
+			defaultWidth: appGitHubExplorer.def.defaultWidth,
+			defaultHeight: appGitHubExplorer.def.defaultHeight,
 		},
 		x: 0,
 		y: 0,
@@ -25,6 +28,8 @@ export const DESKTOP_ITEMS: DesktopItem[] = [
 			title: appLinkedin.def.title,
 			component: appLinkedin.def.component,
 			groupingId: appLinkedin.def.groupingId,
+			defaultWidth: appLinkedin.def.defaultWidth,
+			defaultHeight: appLinkedin.def.defaultHeight,
 		},
 		x: 0,
 		y: 100,
@@ -37,6 +42,8 @@ export const DESKTOP_ITEMS: DesktopItem[] = [
 			title: appBackgroundRemover.def.title,
 			component: appBackgroundRemover.def.component,
 			groupingId: appBackgroundRemover.def.groupingId,
+			defaultWidth: appBackgroundRemover.def.defaultWidth,
+			defaultHeight: appBackgroundRemover.def.defaultHeight,
 		},
 		x: 0,
 		y: 200,
@@ -54,5 +61,19 @@ export const DESKTOP_ITEMS: DesktopItem[] = [
 		},
 		x: 0,
 		y: 300,
+	},
+	{
+		data: {
+			id: 5,
+			appId: appMimeType.def.appId,
+			icon: appMimeType.def.iconSrc,
+			title: appMimeType.def.title,
+			component: appMimeType.def.component,
+			groupingId: appMimeType.def.groupingId,
+			defaultWidth: appMimeType.def.defaultWidth,
+			defaultHeight: appMimeType.def.defaultHeight,
+		},
+		x: 0,
+		y: 400,
 	},
 ];

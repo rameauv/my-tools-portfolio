@@ -1,34 +1,34 @@
-import { useEffect, useRef, useCallback } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
 // Worker message types
 interface ProcessImageMessage {
-	type: 'PROCESS_IMAGE';
+	type: "PROCESS_IMAGE";
 	jobId: string;
 	imageData: ArrayBuffer;
-	powerPreference: 'high-performance' | 'low-power';
+	powerPreference: "high-performance" | "low-power";
 }
 
 interface CancelMessage {
-	type: 'CANCEL';
+	type: "CANCEL";
 	jobId: string;
 }
 
 // Worker response types
 interface ProgressResponse {
-	type: 'PROGRESS';
+	type: "PROGRESS";
 	jobId: string;
 	progress: string;
 	percentage: number;
 }
 
 interface SuccessResponse {
-	type: 'SUCCESS';
+	type: "SUCCESS";
 	jobId: string;
 	result: ArrayBuffer;
 }
 
 interface ErrorResponse {
-	type: 'ERROR';
+	type: "ERROR";
 	jobId: string;
 	error: {
 		message: string;
@@ -37,7 +37,7 @@ interface ErrorResponse {
 }
 
 interface CancelledResponse {
-	type: 'CANCELLED';
+	type: "CANCELLED";
 	jobId: string;
 }
 
@@ -63,7 +63,7 @@ export function useBackgroundRemovalWorker({
 		onSuccess: onSuccess,
 		onError: onError,
 		onCancelled: onCancelled,
-	})
+	});
 
 	useEffect(() => {
 		statusHandler.current.onProgress = onProgress;
@@ -76,16 +76,13 @@ export function useBackgroundRemovalWorker({
 		async (
 			jobId: string,
 			imageUrl: string,
-			powerPreference: 'high-performance' | 'low-power',
+			powerPreference: "high-performance" | "low-power",
 		): Promise<ArrayBuffer> => {
 			console.log("processImage", jobId, imageUrl, powerPreference);
 			if (worker) {
 				throw new Error("Worker already initialized");
 			}
-			const currentWorker = new Worker(
-				new URL('./background-removal.worker.ts', import.meta.url),
-				{ type: 'module' }
-			);
+			const currentWorker = new Worker(new URL("./background-removal.worker.ts", import.meta.url), { type: "module" });
 			worker = currentWorker;
 
 			// Convert image URL to ArrayBuffer
@@ -94,7 +91,7 @@ export function useBackgroundRemovalWorker({
 
 			// Send message to worker
 			const message: ProcessImageMessage = {
-				type: 'PROCESS_IMAGE',
+				type: "PROCESS_IMAGE",
 				jobId,
 				imageData,
 				powerPreference,
@@ -106,16 +103,16 @@ export function useBackgroundRemovalWorker({
 			return new Promise((resolve, reject) => {
 				const handler = (response: WorkerResponse) => {
 					console.log("handler", response);
-					if (response.type === 'SUCCESS') {
+					if (response.type === "SUCCESS") {
 						resolve(response.result);
 						worker?.terminate();
 						worker = null;
-					} else if (response.type === 'ERROR') {
+					} else if (response.type === "ERROR") {
 						reject(new Error(response.error.message));
 						worker?.terminate();
 						worker = null;
-					} else if (response.type === 'CANCELLED') {
-						reject(new Error('Job cancelled'));
+					} else if (response.type === "CANCELLED") {
+						reject(new Error("Job cancelled"));
 						worker?.terminate();
 						worker = null;
 					}
@@ -125,16 +122,16 @@ export function useBackgroundRemovalWorker({
 					console.log("worker message", event.data);
 					handler(event.data);
 					switch (event.data.type) {
-						case 'PROGRESS':
+						case "PROGRESS":
 							statusHandler.current.onProgress?.(event.data.jobId, event.data.progress, event.data.percentage);
 							break;
-						case 'SUCCESS':
+						case "SUCCESS":
 							statusHandler.current.onSuccess?.(event.data.jobId, event.data.result);
 							break;
-						case 'ERROR':
+						case "ERROR":
 							statusHandler.current.onError?.(event.data.jobId, event.data.error);
 							break;
-						case 'CANCELLED':
+						case "CANCELLED":
 							statusHandler.current.onCancelled?.(event.data.jobId);
 							break;
 					}
@@ -151,13 +148,12 @@ export function useBackgroundRemovalWorker({
 		}
 
 		const message: CancelMessage = {
-			type: 'CANCEL',
+			type: "CANCEL",
 			jobId,
 		};
 
 		worker.postMessage(message);
 	}, []);
-
 
 	return {
 		processImage,

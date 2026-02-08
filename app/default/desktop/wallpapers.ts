@@ -12,9 +12,7 @@ export const wallpapers = {
 	},
 } as const;
 
-export function getWallpaperSrcSet(
-	wallpaper: (typeof wallpapers)[keyof typeof wallpapers],
-): string {
+export function getWallpaperSrcSet(wallpaper: (typeof wallpapers)[keyof typeof wallpapers]): string {
 	return Object.entries(wallpaper.sizes)
 		.map(([width, url]) => `${url} ${width}w`)
 		.join(",\n\t\t\t");

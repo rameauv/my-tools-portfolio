@@ -22,7 +22,6 @@ const OVERSHOOT_THRESHOLD = 300;
 const MIN_X_POS_OVERSHOOT_THRESHOLD = MIN_X_POS - OVERSHOOT_THRESHOLD;
 const MIN_Y_POS_OVERSHOOT_THRESHOLD = MIN_Y_POS - OVERSHOOT_THRESHOLD;
 
-
 export function useWindowDrag(params: UseWindowDragParams) {
 	const [isDragging, setIsDragging] = useState(false);
 	const lastMousePos = useRef({ x: 0, y: 0 });
@@ -48,10 +47,7 @@ export function useWindowDrag(params: UseWindowDragParams) {
 		const target = e.target as HTMLElement;
 		const currentTarget = e.currentTarget as HTMLElement;
 
-		if (
-			target.closest("button") ||
-			currentTarget.querySelector("button")?.contains(target)
-		) {
+		if (target.closest("button") || currentTarget.querySelector("button")?.contains(target)) {
 			return;
 		}
 
@@ -74,8 +70,7 @@ export function useWindowDrag(params: UseWindowDragParams) {
 			const viewportHeight = window.innerHeight;
 
 			const maxX = viewportWidth - windowPosSize.current.width;
-			const maxY =
-				viewportHeight - windowPosSize.current.height - TASKBAR_HEIGHT;
+			const maxY = viewportHeight - windowPosSize.current.height - TASKBAR_HEIGHT;
 
 			const proposedX = windowPosSize.current.x + deltaX;
 			const proposedY = windowPosSize.current.y + deltaY;
@@ -125,25 +120,13 @@ export function useWindowDrag(params: UseWindowDragParams) {
 			let newX = windowPosSize.current.x + dampedDeltaX;
 			let newY = windowPosSize.current.y + dampedDeltaY;
 
-			newX = Math.max(
-				MIN_X_POS_OVERSHOOT_THRESHOLD,
-				Math.min(newX, maxX + OVERSHOOT_THRESHOLD),
-			);
-			newY = Math.max(
-				MIN_Y_POS_OVERSHOOT_THRESHOLD,
-				Math.min(newY, maxY + OVERSHOOT_THRESHOLD),
-			);
+			newX = Math.max(MIN_X_POS_OVERSHOOT_THRESHOLD, Math.min(newX, maxX + OVERSHOOT_THRESHOLD));
+			newY = Math.max(MIN_Y_POS_OVERSHOOT_THRESHOLD, Math.min(newY, maxY + OVERSHOOT_THRESHOLD));
 
 			params.setX(newX);
 			params.setY(newY);
 		},
-		[
-			isDragging,
-			params.setX,
-			params.setY,
-			params.setIsSnappingWindow,
-			params.setSnappingSide,
-		],
+		[isDragging, params.setX, params.setY, params.setIsSnappingWindow, params.setSnappingSide],
 	);
 
 	const onMouseUp = useCallback(
@@ -202,14 +185,7 @@ export function useWindowDrag(params: UseWindowDragParams) {
 				params.setY(targetY);
 			}
 		},
-		[
-			params.setX,
-			params.setY,
-			params.setWidth,
-			params.setHeight,
-			params.setIsSnappingWindow,
-			params.setSnappingSide,
-		],
+		[params.setX, params.setY, params.setWidth, params.setHeight, params.setIsSnappingWindow, params.setSnappingSide],
 	);
 
 	useEffect(() => {

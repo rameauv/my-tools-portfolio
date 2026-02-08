@@ -1,40 +1,24 @@
 import type * as React from "react";
 import { useEffect, useEffectEvent, useRef, useState } from "react";
-import { cancelStaleRunningJobs } from "./apps/app-background-remover/internal/backgroundRemovalDB";
-import { appLinkedin } from "./apps/app-linkedin";
+import { cancelRunningJobs } from "./apps/app-background-remover/internal/backgroundRemovalDB";
 import type { WindowContentProps } from "./apps/WindowContentProps";
 import { BottomBar } from "./bottom-bar/BottomBar";
 import { Desktop } from "./desktop/Desktop";
 import type { DesktopItemData } from "./desktop/DesktopItemData";
-import { Window, type WindowConfig } from "./window/Window";
+import type { WindowConfig } from "./window/models/WindowConfig";
+import { Window } from "./window/Window";
 import { WindowProvider } from "./window-snapping/WindowContext";
 import { WindowSnapping } from "./window-snapping/WindowSnapping";
 
 let windowId = 0;
 
 export function Default() {
-	const [windows, setWindows] = useState<WindowConfig[]>([
-		{
-			id: windowId++,
-			appId: appLinkedin.def.appId,
-			title: appLinkedin.def.title,
-			isMinimized: false,
-			iconSrc: appLinkedin.def.iconSrc,
-			isFocused: false,
-			component: appLinkedin.def.component,
-			defaultWidth: 900,
-			defaultHeight: 700,
-			depth: 2,
-			groupingId: appLinkedin.def.groupingId,
-		},
-	]);
+	const [windows, setWindows] = useState<WindowConfig[]>([]);
 
 	function onMinimize(id: number) {
 		setWindows(
 			windows.map((window) =>
-				window.id === id
-					? { ...window, isMinimized: !window.isMinimized, isFocused: false }
-					: window,
+				window.id === id ? { ...window, isMinimized: !window.isMinimized, isFocused: false } : window,
 			),
 		);
 	}
@@ -97,9 +81,7 @@ export function Default() {
 		defaultWidth?: number;
 		defaultHeight?: number;
 	}) {
-		const existingWindow = windows.find(
-			(windowItem) => windowItem.appId === config.appId,
-		);
+		const existingWindow = windows.find((windowItem) => windowItem.appId === config.appId);
 		if (existingWindow != null) {
 			onFocus(existingWindow.id);
 			return;
@@ -119,11 +101,7 @@ export function Default() {
 			groupingId: config.groupingId,
 			depth: windows.length,
 		};
-		setWindows(
-			windows
-				.map((w) => ({ ...w, isFocused: false, depth: w.depth - 1 }))
-				.concat(newWindow),
-		);
+		setWindows(windows.map((w) => ({ ...w, isFocused: false, depth: w.depth - 1 })).concat(newWindow));
 	}
 
 	const onOpenItem = useEffectEvent((item: DesktopItemData) => {
@@ -138,47 +116,32 @@ export function Default() {
 		});
 	});
 
-	console.log("windows", windows);
 	const windowsContainerRef = useRef<HTMLDivElement>(null);
 
 	// Cleanup stale running jobs on startup
 	useEffect(() => {
-		cancelStaleRunningJobs().catch((error) => {
+		cancelRunningJobs().catch((error) => {
 			console.error("Failed to cancel stale running jobs:", error);
 		});
 	}, []);
 
 	return (
 		<WindowProvider openWindow={openWindow}>
-			<Shell
-				bottomBar={
-					<BottomBar onToggleWindow={onToggleWindow} windows={windows} />
-				}
-			>
+			<Shell bottomBar={<BottomBar onToggleWindow={onToggleWindow} windows={windows} />}>
 				<WindowSnapping>
-					<div className="w-full h-full" ref={windowsContainerRef}>
+					<div className="h-full w-full" ref={windowsContainerRef}>
 						{windows.map((window) => {
 							const Component = window.component;
 							return (
 								<Window
 									config={window}
-									defaultHeight={
-										window.defaultHeight ?? (window.id === 1 ? 600 : 300)
-									}
-									defaultWidth={
-										window.defaultWidth ?? (window.id === 1 ? 800 : 400)
-									}
 									key={`window-${window.id}`}
 									onClose={() => onClose(window.id)}
 									onFocus={() => onFocus(window.id)}
 									onMinimize={() => onMinimize(window.id)}
-									title={window.title}
 									windowsContainerRef={windowsContainerRef}
 								>
-									<Component
-										data={window.componentData}
-										key={`window-content-${window.id}`}
-									/>
+									<Component data={window.componentData} key={`window-content-${window.id}`} />
 								</Window>
 							);
 						})}
@@ -190,13 +153,10 @@ export function Default() {
 	);
 }
 
-function Shell(props: {
-	children: React.ReactNode;
-	bottomBar: React.ReactNode;
-}) {
+function Shell(props: { children: React.ReactNode; bottomBar: React.ReactNode }) {
 	return (
-		<main className="flex flex-col h-screen overflow-hidden">
-			<div className="flex-1 relative overflow-hidden">{props.children}</div>
+		<main className="flex h-screen flex-col overflow-hidden">
+			<div className="relative flex-1 overflow-hidden">{props.children}</div>
 			{props.bottomBar}
 		</main>
 	);

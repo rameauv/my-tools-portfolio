@@ -7,4 +7,6 @@ export const def: AppDef = {
 	iconSrc: "/assets/icons/shell32/23-folder-48.ico",
 	component: GitHubExplorer,
 	groupingId: "GITHUB_EXPLORER",
+	defaultWidth: 900,
+	defaultHeight: 700,
 };

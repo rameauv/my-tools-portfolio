@@ -1,10 +1,5 @@
 import breezyWeatherContent from "./content/breezy-weather.md?raw";
-import fusionKeyboardApiContent from "./content/fusion-keyboard-api.md?raw";
-import fusionKeyboardControllerContent from "./content/fusion-keyboard-controller.md?raw";
-import gameOfLifePsVitaContent from "./content/game-of-life-psvita.md?raw";
-import morphmanKoreanMecabContent from "./content/morphman-korean-mecab.md?raw";
 import spotifyBackendAspnetContent from "./content/spotify-backend-aspnet.md?raw";
-import spotifyFlutterContent from "./content/spotify-flutter.md?raw";
 import spotifyFrontendReactIonicContent from "./content/spotify-frontend-react-ionic.md?raw";
 
 export const PROJECTS_CUSTOM_MARKDOWN = [

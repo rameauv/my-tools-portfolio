@@ -1,23 +1,27 @@
-import type { BackgroundRemovalPipeline } from "@huggingface/transformers";
-import { pipeline, env } from "@huggingface/transformers";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import type { BackgroundRemovalPipeline, ProgressInfo } from "@huggingface/transformers";
+import { env, pipeline } from "@huggingface/transformers";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 
 interface UseBackgroundRemovalPipelineOptions {
-	powerPreference: 'high-performance' | 'low-power';
+	powerPreference: "high-performance" | "low-power";
 	onProgress?: (progress: string) => void;
 }
 
-export function useBackgroundRemovalPipeline({
-	powerPreference,
-	onProgress,
-}: UseBackgroundRemovalPipelineOptions) {
+// biome-ignore lint/suspicious/noExplicitAny: We don't know the type of the GPUDevice
+type GPUDevice = any;
+
+export function useBackgroundRemovalPipeline({ powerPreference, onProgress }: UseBackgroundRemovalPipelineOptions) {
 	const queryClient = useQueryClient();
 	const [isPowerPreferenceLocked, setIsPowerPreferenceLocked] = useState(false);
 
 	// Initialize pipeline
-	const { data: pipelineInstance, isLoading: isModelLoading, error: pipelineError } = useQuery({
-		queryKey: ['pipeline', powerPreference],
+	const {
+		data: pipelineInstance,
+		isLoading: isModelLoading,
+		error: pipelineError,
+	} = useQuery({
+		queryKey: ["pipeline", powerPreference],
 		queryFn: async () => {
 			console.log("initializePipeline", powerPreference);
 			onProgress?.("Loading BEN2-ONNX model...");
@@ -30,7 +34,7 @@ export function useBackgroundRemovalPipeline({
 			setIsPowerPreferenceLocked(true);
 			const segmenter = await pipeline("background-removal", "onnx-community/BEN2-ONNX", {
 				device: "wasm",
-				progress_callback: (progressInfo: any) => {
+				progress_callback: (progressInfo: ProgressInfo) => {
 					// Handle ProgressStatusInfo (status: "progress")
 					if (progressInfo?.status === "progress" && typeof progressInfo.progress === "number") {
 						const percent = Math.round(progressInfo.progress);
@@ -72,13 +76,13 @@ export function useBackgroundRemovalPipeline({
 	useEffect(() => {
 		return () => {
 			// Cleanup current pipeline
-			const currentPipeline = queryClient.getQueryData<BackgroundRemovalPipeline>(['pipeline', powerPreference]);
+			const currentPipeline = queryClient.getQueryData<BackgroundRemovalPipeline>(["pipeline", powerPreference]);
 			if (currentPipeline) {
 				console.log("dispose pipeline");
 				currentPipeline.dispose();
 				console.log("destroy device", env.backends.onnx.webgpu?.device);
-				if ((env.backends.onnx.webgpu?.device as any)?.destroy) {
-					(env.backends.onnx.webgpu?.device as any)?.destroy();
+				if ((env.backends.onnx.webgpu?.device as GPUDevice)?.destroy) {
+					(env.backends.onnx.webgpu?.device as GPUDevice)?.destroy();
 				}
 			}
 		};
@@ -87,7 +91,7 @@ export function useBackgroundRemovalPipeline({
 	// Process image
 	const processImageMutation = useMutation({
 		mutationFn: async (imageUrl: string) => {
-			const segmenter = queryClient.getQueryData<BackgroundRemovalPipeline>(['pipeline', powerPreference]);
+			const segmenter = queryClient.getQueryData<BackgroundRemovalPipeline>(["pipeline", powerPreference]);
 			if (!segmenter) {
 				throw new Error("Pipeline not initialized");
 			}

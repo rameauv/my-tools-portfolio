@@ -1,18 +1,19 @@
 import { AdapterDetailCard } from "./AdapterDetailCard";
+import type { GPUAdapter } from "./GPUAdapter";
 
 interface AdapterDetailsProps {
 	adapters: {
-		lowPowerAdapter: any | null;
-		highPerformanceAdapter: any | null;
+		lowPowerAdapter: GPUAdapter | null;
+		highPerformanceAdapter: GPUAdapter | null;
 	};
 }
 
-export function AdapterDetails({ adapters }: AdapterDetailsProps) {
+export function AdapterDetails(props: AdapterDetailsProps) {
 	return (
-		<div className="bg-white border border-gray-300 rounded-lg p-4">
+		<div className="rounded-lg border border-gray-300 bg-white p-4">
 			<div className="flex flex-col gap-4">
-				<AdapterDetailCard adapter={adapters.lowPowerAdapter} adapterType="low-power" />
-				<AdapterDetailCard adapter={adapters.highPerformanceAdapter} adapterType="high-performance" />
+				<AdapterDetailCard adapter={props.adapters.lowPowerAdapter} adapterType="low-power" />
+				<AdapterDetailCard adapter={props.adapters.highPerformanceAdapter} adapterType="high-performance" />
 			</div>
 		</div>
 	);
