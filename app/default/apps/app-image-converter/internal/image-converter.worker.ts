@@ -29,7 +29,7 @@ async function getVips() {
 	try {
 		vipsInstance = await Vips({
 			locateFile: (path: string, _prefix: string) => {
-				return `/assets/wasm-vips/${path}`;
+				return `/assets/libs/wasm-vips/${path}`;
 			},
 		});
 
