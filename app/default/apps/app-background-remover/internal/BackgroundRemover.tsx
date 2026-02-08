@@ -176,26 +176,39 @@ export const BackgroundRemover = React.memo(() => {
 		jobHistoryQuery.refetch();
 	}, [processedImage, jobHistoryQuery.refetch]);
 
+	// WebGPU availability: show fallback UI when loading or unavailable
+	const adapters = adaptersQuery.adapters;
+	const isWebGpuLoading = adapters === undefined;
+	const isWebGpuUnavailable =
+		adapters === null ||
+		(adapters !== null && adapters !== undefined && !adapters.lowPowerAdapter && !adapters.highPerformanceAdapter);
+
+	if (isWebGpuLoading || isWebGpuUnavailable) {
+		return (
+			<div className="flex h-full flex-col items-center justify-center gap-4 bg-gray-50 p-4">
+				<div className="max-w-md rounded-lg border border-gray-200 bg-white p-6 text-center shadow-sm">
+					<h2 className="mb-2 font-semibold text-gray-900 text-xl">
+						{isWebGpuLoading ? "Checking WebGPU support…" : "WebGPU is required"}
+					</h2>
+					{isWebGpuLoading ? (
+						<p className="text-gray-600 text-sm">Please wait.</p>
+					) : (
+						<p className="text-gray-600 text-sm">
+							This tool uses WebGPU to remove image backgrounds. WebGPU is not available in your current browser or
+							environment. Try a supported browser (e.g. Chrome, Edge) with hardware acceleration enabled, or ensure
+							WebGPU is not disabled by policy.
+						</p>
+					)}
+				</div>
+			</div>
+		);
+	}
+
 	return (
 		<div className="flex h-full flex-col gap-4 bg-gray-50 p-4">
 			{/* Header */}
 			<div className="flex items-center justify-between">
 				<h2 className="font-semibold text-xl">Background Remover</h2>
-				<div className="flex items-center gap-2">
-					{adaptersQuery.adapters !== null && adaptersQuery.adapters !== undefined && (
-						<div
-							className={`rounded px-2 py-1 text-xs ${
-								adaptersQuery.adapters.lowPowerAdapter || adaptersQuery.adapters.highPerformanceAdapter
-									? "bg-green-100 text-green-800"
-									: "bg-yellow-100 text-yellow-800"
-							}`}
-						>
-							{adaptersQuery.adapters.lowPowerAdapter || adaptersQuery.adapters.highPerformanceAdapter
-								? "WebGPU Available"
-								: "WebGPU Not Available"}
-						</div>
-					)}
-				</div>
 			</div>
 
 			{/* GPU Info Section */}
