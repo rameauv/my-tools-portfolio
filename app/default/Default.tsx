@@ -155,7 +155,7 @@ export function Default() {
 
 function Shell(props: { children: React.ReactNode; bottomBar: React.ReactNode }) {
 	return (
-		<main className="flex h-screen flex-col overflow-hidden">
+		<main className="flex h-dvh flex-col overflow-hidden">
 			<div className="relative flex-1 overflow-hidden">{props.children}</div>
 			{props.bottomBar}
 		</main>

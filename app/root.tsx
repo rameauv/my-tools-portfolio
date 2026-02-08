@@ -55,7 +55,7 @@ export default function App() {
 
 export function HydrateFallback() {
 	return (
-		<div className="flex min-h-screen w-full items-center justify-center bg-white">
+		<div className="flex min-h-dvh w-full items-center justify-center bg-white">
 			<Loader2 aria-hidden className="size-8 animate-spin text-gray-400" />
 		</div>
 	);
