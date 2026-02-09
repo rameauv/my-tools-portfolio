@@ -1,4 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Analytics } from "@vercel/analytics/react";
 import { Loader2 } from "lucide-react";
 import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration } from "react-router";
 
@@ -40,6 +41,7 @@ export function Layout(props: { children: React.ReactNode }) {
 				{props.children}
 				<ScrollRestoration />
 				<Scripts />
+				<Analytics />
 			</body>
 		</html>
 	);
