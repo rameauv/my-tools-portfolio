@@ -4,88 +4,47 @@ import type { WindowContentProps } from "./apps/WindowContentProps";
 import { BottomBar } from "./bottom-bar/BottomBar";
 import { Desktop } from "./desktop/Desktop";
 import type { DesktopItemData } from "./desktop/DesktopItemData";
+import { NextWindowId } from "./NextWindowId";
 import { useCancelStaleRunningJobs } from "./useCancelStaleRunningJobs";
 import type { WindowConfig } from "./window/models/WindowConfig";
 import { Window } from "./window/Window";
 import { WindowProvider } from "./window-snapping/WindowContext";
 import { WindowSnapping } from "./window-snapping/WindowSnapping";
 
-let windowId = 0;
-
-function applyShiftWindowFocus(window: WindowConfig, targetWindow: WindowConfig) {
-	return { ...window, isFocused: false, depth: window.depth > targetWindow.depth ? window.depth - 1 : window.depth };
-}
-
 export function Default() {
 	const [windows, setWindows] = useState<WindowConfig[]>([]);
 
+	const windowsContainerRef = useRef<HTMLDivElement>(null);
+
+	useCancelStaleRunningJobs();
+
 	function onMinimize(id: number) {
-		setWindows(
-			windows.map((window) =>
-				window.id === id ? { ...window, isMinimized: !window.isMinimized, isFocused: false } : window,
-			),
-		);
+		setWindows(windows.map((window) => (window.id === id ? applyToggleMinimizeWindow(window) : window)));
 	}
 
 	function onToggleWindow(id: number) {
-		console.log("onToggleWindow");
-		setWindows((windows) => {
-			const targetWindow = windows.find((window) => window.id === id);
+		setWindows((prevWindows) => {
+			const targetWindow = prevWindows.find((window) => window.id === id);
 			if (targetWindow == null) {
-				return windows;
+				return prevWindows;
 			}
-			const focusedWindow = windows.find((window) => window.isFocused);
-			if (focusedWindow != null && focusedWindow.id !== id) {
-				return windows.map((window) => {
-					if (window.id === id) {
-						return {
-							...window,
-							isFocused: true,
-							isMinimized: false,
-							depth: windows.length - 1,
-						};
-					} else {
-						return {
-							...window,
-							isFocused: false,
-							depth: window.depth > targetWindow.depth ? window.depth - 1 : window.depth,
-						};
-					}
-				});
-			}
-			return windows.map((window) =>
-				window.id === id
-					? {
-							...window,
-							isMinimized: !window.isMinimized,
-							isFocused: window.isMinimized,
-							depth: windows.length - 1,
-						}
-					: { ...window, isFocused: false, depth: window.depth > targetWindow.depth ? window.depth - 1 : window.depth },
+			const focusedWindow = prevWindows.find((window) => window.isFocused);
+			const targetWindowIsNotTheFocusedWindow = focusedWindow != null && focusedWindow.id !== id;
+			const matchMapper = targetWindowIsNotTheFocusedWindow ? applyFocusWindow : applyToggleWindow;
+			return prevWindows.map((window) =>
+				window.id === id ? matchMapper(window, prevWindows.length) : applyShiftWindowFocus(window, targetWindow),
 			);
 		});
 	}
 
 	function onFocus(id: number) {
-		console.log("onFocus");
 		setWindows((prevWindows) => {
 			const targetWindow = prevWindows.find((window) => window.id === id);
 			if (targetWindow == null) {
 				return prevWindows;
 			}
 			return prevWindows.map((window) =>
-				window.id === id
-					? {
-							...window,
-							isFocused: true,
-							isMinimized: false,
-							depth: prevWindows.length - 1,
-						}
-					: {
-							...window,
-							isFocused: false,
-							depth: window.depth > targetWindow.depth ? window.depth - 1 : window.depth,
-						},
+				window.id === id ? applyFocusWindow(window, prevWindows.length) : applyShiftWindowFocus(window, targetWindow),
 			);
 		});
 	}
@@ -106,11 +65,10 @@ export function Default() {
 	}) {
 		const existingWindow = windows.find((windowItem) => windowItem.appId === config.appId);
 		if (existingWindow != null) {
-			console.log("openWindow->onFocus");
 			onFocus(existingWindow.id);
 			return;
 		}
-		const newId = windowId++;
+		const newId = NextWindowId.get();
 		const newWindow: WindowConfig = {
 			id: newId,
 			appId: config.appId,
@@ -140,12 +98,6 @@ export function Default() {
 		});
 	}
 
-	const windowsContainerRef = useRef<HTMLDivElement>(null);
-
-	useCancelStaleRunningJobs();
-
-	console.log("windows", windows);
-
 	return (
 		<WindowProvider openWindow={openWindow}>
 			<Shell bottomBar={<BottomBar onToggleWindow={onToggleWindow} windows={windows} />}>
@@ -159,7 +111,6 @@ export function Default() {
 									key={`window-${window.id}`}
 									onClose={() => onClose(window.id)}
 									onFocus={() => {
-										console.log("Window->onFocus");
 										onFocus(window.id);
 									}}
 									onMinimize={() => onMinimize(window.id)}
@@ -184,4 +135,30 @@ function Shell(props: { children: React.ReactNode; bottomBar: React.ReactNode })
 			{props.bottomBar}
 		</main>
 	);
+}
+
+function applyShiftWindowFocus(window: WindowConfig, targetWindow: WindowConfig) {
+	return { ...window, isFocused: false, depth: window.depth > targetWindow.depth ? window.depth - 1 : window.depth };
+}
+
+function applyFocusWindow(window: WindowConfig, windowCount: number) {
+	return {
+		...window,
+		isFocused: true,
+		isMinimized: false,
+		depth: windowCount - 1,
+	};
+}
+
+function applyToggleWindow(window: WindowConfig, windowCount: number) {
+	return {
+		...window,
+		isMinimized: !window.isMinimized,
+		isFocused: window.isMinimized,
+		depth: windowCount - 1,
+	};
+}
+
+function applyToggleMinimizeWindow(window: WindowConfig) {
+	return { ...window, isMinimized: !window.isMinimized, isFocused: false };
 }
