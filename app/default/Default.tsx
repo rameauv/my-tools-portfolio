@@ -1,10 +1,10 @@
 import type * as React from "react";
-import { useEffect, useEffectEvent, useRef, useState } from "react";
-import { cancelRunningJobs } from "./apps/app-background-remover/internal/backgroundRemovalDB";
+import { useRef, useState } from "react";
 import type { WindowContentProps } from "./apps/WindowContentProps";
 import { BottomBar } from "./bottom-bar/BottomBar";
 import { Desktop } from "./desktop/Desktop";
 import type { DesktopItemData } from "./desktop/DesktopItemData";
+import { useCancelStaleRunningJobs } from "./useCancelStaleRunningJobs";
 import type { WindowConfig } from "./window/models/WindowConfig";
 import { Window } from "./window/Window";
 import { WindowProvider } from "./window-snapping/WindowContext";
@@ -60,6 +60,7 @@ export function Default() {
 					? {
 							...window,
 							isFocused: true,
+							isMinimized: false,
 							depth: windows.length - 1,
 						}
 					: { ...window, isFocused: false, depth: window.depth - 1 },
@@ -104,7 +105,7 @@ export function Default() {
 		setWindows(windows.map((w) => ({ ...w, isFocused: false, depth: w.depth - 1 })).concat(newWindow));
 	}
 
-	const onOpenItem = useEffectEvent((item: DesktopItemData) => {
+	function onOpenItem(item: DesktopItemData) {
 		openWindow({
 			appId: item.appId,
 			title: item.title,
@@ -114,16 +115,11 @@ export function Default() {
 			defaultWidth: item.defaultWidth,
 			defaultHeight: item.defaultHeight,
 		});
-	});
+	}
 
 	const windowsContainerRef = useRef<HTMLDivElement>(null);
 
-	// Cleanup stale running jobs on startup
-	useEffect(() => {
-		cancelRunningJobs().catch((error) => {
-			console.error("Failed to cancel stale running jobs:", error);
-		});
-	}, []);
+	useCancelStaleRunningJobs();
 
 	return (
 		<WindowProvider openWindow={openWindow}>

@@ -9,9 +9,9 @@ import { getWallpaperSrcSet, wallpapers } from "./wallpapers";
 export const Desktop = React.memo(function Desktop(props: { onOpenItem: (item: DesktopItemData) => void }) {
 	const [desktopItems, setDesktopItems] = useState<DesktopItem[]>(DESKTOP_ITEMS);
 
-	const updateItemPosition = React.useEffectEvent((id: number, x: number, y: number) => {
+	function updateItemPosition(id: number, x: number, y: number) {
 		setDesktopItems((items) => items.map((item) => (item.data.id === id ? { ...item, x, y } : item)));
-	});
+	}
 
 	return (
 		<ul className="relative flex h-full w-full flex-col items-start gap-4">
