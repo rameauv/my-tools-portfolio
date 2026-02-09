@@ -5,10 +5,17 @@ import { cn } from "~/utils/cn";
 import { linkedinData } from "./data";
 import type { LinkedInProfile } from "./types";
 
-function extractVanityName(url: string): string | null {
-	const match = url.match(/\/in\/([^/?]+)/);
-	return match ? match[1] : null;
-}
+const SECTIONS = [
+	{ label: "About", id: "about", Component: AboutSection },
+	{ label: "Experience", id: "experience", Component: ExperienceSection },
+	{ label: "Education", id: "education", Component: EducationSection },
+	{ label: "Skills", id: "skills", Component: SkillsSection },
+	{ label: "Projects", id: "projects", Component: ProjectsSection },
+] as const;
+
+const MOBILE_SECTIONS = SECTIONS.map((section) => ({ ...section, elId: mobileSectionIdProvider(section.id) }));
+
+const DESKTOP_SECTIONS = SECTIONS.map((section) => ({ ...section, elId: desktopSectionIdProvider(section.id) }));
 
 export function Page() {
 	const profile = linkedinData;
@@ -21,9 +28,8 @@ export function Page() {
 		section: "about" | "experience" | "education" | "skills" | "projects",
 		platform: "desktop" | "mobile",
 	) => {
-		setActiveSection(section);
-
 		if (platform === "mobile") {
+			setActiveSection(section);
 			if (containerRef.current) {
 				containerRef.current.scrollTo({ top: 0, behavior: "smooth" });
 			}
@@ -31,7 +37,7 @@ export function Page() {
 		}
 
 		if (platform === "desktop") {
-			const element = document.getElementById(`section-${section}`);
+			const element = document.getElementById(desktopSectionIdProvider(section));
 			if (element) {
 				element.scrollIntoView({ behavior: "smooth" });
 			}
@@ -40,58 +46,37 @@ export function Page() {
 		assertAllOptionsHandled(platform);
 	};
 
+	const activeMobileSection = MOBILE_SECTIONS.find((section) => section.id === activeSection);
+
 	return (
 		<div className="@container h-full w-full overflow-auto bg-[#e5e5e5] font-sans text-black" ref={containerRef}>
 			<ProfileHeader jobTitle={profile.personal_information.job_title} name={profile.personal_information.name} />
 
 			<div className="sticky top-0 z-20 flex @sm:hidden overflow-x-auto border-gray-400 border-b bg-[#ece9d8]">
-				<NavTab
-					active={activeSection === "about"}
-					label="About"
-					onClick={() => handleSectionChange("about", "mobile")}
-				/>
-				<NavTab
-					active={activeSection === "experience"}
-					label="Experience"
-					onClick={() => handleSectionChange("experience", "mobile")}
-				/>
-				<NavTab
-					active={activeSection === "education"}
-					label="Education"
-					onClick={() => handleSectionChange("education", "mobile")}
-				/>
-				<NavTab
-					active={activeSection === "skills"}
-					label="Skills"
-					onClick={() => handleSectionChange("skills", "mobile")}
-				/>
-				<NavTab
-					active={activeSection === "projects"}
-					label="Projects"
-					onClick={() => handleSectionChange("projects", "mobile")}
-				/>
+				{MOBILE_SECTIONS.map((section) => (
+					<NavTab
+						active={activeSection === section.id}
+						key={section.id}
+						label={section.label}
+						onClick={() => handleSectionChange(section.id, "mobile")}
+					/>
+				))}
 			</div>
 
 			<div className="flex @sm:flex-row flex-col">
 				<div className="sticky top-0 @sm:block hidden h-fit w-48 shrink-0 self-start border-[#a0a0a0] border-r-2 bg-[#f0f0f0] p-3">
-					<SidebarNav activeSection={""} onSectionChange={handleSectionChange} />
+					<DesktopSidebarNav activeSection={""} onSectionChange={handleSectionChange} />
 				</div>
 
 				<div className="min-h-0 flex-1 bg-white @sm:p-6 p-3">
 					<div className="@sm:hidden">
-						{activeSection === "about" && <AboutSection profile={profile} />}
-						{activeSection === "experience" && <ExperienceSection profile={profile} />}
-						{activeSection === "education" && <EducationSection profile={profile} />}
-						{activeSection === "skills" && <SkillsSection profile={profile} />}
-						{activeSection === "projects" && <ProjectsSection profile={profile} />}
+						{activeMobileSection && <activeMobileSection.Component id={activeMobileSection.elId} profile={profile} />}
 					</div>
 
 					<div className="@sm:block hidden space-y-6">
-						<AboutSection profile={profile} />
-						<ExperienceSection profile={profile} />
-						<EducationSection profile={profile} />
-						<SkillsSection profile={profile} />
-						<ProjectsSection profile={profile} />
+						{DESKTOP_SECTIONS.map((section) => (
+							<section.Component id={section.elId} key={section.id} profile={profile} />
+						))}
 					</div>
 				</div>
 			</div>
@@ -122,7 +107,7 @@ function NavTab(props: { active: boolean; onClick: () => void; label: string }) 
 	return (
 		<button
 			className={cn(
-				"whitespace-nowrap border-b-2 px-4 py-2 font-semibold @sm:text-xs text-[10px] transition-colors",
+				"cursor-pointer whitespace-nowrap border-b-2 px-4 py-2 font-semibold @sm:text-xs text-[10px] transition-colors",
 				props.active
 					? "border-[#003366] bg-white text-[#003366]"
 					: "border-transparent bg-[#ece9d8] text-gray-600 hover:bg-gray-100",
@@ -135,53 +120,45 @@ function NavTab(props: { active: boolean; onClick: () => void; label: string }) 
 	);
 }
 
-function SidebarNav(props: {
+function DesktopSidebarNav(props: {
 	activeSection: string;
 	onSectionChange: (
 		section: "about" | "experience" | "education" | "skills" | "projects",
 		platform: "desktop" | "mobile",
 	) => void;
 }) {
-	const links = [
-		{ id: "about" as const, label: "About" },
-		{ id: "experience" as const, label: "Experience" },
-		{ id: "education" as const, label: "Education" },
-		{ id: "skills" as const, label: "Skills" },
-		{ id: "projects" as const, label: "Projects" },
-	];
-
 	return (
 		<div className="space-y-1">
-			{links.map((link) => (
+			{DESKTOP_SECTIONS.map((section) => (
 				<button
 					className={cn(
-						"w-full rounded-sm border px-3 py-2 text-left text-xs transition-colors",
-						props.activeSection === link.id
+						"w-full cursor-pointer rounded-sm border px-3 py-2 text-left text-xs transition-colors",
+						props.activeSection === section.id
 							? "border-[#003366] bg-[#dfe8f6] font-bold text-[#003366]"
 							: "border-gray-300 bg-white text-gray-700 hover:bg-gray-50",
 					)}
-					key={link.id}
-					onClick={() => props.onSectionChange(link.id, "desktop")}
+					key={section.id}
+					onClick={() => props.onSectionChange(section.id, "desktop")}
 					style={{
 						boxShadow:
-							props.activeSection === link.id
+							props.activeSection === section.id
 								? "inset 0 1px 0 rgba(255,255,255,0.5), inset 0 -1px 0 rgba(0,0,0,0.1)"
 								: undefined,
 					}}
 					type="button"
 				>
-					{link.label}
+					{section.label}
 				</button>
 			))}
 		</div>
 	);
 }
 
-function AboutSection(props: { profile: LinkedInProfile }) {
+function AboutSection(props: { profile: LinkedInProfile; id: string }) {
 	const vanityName = extractVanityName(props.profile.personal_information.contact.linkedin);
 
 	return (
-		<Section id="section-about" title="About">
+		<Section id={props.id} title="About">
 			<div className="space-y-4">
 				{/* Basic Info */}
 				<div className="rounded-sm border border-gray-300 bg-[#f9f9f9] p-3">
@@ -226,9 +203,9 @@ function AboutSection(props: { profile: LinkedInProfile }) {
 	);
 }
 
-function ExperienceSection(props: { profile: LinkedInProfile }) {
+function ExperienceSection(props: { profile: LinkedInProfile; id: string }) {
 	return (
-		<Section id="section-experience" title="Experience">
+		<Section id={props.id} title="Experience">
 			<div className="space-y-4">
 				{props.profile.work_experience.length === 0 ? (
 					<p className="@sm:text-xs text-[10px] text-gray-500">No experience listed.</p>
@@ -277,11 +254,11 @@ function ExperienceSection(props: { profile: LinkedInProfile }) {
 	);
 }
 
-function EducationSection(props: { profile: LinkedInProfile }) {
+function EducationSection(props: { profile: LinkedInProfile; id: string }) {
 	const allEducation = [...(props.profile.education || []), ...(props.profile.certifications || [])];
 
 	return (
-		<Section id="section-education" title="Education">
+		<Section id={props.id} title="Education">
 			<div className="space-y-4">
 				{allEducation.length === 0 ? (
 					<p className="@sm:text-xs text-[10px] text-gray-500">No education listed.</p>
@@ -322,7 +299,7 @@ function EducationSection(props: { profile: LinkedInProfile }) {
 	);
 }
 
-function SkillsSection(props: { profile: LinkedInProfile }) {
+function SkillsSection(props: { profile: LinkedInProfile; id: string }) {
 	// Flatten all skills from different categories
 	const allSkills = [
 		...(props.profile.skills.programming_languages || []),
@@ -333,7 +310,7 @@ function SkillsSection(props: { profile: LinkedInProfile }) {
 	];
 
 	return (
-		<Section id="section-skills" title="Skills">
+		<Section id={props.id} title="Skills">
 			<div className="space-y-4">
 				{allSkills.length === 0 ? (
 					<p className="@sm:text-xs text-[10px] text-gray-500">No skills listed.</p>
@@ -357,9 +334,9 @@ function SkillsSection(props: { profile: LinkedInProfile }) {
 	);
 }
 
-function ProjectsSection(props: { profile: LinkedInProfile }) {
+function ProjectsSection(props: { profile: LinkedInProfile; id: string }) {
 	return (
-		<Section id="section-projects" title="Projects">
+		<Section id={props.id} title="Projects">
 			<div className="space-y-4">
 				{props.profile.projects.length === 0 ? (
 					<p className="@sm:text-xs text-[10px] text-gray-500">No projects listed.</p>
@@ -416,4 +393,17 @@ function InfoRow(props: { label: string; value: string; href?: string }) {
 	}
 
 	return content;
+}
+
+function extractVanityName(url: string): string | null {
+	const match = url.match(/\/in\/([^/?]+)/);
+	return match ? match[1] : null;
+}
+
+function mobileSectionIdProvider(section: string) {
+	return `section-${section}-mobile`;
+}
+
+function desktopSectionIdProvider(section: string) {
+	return `section-${section}-desktop`;
 }
