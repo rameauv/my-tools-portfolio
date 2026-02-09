@@ -12,6 +12,10 @@ import { WindowSnapping } from "./window-snapping/WindowSnapping";
 
 let windowId = 0;
 
+function applyShiftWindowFocus(window: WindowConfig, targetWindow: WindowConfig) {
+	return { ...window, isFocused: false, depth: window.depth > targetWindow.depth ? window.depth - 1 : window.depth };
+}
+
 export function Default() {
 	const [windows, setWindows] = useState<WindowConfig[]>([]);
 
@@ -24,7 +28,12 @@ export function Default() {
 	}
 
 	function onToggleWindow(id: number) {
+		console.log("onToggleWindow");
 		setWindows((windows) => {
+			const targetWindow = windows.find((window) => window.id === id);
+			if (targetWindow == null) {
+				return windows;
+			}
 			const focusedWindow = windows.find((window) => window.isFocused);
 			if (focusedWindow != null && focusedWindow.id !== id) {
 				return windows.map((window) => {
@@ -36,7 +45,11 @@ export function Default() {
 							depth: windows.length - 1,
 						};
 					} else {
-						return { ...window, isFocused: false, depth: window.depth - 1 };
+						return {
+							...window,
+							isFocused: false,
+							depth: window.depth > targetWindow.depth ? window.depth - 1 : window.depth,
+						};
 					}
 				});
 			}
@@ -48,24 +61,33 @@ export function Default() {
 							isFocused: window.isMinimized,
 							depth: windows.length - 1,
 						}
-					: { ...window, isFocused: false, depth: window.depth - 1 },
+					: { ...window, isFocused: false, depth: window.depth > targetWindow.depth ? window.depth - 1 : window.depth },
 			);
 		});
 	}
 
 	function onFocus(id: number) {
-		setWindows(
-			windows.map((window) =>
+		console.log("onFocus");
+		setWindows((prevWindows) => {
+			const targetWindow = prevWindows.find((window) => window.id === id);
+			if (targetWindow == null) {
+				return prevWindows;
+			}
+			return prevWindows.map((window) =>
 				window.id === id
 					? {
 							...window,
 							isFocused: true,
 							isMinimized: false,
-							depth: windows.length - 1,
+							depth: prevWindows.length - 1,
 						}
-					: { ...window, isFocused: false, depth: window.depth - 1 },
-			),
-		);
+					: {
+							...window,
+							isFocused: false,
+							depth: window.depth > targetWindow.depth ? window.depth - 1 : window.depth,
+						},
+			);
+		});
 	}
 
 	function onClose(id: number) {
@@ -84,6 +106,7 @@ export function Default() {
 	}) {
 		const existingWindow = windows.find((windowItem) => windowItem.appId === config.appId);
 		if (existingWindow != null) {
+			console.log("openWindow->onFocus");
 			onFocus(existingWindow.id);
 			return;
 		}
@@ -102,7 +125,7 @@ export function Default() {
 			groupingId: config.groupingId,
 			depth: windows.length,
 		};
-		setWindows(windows.map((w) => ({ ...w, isFocused: false, depth: w.depth - 1 })).concat(newWindow));
+		setWindows(windows.map((w) => ({ ...w, isFocused: false })).concat(newWindow));
 	}
 
 	function onOpenItem(item: DesktopItemData) {
@@ -121,6 +144,8 @@ export function Default() {
 
 	useCancelStaleRunningJobs();
 
+	console.log("windows", windows);
+
 	return (
 		<WindowProvider openWindow={openWindow}>
 			<Shell bottomBar={<BottomBar onToggleWindow={onToggleWindow} windows={windows} />}>
@@ -133,7 +158,10 @@ export function Default() {
 									config={window}
 									key={`window-${window.id}`}
 									onClose={() => onClose(window.id)}
-									onFocus={() => onFocus(window.id)}
+									onFocus={() => {
+										console.log("Window->onFocus");
+										onFocus(window.id);
+									}}
 									onMinimize={() => onMinimize(window.id)}
 									windowsContainerRef={windowsContainerRef}
 								>

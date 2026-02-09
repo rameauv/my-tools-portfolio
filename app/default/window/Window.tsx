@@ -126,11 +126,10 @@ const DialogPopup = React.memo(
 				className={cn(
 					"fixed top-0 left-0 z-50 overflow-hidden rounded-t-lg border-2 bg-[#ece9d8] shadow-xl",
 					props.config.isFocused ? "border-[#0054e3]" : "border-[#7a96df]",
-					isMobile ? "rounded-none" : "",
-					props.config.isMinimized ? "pointer-events-none" : "pointer-events-auto",
-					props.config.isMinimized ? "opacity-0" : "opacity-100",
+					isMobile && "rounded-none",
+					props.config.isMinimized && "hidden"
 				)}
-				onFocus={() => props.onFocus()}
+				onFocus={() => !props.config.isMinimized && props.onFocus()}
 				style={{
 					transform: `translate3d(${x}px, ${y}px, 0)`,
 					width: width,
