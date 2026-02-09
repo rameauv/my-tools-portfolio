@@ -10,7 +10,7 @@ function extractVanityName(url: string): string | null {
 	return match ? match[1] : null;
 }
 
-export function XpPage() {
+export function Page() {
 	const profile = linkedinData;
 	const [activeSection, setActiveSection] = useState<"about" | "experience" | "education" | "skills" | "projects">(
 		"about",
@@ -42,15 +42,8 @@ export function XpPage() {
 
 	return (
 		<div className="@container h-full w-full overflow-auto bg-[#e5e5e5] font-sans text-black" ref={containerRef}>
-			{/* Page Header */}
-			<div className="border-[#a0a0a0] border-b-2 bg-linear-to-b from-[#dfe8f6] to-[#c8d5e8] @sm:px-6 px-3 @sm:py-3 py-2">
-				<h1 className="font-bold @sm:text-lg text-[#003366] text-base">{profile.personal_information.name}</h1>
-				{profile.personal_information.job_title && (
-					<p className="mt-1 @sm:text-xs text-[10px] text-gray-700">{profile.personal_information.job_title}</p>
-				)}
-			</div>
+			<ProfileHeader jobTitle={profile.personal_information.job_title} name={profile.personal_information.name} />
 
-			{/* Mobile Navigation Tabs */}
 			<div className="sticky top-0 z-20 flex @sm:hidden overflow-x-auto border-gray-400 border-b bg-[#ece9d8]">
 				<NavTab
 					active={activeSection === "about"}
@@ -79,16 +72,12 @@ export function XpPage() {
 				/>
 			</div>
 
-			{/* Main Content Area */}
 			<div className="flex @sm:flex-row flex-col">
-				{/* Sidebar - Desktop */}
 				<div className="sticky top-0 @sm:block hidden h-fit w-48 shrink-0 self-start border-[#a0a0a0] border-r-2 bg-[#f0f0f0] p-3">
-					<SidebarNav activeSection={activeSection} onSectionChange={handleSectionChange} />
+					<SidebarNav activeSection={""} onSectionChange={handleSectionChange} />
 				</div>
 
-				{/* Content */}
 				<div className="min-h-0 flex-1 bg-white @sm:p-6 p-3">
-					{/* Mobile: Show only active section */}
 					<div className="@sm:hidden">
 						{activeSection === "about" && <AboutSection profile={profile} />}
 						{activeSection === "experience" && <ExperienceSection profile={profile} />}
@@ -97,7 +86,6 @@ export function XpPage() {
 						{activeSection === "projects" && <ProjectsSection profile={profile} />}
 					</div>
 
-					{/* Desktop: Show all sections */}
 					<div className="@sm:block hidden space-y-6">
 						<AboutSection profile={profile} />
 						<ExperienceSection profile={profile} />
@@ -108,10 +96,24 @@ export function XpPage() {
 				</div>
 			</div>
 
-			{/* Footer */}
-			<div className="border-gray-400 border-t bg-[#ece9d8] @sm:px-6 px-3 py-1 text-center @sm:text-[10px] text-[9px] text-gray-600">
-				Last updated: {new Date().toLocaleDateString()} | Powered by Internet Explorer 6
-			</div>
+			<PageFooter />
+		</div>
+	);
+}
+
+function ProfileHeader(props: { name: string; jobTitle?: string }) {
+	return (
+		<div className="border-[#a0a0a0] border-b-2 bg-linear-to-b from-[#dfe8f6] to-[#c8d5e8] @sm:px-6 px-3 @sm:py-3 py-2">
+			<h1 className="font-bold @sm:text-lg text-[#003366] text-base">{props.name}</h1>
+			{props.jobTitle && <p className="mt-1 @sm:text-xs text-[10px] text-gray-700">{props.jobTitle}</p>}
+		</div>
+	);
+}
+
+function PageFooter() {
+	return (
+		<div className="border-gray-400 border-t bg-[#ece9d8] @sm:px-6 px-3 py-1 text-center @sm:text-[10px] text-[9px] text-gray-600">
+			Last updated: {new Date().toLocaleDateString()} | Powered by Internet Explorer 6
 		</div>
 	);
 }

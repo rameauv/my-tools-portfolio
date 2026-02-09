@@ -31,9 +31,7 @@ export function AdapterSummary(props: AdapterSummaryProps) {
 					className="mt-1 self-start"
 					icon={
 						<Play
-							className={`size-3 transition-transform ${
-								props.isExpanded ? "rotate-90" : "rotate-0"
-							}`}
+							className={`size-3 transition-transform ${props.isExpanded ? "rotate-90" : "rotate-0"}`}
 							fill="black"
 						/>
 					}

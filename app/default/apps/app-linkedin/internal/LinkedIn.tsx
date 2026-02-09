@@ -1,11 +1,11 @@
 import React from "react";
-import { InternetExplorer } from "./InternetExplorer";
-import { XpPage } from "./XpPage";
+import { InternetExplorerShell } from "./InternetExplorerShell";
+import { Page } from "./Page";
 
 export const LinkedIn = React.memo(() => {
 	return (
-		<InternetExplorer>
-			<XpPage />
-		</InternetExplorer>
+		<InternetExplorerShell>
+			<Page />
+		</InternetExplorerShell>
 	);
 });
