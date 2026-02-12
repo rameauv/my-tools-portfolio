@@ -207,7 +207,7 @@ export const BackgroundRemover = React.memo(() => {
 	}
 
 	return (
-		<div className="flex h-full flex-col gap-4 bg-gray-50 p-4">
+		<div className="flex min-h-full flex-col gap-4 bg-gray-50 p-4">
 			{/* Header */}
 			<div className="flex items-center justify-between">
 				<h2 className="font-semibold text-xl">Background Remover</h2>
