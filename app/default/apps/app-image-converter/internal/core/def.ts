@@ -1,4 +1,4 @@
-import type { AppDef } from "../../AppDef";
+import type { AppDef } from "../../../AppDef";
 import { ImageConverter } from "./ImageConverter";
 
 export const def: AppDef = {

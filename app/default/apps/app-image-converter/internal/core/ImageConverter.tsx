@@ -2,13 +2,6 @@ import { Download, Image as ImageIcon, RefreshCw, Settings2, Upload, X } from "l
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { useImageConverterWorker } from "./useImageConverterWorker";
 
-interface ImageState {
-	file: File | null;
-	url: string | null;
-}
-
-const SUPPORTED_FORMATS = ["WEBP", "JPEG", "PNG"];
-
 export const ImageConverter = React.memo(() => {
 	const [image, setImage] = useState<ImageState>({ file: null, url: null });
 	const [targetFormat, setTargetFormat] = useState("WEBP");
@@ -310,3 +303,10 @@ export const ImageConverter = React.memo(() => {
 		</div>
 	);
 });
+
+interface ImageState {
+	file: File | null;
+	url: string | null;
+}
+
+const SUPPORTED_FORMATS = ["WEBP", "JPEG", "PNG"];

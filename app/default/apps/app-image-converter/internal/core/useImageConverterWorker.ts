@@ -1,28 +1,6 @@
 import { useCallback, useEffect, useRef } from "react";
-
-// Worker message types
-// Removed unused ConvertImageMessage to fix lint
-
-// Worker response types
-interface ProgressResponse {
-	type: "PROGRESS";
-	jobId: string;
-	message: string;
-}
-
-interface SuccessResponse {
-	type: "SUCCESS";
-	jobId: string;
-	result: ArrayBuffer;
-}
-
-interface ErrorResponse {
-	type: "ERROR";
-	jobId: string;
-	error: string;
-}
-
-type WorkerResponse = ProgressResponse | SuccessResponse | ErrorResponse;
+import { assertAllOptionsHandled } from "~/utils/assertIsNever";
+import type { WorkerResponse } from "../shared/image-converter-worker-types";
 
 interface UseImageConverterWorkerOptions {
 	onProgress?: (jobId: string, message: string) => void;
@@ -55,7 +33,7 @@ export function useImageConverterWorker({ onProgress, onSuccess, onError }: UseI
 				workerRef.current.terminate();
 			}
 
-			const worker = new Worker(new URL("./image-converter.worker.ts", import.meta.url), { type: "module" });
+			const worker = new Worker(new URL("../worker/image-converter.worker.ts", import.meta.url), { type: "module" });
 			workerRef.current = worker;
 
 			worker.postMessage(
@@ -70,6 +48,14 @@ export function useImageConverterWorker({ onProgress, onSuccess, onError }: UseI
 			);
 
 			return new Promise((resolve, reject) => {
+				worker.onerror = (event: ErrorEvent) => {
+					const message = event.message || "Worker failed to load or run";
+					statusHandler.current.onError?.(jobId, message);
+					reject(new Error(message));
+					worker.terminate();
+					workerRef.current = null;
+				};
+
 				worker.onmessage = (event: MessageEvent<WorkerResponse>) => {
 					const response = event.data;
 					switch (response.type) {
@@ -88,6 +74,8 @@ export function useImageConverterWorker({ onProgress, onSuccess, onError }: UseI
 							worker.terminate();
 							workerRef.current = null;
 							break;
+						default:
+							assertAllOptionsHandled(response);
 					}
 				};
 			});
