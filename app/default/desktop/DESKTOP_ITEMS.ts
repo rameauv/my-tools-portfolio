@@ -4,6 +4,7 @@ import { appMimeType } from "../apps/app-file-type-detector";
 import { appGitHubExplorer } from "../apps/app-github-explorer";
 import { appImageConverter } from "../apps/app-image-converter";
 import { appLinkedin } from "../apps/app-linkedin";
+import { appVideoEditor } from "../apps/app-video-editor";
 import type { DesktopItem } from "./DesktopItem";
 
 export const DESKTOP_ITEMS: DesktopItem[] = [
@@ -90,5 +91,19 @@ export const DESKTOP_ITEMS: DesktopItem[] = [
 		},
 		x: 0,
 		y: 500,
+	},
+	{
+		data: {
+			id: 7,
+			appId: appVideoEditor.def.appId,
+			icon: appVideoEditor.def.iconSrc,
+			title: appVideoEditor.def.title,
+			component: appVideoEditor.def.component,
+			groupingId: appVideoEditor.def.groupingId,
+			defaultWidth: appVideoEditor.def.defaultWidth,
+			defaultHeight: appVideoEditor.def.defaultHeight,
+		},
+		x: 0,
+		y: 600,
 	},
 ];

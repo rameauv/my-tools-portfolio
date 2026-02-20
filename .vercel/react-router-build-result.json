@@ -1,0 +1,68 @@
+{
+	"buildManifest": {
+		"routes": {
+			"root": {
+				"id": "root",
+				"file": "root.tsx",
+				"path": ""
+			},
+			"routes/default": {
+				"id": "routes/default",
+				"parentId": "root",
+				"file": "routes/default.tsx",
+				"index": true
+			}
+		}
+	},
+	"reactRouterConfig": {
+		"appDirectory": "/Users/valentinrameau/projects/portfolio/app",
+		"basename": "/",
+		"buildDirectory": "/Users/valentinrameau/projects/portfolio/build",
+		"future": {
+			"unstable_optimizeDeps": false,
+			"unstable_subResourceIntegrity": false,
+			"unstable_trailingSlashAwareDataRequests": false,
+			"v8_middleware": false,
+			"v8_splitRouteModules": false,
+			"v8_viteEnvironmentApi": false
+		},
+		"routes": {
+			"root": {
+				"id": "root",
+				"file": "root.tsx",
+				"path": ""
+			},
+			"routes/default": {
+				"id": "routes/default",
+				"parentId": "root",
+				"file": "routes/default.tsx",
+				"index": true
+			}
+		},
+		"routeDiscovery": {
+			"mode": "initial"
+		},
+		"serverBuildFile": "index.js",
+		"serverModuleFormat": "esm",
+		"ssr": false,
+		"allowedActionOrigins": false,
+		"unstable_routeConfig": [
+			{
+				"id": "root",
+				"path": "",
+				"file": "root.tsx",
+				"children": [
+					{
+						"file": "routes/default.tsx",
+						"index": true
+					}
+				]
+			}
+		]
+	},
+	"viteConfig": {
+		"build": {
+			"assetsDir": "assets"
+		}
+	}
+}

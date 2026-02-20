@@ -28,9 +28,7 @@ export function Default() {
 			if (targetWindow == null) {
 				return prevWindows;
 			}
-			const focusedWindow = prevWindows.find((window) => window.isFocused);
-			const targetWindowIsNotTheFocusedWindow = focusedWindow != null && focusedWindow.id !== id;
-			const matchMapper = targetWindowIsNotTheFocusedWindow ? applyFocusWindow : applyToggleWindow;
+			const matchMapper = !targetWindow.isFocused ? applyFocusWindow : applyToggleWindow;
 			return prevWindows.map((window) =>
 				window.id === id ? matchMapper(window, prevWindows.length) : applyShiftWindowFocus(window, targetWindow),
 			);
