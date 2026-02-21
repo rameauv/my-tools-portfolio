@@ -14,4 +14,5 @@ export interface WindowConfig {
 	componentData?: unknown;
 	defaultWidth?: number;
 	defaultHeight?: number;
+	canCloseStatusProvider?: () => Promise<{ text: string } | null>;
 }

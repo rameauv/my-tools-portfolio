@@ -6,8 +6,14 @@ export interface VideoEditorGLUniforms {
 	time: number;
 }
 
+export type VideoEditorGLSource = TexImageSource;
+
+export type VideoEditorGLPipelineOptions = {
+	finishAfterRender?: boolean;
+};
+
 export interface VideoEditorGLPipeline {
-	render: (uniforms: VideoEditorGLUniforms) => void;
+	render: (uniforms: VideoEditorGLUniforms, source?: VideoEditorGLSource) => void;
 	destroy: () => void;
 }
 
@@ -65,32 +71,24 @@ function createVideoTexture(gl: WebGL2RenderingContext): WebGLTexture | null {
 	return texture;
 }
 
-function updateVideoTexture(gl: WebGL2RenderingContext, texture: WebGLTexture, video: HTMLVideoElement): void {
+function updateVideoTexture(gl: WebGL2RenderingContext, texture: WebGLTexture, source: VideoEditorGLSource): void {
 	gl.bindTexture(gl.TEXTURE_2D, texture);
-	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, video);
+	gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, source);
 }
 
-export function resizeCanvasToMatchVideo(canvas: HTMLCanvasElement, video: HTMLVideoElement): void {
-	const w = video.videoWidth;
-	const h = video.videoHeight;
-	if (w <= 0 || h <= 0) return;
-	const dpr = Math.min(2, window.devicePixelRatio ?? 1);
-	canvas.width = Math.floor(w * dpr);
-	canvas.height = Math.floor(h * dpr);
-	canvas.style.width = `${w}px`;
-	canvas.style.height = `${h}px`;
-}
+export type VideoEditorCanvas = HTMLCanvasElement | OffscreenCanvas;
 
 export function createVideoEditorPipeline(
-	canvas: HTMLCanvasElement,
-	video: HTMLVideoElement,
+	canvas: VideoEditorCanvas,
+	defaultSource?: VideoEditorGLSource,
+	options?: VideoEditorGLPipelineOptions,
 ): VideoEditorGLPipeline | null {
-	const glOrNull = canvas.getContext("webgl2", { alpha: false, antialias: false });
+	const glOrNull = canvas.getContext("webgl2", { alpha: false, antialias: false }) as WebGL2RenderingContext | null;
 	if (!glOrNull) {
 		console.error("WebGL2 not supported");
 		return null;
 	}
-	const gl: WebGL2RenderingContext = glOrNull;
+	const gl = glOrNull;
 
 	const program = createProgram(gl, VERTEX_SOURCE, FRAGMENT_SOURCE);
 	const quadBuffer = createQuadBuffer(gl);
@@ -109,11 +107,12 @@ export function createVideoEditorPipeline(
 	const uIntensity = gl.getUniformLocation(program, "u_intensity");
 	const uFilterType = gl.getUniformLocation(program, "u_filterType");
 
-	function render(uniforms: VideoEditorGLUniforms): void {
-		if (video.readyState < 2) return;
-		updateVideoTexture(gl, texture, video);
+	function render(uniforms: VideoEditorGLUniforms, source?: VideoEditorGLSource): void {
+		const sourceToRender = source ?? defaultSource;
+		if (sourceToRender) {
+			updateVideoTexture(gl, texture, sourceToRender);
+		}
 		gl.viewport(0, 0, canvas.width, canvas.height);
-		// biome-ignore lint/correctness/useHookAtTopLevel: WebGL API method, not a React hook
 		gl.useProgram(program);
 		gl.activeTexture(gl.TEXTURE0);
 		gl.bindTexture(gl.TEXTURE_2D, texture);
@@ -125,6 +124,9 @@ export function createVideoEditorPipeline(
 		gl.enableVertexAttribArray(positionLoc);
 		gl.vertexAttribPointer(positionLoc, 2, gl.FLOAT, false, 0, 0);
 		gl.drawArrays(gl.TRIANGLES, 0, 6);
+		if (options?.finishAfterRender) {
+			gl.finish();
+		}
 	}
 
 	function destroy(): void {

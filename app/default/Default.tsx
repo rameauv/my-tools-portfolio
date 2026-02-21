@@ -1,5 +1,7 @@
+import { Dialog } from "@base-ui/react";
 import type * as React from "react";
-import { useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
+import { Button } from "./apps/shared/ds/Button";
 import type { WindowContentProps } from "./apps/WindowContentProps";
 import { BottomBar } from "./bottom-bar/BottomBar";
 import { Desktop } from "./desktop/Desktop";
@@ -13,6 +15,7 @@ import { WindowSnapping } from "./window-snapping/WindowSnapping";
 
 export function Default() {
 	const [windows, setWindows] = useState<WindowConfig[]>([]);
+	const [pendingCloseWindow, setPendingCloseWindow] = useState<{ id: number; text: string } | null>(null);
 
 	const windowsContainerRef = useRef<HTMLDivElement>(null);
 
@@ -48,7 +51,34 @@ export function Default() {
 	}
 
 	function onClose(id: number) {
-		setWindows(windows.filter((window) => window.id !== id));
+		const targetWindow = windows.find((window) => window.id === id);
+		if (targetWindow == null) {
+			return;
+		}
+		const canCloseDataPromise = targetWindow.canCloseStatusProvider?.();
+		if (canCloseDataPromise == null) {
+			setWindows(windows.filter((window) => window.id !== id));
+			return;
+		}
+		canCloseDataPromise.then((data) => {
+			if (data == null) {
+				setWindows(windows.filter((window) => window.id !== id));
+				return;
+			}
+			setPendingCloseWindow({ id: id, text: data.text });
+		});
+	}
+
+	function onCancelCloseConfirmation() {
+		setPendingCloseWindow(null);
+	}
+
+	function onConfirmClose() {
+		if (pendingCloseWindow == null) {
+			return;
+		}
+		setWindows((prevWindows) => prevWindows.filter((window) => window.id !== pendingCloseWindow.id));
+		setPendingCloseWindow(null);
 	}
 
 	function openWindow(config: {
@@ -96,6 +126,16 @@ export function Default() {
 		});
 	}
 
+	const windowApi = useMemo(() => {
+		return {
+			onSetCanCloseStatusProvider: (id: number, provider: () => Promise<{ text: string } | null>) => {
+				setWindows((prevWindows) =>
+					prevWindows.map((window) => (window.id === id ? { ...window, canCloseStatusProvider: provider } : window)),
+				);
+			},
+		};
+	}, []);
+
 	return (
 		<WindowProvider openWindow={openWindow}>
 			<Shell bottomBar={<BottomBar onToggleWindow={onToggleWindow} windows={windows} />}>
@@ -114,7 +154,12 @@ export function Default() {
 									onMinimize={() => onMinimize(window.id)}
 									windowsContainerRef={windowsContainerRef}
 								>
-									<Component data={window.componentData} key={`window-content-${window.id}`} />
+									<Component
+										api={windowApi}
+										data={window.componentData}
+										id={window.id}
+										key={`window-content-${window.id}`}
+									/>
 								</Window>
 							);
 						})}
@@ -122,7 +167,46 @@ export function Default() {
 					</div>
 				</WindowSnapping>
 			</Shell>
+			<ConfirmCloseModal
+				onCancel={onCancelCloseConfirmation}
+				onConfirm={onConfirmClose}
+				pendingCloseWindow={pendingCloseWindow}
+			/>
 		</WindowProvider>
+	);
+}
+
+function ConfirmCloseModal(props: {
+	onCancel: () => void;
+	onConfirm: () => void;
+	pendingCloseWindow: { id: number; text: string } | null;
+}) {
+	return (
+		<Dialog.Root
+			onOpenChange={(open) => {
+				if (!open) {
+					props.onCancel();
+				}
+			}}
+			open={props.pendingCloseWindow != null}
+		>
+			<Dialog.Portal>
+				<Dialog.Backdrop className="fixed inset-0 z-300 bg-black/30" />
+				<Dialog.Popup className="fixed top-1/2 left-1/2 z-300 w-[420px] -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-t-lg border-2 border-[#0054e3] bg-[#ece9d8] shadow-xl">
+					<div className="flex select-none items-center justify-between bg-linear-to-b from-[#0058e6] via-[#2576ff] to-[#0058e6] px-2 py-1">
+						<span className="truncate font-bold text-sm text-white shadow-sm">Confirm close</span>
+					</div>
+					<div className="m-1 flex flex-col gap-4 border border-gray-400 bg-white p-4">
+						<p className="text-sm">{props.pendingCloseWindow?.text}</p>
+						<div className="flex justify-end gap-2">
+							<Button onClick={props.onCancel} type="button">
+								Close
+							</Button>
+						</div>
+					</div>
+				</Dialog.Popup>
+			</Dialog.Portal>
+		</Dialog.Root>
 	);
 }
 

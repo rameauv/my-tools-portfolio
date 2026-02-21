@@ -13,7 +13,7 @@ precision highp float;
 uniform sampler2D u_texture;
 uniform float u_time;
 uniform float u_intensity;
-uniform int u_filterType; // 0 none, 1 grayscale, 2 sepia, 3 vignette
+uniform int u_filterType;
 in vec2 v_uv;
 out vec4 outColor;
 

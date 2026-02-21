@@ -1,6 +1,7 @@
 import { Menu, Popover } from "@base-ui/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { WindowConfig } from "../window/models/WindowConfig";
+import { FpsCounter } from "./FpsCounter";
 import { StartButton } from "./StartButton";
 import { StartMenu } from "./StartMenu";
 import { StatusSectionClock } from "./StatusSectionClock";
@@ -215,6 +216,7 @@ function StatusIconsSection() {
 				backgroundColor: "#107ceb",
 			}}
 		>
+			<FpsCounter />
 			<StatusSectionClock />
 		</div>
 	);

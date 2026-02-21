@@ -6,6 +6,7 @@ import { appGitHubExplorer } from "../apps/app-github-explorer";
 import { appImageConverter } from "../apps/app-image-converter";
 import { appLinkedin } from "../apps/app-linkedin";
 import { appVideoEditor } from "../apps/app-video-editor";
+import { appVideoEditorWebcodecs } from "../apps/app-video-editor-webcodecs";
 import type { DesktopItem } from "./DesktopItem";
 
 export const DESKTOP_ITEMS: DesktopItem[] = [
@@ -106,6 +107,20 @@ export const DESKTOP_ITEMS: DesktopItem[] = [
 		},
 		x: 0,
 		y: 600,
+	},
+	{
+		data: {
+			id: 8,
+			appId: appVideoEditorWebcodecs.def.appId,
+			icon: appVideoEditorWebcodecs.def.iconSrc,
+			title: appVideoEditorWebcodecs.def.title,
+			component: appVideoEditorWebcodecs.def.component,
+			groupingId: appVideoEditorWebcodecs.def.groupingId,
+			defaultWidth: appVideoEditorWebcodecs.def.defaultWidth,
+			defaultHeight: appVideoEditorWebcodecs.def.defaultHeight,
+		},
+		x: 0,
+		y: 700,
 	},
 	{
 		data: {

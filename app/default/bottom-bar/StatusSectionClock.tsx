@@ -17,7 +17,7 @@ export const StatusSectionClock = React.memo(() => {
 
 	return (
 		<div className="flex items-center gap-2">
-			<span className="text-sm text-white">{formattedTime}</span>
+			<span className="text-sm text-white tabular-nums">{formattedTime}</span>
 		</div>
 	);
 });

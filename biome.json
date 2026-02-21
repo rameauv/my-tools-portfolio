@@ -10,7 +10,8 @@
 			"a11y": {
 				"noStaticElementInteractions": "off",
 				"useKeyWithMouseEvents": "off",
-				"useKeyWithClickEvents": "off"
+				"useKeyWithClickEvents": "off",
+				"useMediaCaption": "off"
 			},
 			"nursery": {
 				"useSortedClasses": {
