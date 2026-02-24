@@ -5,6 +5,7 @@ import { isRouteErrorResponse, Links, Meta, Outlet, Scripts, ScrollRestoration }
 
 import type { Route } from "./+types/root";
 import "./app.css";
+import "@xyflow/react/dist/style.css";
 
 const queryClient = new QueryClient({
 	defaultOptions: {

@@ -1,3 +1,4 @@
+import { appAudioSynthesizer } from "../apps/app-audio-synthesizer";
 import { appBackgroundRemover } from "../apps/app-background-remover";
 import { appDs } from "../apps/app-ds";
 import { appMimeType } from "../apps/app-file-type-detector";
@@ -105,5 +106,19 @@ export const DESKTOP_ITEMS: DesktopItem[] = [
 		},
 		x: 0,
 		y: 600,
+	},
+	{
+		data: {
+			id: 9,
+			appId: appAudioSynthesizer.def.appId,
+			icon: appAudioSynthesizer.def.iconSrc,
+			title: appAudioSynthesizer.def.title,
+			component: appAudioSynthesizer.def.component,
+			groupingId: appAudioSynthesizer.def.groupingId,
+			defaultWidth: appAudioSynthesizer.def.defaultWidth,
+			defaultHeight: appAudioSynthesizer.def.defaultHeight,
+		},
+		x: 0,
+		y: 800,
 	},
 ];
