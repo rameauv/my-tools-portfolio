@@ -5,6 +5,7 @@ import { appMimeType } from "../apps/app-file-type-detector";
 import { appGitHubExplorer } from "../apps/app-github-explorer";
 import { appImageConverter } from "../apps/app-image-converter";
 import { appLinkedin } from "../apps/app-linkedin";
+import { appMandelbrot } from "../apps/app-mandelbrot";
 import { appVideoEditor } from "../apps/app-video-editor";
 import type { DesktopItem } from "./DesktopItem";
 
@@ -120,5 +121,19 @@ export const DESKTOP_ITEMS: DesktopItem[] = [
 		},
 		x: 0,
 		y: 800,
+	},
+	{
+		data: {
+			id: 10,
+			appId: appMandelbrot.def.appId,
+			icon: appMandelbrot.def.iconSrc,
+			title: appMandelbrot.def.title,
+			component: appMandelbrot.def.component,
+			groupingId: appMandelbrot.def.groupingId,
+			defaultWidth: appMandelbrot.def.defaultWidth,
+			defaultHeight: appMandelbrot.def.defaultHeight,
+		},
+		x: 0,
+		y: 900,
 	},
 ];
