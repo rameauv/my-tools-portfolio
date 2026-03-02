@@ -31,10 +31,7 @@ export function useDesktopItemDrag(params: UseDesktopItemDragParams) {
 		const newX = dragStartPos.current.x + deltaX;
 		const newY = dragStartPos.current.y + deltaY;
 
-		params.onUpdatePosition(
-			Math.max(0, Math.min(newX, window.innerWidth - 100)),
-			Math.max(0, Math.min(newY, window.innerHeight - 100)),
-		);
+		params.onUpdatePosition(newX, newY);
 	});
 
 	const onMouseUpEvent = useEffectEvent(() => {
