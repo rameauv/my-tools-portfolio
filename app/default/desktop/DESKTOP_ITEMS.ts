@@ -37,7 +37,7 @@ export const DESKTOP_ITEMS: DesktopItem[] = [
 			defaultHeight: appLinkedin.def.defaultHeight,
 		},
 		x: 0,
-		y: 100,
+		y: 0,
 	},
 	{
 		data: {
@@ -51,7 +51,7 @@ export const DESKTOP_ITEMS: DesktopItem[] = [
 			defaultHeight: appBackgroundRemover.def.defaultHeight,
 		},
 		x: 0,
-		y: 200,
+		y: 0,
 	},
 	{
 		data: {
@@ -65,7 +65,7 @@ export const DESKTOP_ITEMS: DesktopItem[] = [
 			defaultHeight: appImageConverter.def.defaultHeight,
 		},
 		x: 0,
-		y: 300,
+		y: 0,
 	},
 	{
 		data: {
@@ -79,7 +79,7 @@ export const DESKTOP_ITEMS: DesktopItem[] = [
 			defaultHeight: appMimeType.def.defaultHeight,
 		},
 		x: 0,
-		y: 400,
+		y: 0,
 	},
 	{
 		data: {
@@ -93,7 +93,7 @@ export const DESKTOP_ITEMS: DesktopItem[] = [
 			defaultHeight: appDs.def.defaultHeight,
 		},
 		x: 0,
-		y: 500,
+		y: 0,
 	},
 	{
 		data: {
@@ -107,7 +107,7 @@ export const DESKTOP_ITEMS: DesktopItem[] = [
 			defaultHeight: appVideoEditor.def.defaultHeight,
 		},
 		x: 0,
-		y: 600,
+		y: 0,
 	},
 	{
 		data: {
@@ -121,7 +121,7 @@ export const DESKTOP_ITEMS: DesktopItem[] = [
 			defaultHeight: appVideoEditorWebcodecs.def.defaultHeight,
 		},
 		x: 0,
-		y: 700,
+		y: 0,
 	},
 	{
 		data: {
@@ -135,7 +135,7 @@ export const DESKTOP_ITEMS: DesktopItem[] = [
 			defaultHeight: appAudioSynthesizer.def.defaultHeight,
 		},
 		x: 0,
-		y: 800,
+		y: 0,
 	},
 	{
 		data: {
@@ -149,6 +149,6 @@ export const DESKTOP_ITEMS: DesktopItem[] = [
 			defaultHeight: appMandelbrot.def.defaultHeight,
 		},
 		x: 0,
-		y: 900,
+		y: 0,
 	},
 ];
